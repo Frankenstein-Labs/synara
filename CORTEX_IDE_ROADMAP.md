@@ -26,14 +26,14 @@ Cette phase ne doit pas supposer que tous les langages seront supportés simulta
 
 Après la stabilisation de la base et la première architecture LSP, CORTEX IDE pourra ajouter les fonctionnalités IDE suivantes :
 
-| Domaine | Capacités visées |
-| --- | --- |
-| Assistance à l’écriture | Autocomplete et complétion contextuelle. |
-| Qualité | Diagnostics, linting et formatting. |
-| Navigation | Go to definition et find references. |
-| Symboles | Rename symbol et refactoring. |
-| Exécution | Debugging et inspection des processus. |
-| Validation | Testing, résultats de tests et relance ciblée. |
+| Domaine                 | Capacités visées                               |
+| ----------------------- | ---------------------------------------------- |
+| Assistance à l’écriture | Autocomplete et complétion contextuelle.       |
+| Qualité                 | Diagnostics, linting et formatting.            |
+| Navigation              | Go to definition et find references.           |
+| Symboles                | Rename symbol et refactoring.                  |
+| Exécution               | Debugging et inspection des processus.         |
+| Validation              | Testing, résultats de tests et relance ciblée. |
 
 Chaque capacité devra être conçue pour fonctionner par langage et par provider. L’interface devra exposer clairement les capacités disponibles au lieu de masquer les limites d’un environnement donné.
 
@@ -47,13 +47,13 @@ La priorité d’architecture devra être la sécurité. Les extensions devront 
 
 CORTEX AI pourra ajouter les capacités suivantes :
 
-| Domaine | Objectif futur |
-| --- | --- |
-| Interaction | AI Chat intégré au workspace. |
-| Compréhension | Repository Intelligence et Project Analysis. |
-| Dépendances | Dependency Analysis et détection des risques. |
-| Assistance | Code Assistance, Debugging Assistance et Testing Assistance. |
-| Automatisation | Agent Orchestration avec contrôles et limites explicites. |
+| Domaine        | Objectif futur                                               |
+| -------------- | ------------------------------------------------------------ |
+| Interaction    | AI Chat intégré au workspace.                                |
+| Compréhension  | Repository Intelligence et Project Analysis.                 |
+| Dépendances    | Dependency Analysis et détection des risques.                |
+| Assistance     | Code Assistance, Debugging Assistance et Testing Assistance. |
+| Automatisation | Agent Orchestration avec contrôles et limites explicites.    |
 
 La conception devra respecter les frontières de sécurité existantes. Les agents devront rendre leurs actions observables, demander les autorisations appropriées pour les opérations sensibles, limiter leurs changements et produire des traces exploitables. Aucune capacité IA n’est ajoutée par cette étape d’importation.
 
@@ -75,15 +75,15 @@ Cette phase nécessitera une conception séparée des comptes, des permissions, 
 
 ## Ordre de livraison recommandé
 
-| Priorité | Résultat attendu | Condition de passage |
-| --- | --- | --- |
-| 1 | Base importée et reproductible | Installation, tests, typechecks et builds documentés. |
-| 2 | Matrice de runtime et packaging | Démarrage desktop et artefacts vérifiés par plateforme. |
-| 3 | Première intégration LSP | Un langage supporté de bout en bout avec tests. |
-| 4 | Fonctions IDE fondamentales | Diagnostics, navigation et formatage vérifiés. |
-| 5 | Extension Host sécurisé | API versionnée et permissions testées. |
-| 6 | CORTEX AI contrôlable | Actions traçables, limites et tests de sécurité. |
-| 7 | CORTEX Cloud | Identité, projets et synchronisation conçus puis vérifiés. |
+| Priorité | Résultat attendu                | Condition de passage                                       |
+| -------- | ------------------------------- | ---------------------------------------------------------- |
+| 1        | Base importée et reproductible  | Installation, tests, typechecks et builds documentés.      |
+| 2        | Matrice de runtime et packaging | Démarrage desktop et artefacts vérifiés par plateforme.    |
+| 3        | Première intégration LSP        | Un langage supporté de bout en bout avec tests.            |
+| 4        | Fonctions IDE fondamentales     | Diagnostics, navigation et formatage vérifiés.             |
+| 5        | Extension Host sécurisé         | API versionnée et permissions testées.                     |
+| 6        | CORTEX AI contrôlable           | Actions traçables, limites et tests de sécurité.           |
+| 7        | CORTEX Cloud                    | Identité, projets et synchronisation conçus puis vérifiés. |
 
 ## Hors périmètre immédiat
 
@@ -95,4 +95,4 @@ Le grand rebranding de l’interface, le remplacement du code existant, la suppr
 [2]: https://github.com/Frankenstein-Labs/cortex-ide "Dépôt de travail CORTEX IDE"
 [3]: https://microsoft.github.io/language-server-protocol/ "Language Server Protocol"
 
-*Document préparé par Manus AI.*
+_Document préparé par Manus AI._

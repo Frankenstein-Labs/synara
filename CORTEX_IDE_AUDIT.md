@@ -17,18 +17,18 @@ L’analyse a porté sur l’arborescence Git complète, les manifestes `package
 
 ## Architecture réelle
 
-| Zone | Emplacement réel | Rôle observé |
-| --- | --- | --- |
-| Applications | `apps/` | Conteneur des applications produit. |
-| Desktop | `apps/desktop/` | Client desktop Electron, bootstrap principal, preload, ponts IPC, intégration backend et scripts de démarrage. |
-| Serveur / CLI | `apps/server/` | Serveur applicatif et CLI local, orchestration, persistance SQLite, providers, WebSocket et terminal. Le package est nommé `@synara/cli`. |
-| Web | `apps/web/` | Interface React 19 construite avec Vite, TanStack Router, Zustand, Lexical et xterm. |
-| Marketing | `apps/marketing/` | Site marketing et documentation Next.js. |
-| Contrats partagés | `packages/contracts/` | Contrats et types partagés entre les applications. |
-| Code partagé | `packages/shared/` | Utilitaires et abstractions communes, notamment processus, filesystem, plateformes et intégrations. |
-| Scripts | `scripts/` | Build, release, vérifications de provenance, packaging desktop, migrations de manifestes et tests de smoke. |
-| Documentation | `.docs/`, `docs/`, `plans/`, `.plans/`, `audit/` | Documentation d’architecture, plans, procédures, audits et notes de release. |
-| Ressources | `assets/`, `apps/desktop/resources/` | Ressources de développement, de production et ressources desktop. |
+| Zone              | Emplacement réel                                 | Rôle observé                                                                                                                              |
+| ----------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Applications      | `apps/`                                          | Conteneur des applications produit.                                                                                                       |
+| Desktop           | `apps/desktop/`                                  | Client desktop Electron, bootstrap principal, preload, ponts IPC, intégration backend et scripts de démarrage.                            |
+| Serveur / CLI     | `apps/server/`                                   | Serveur applicatif et CLI local, orchestration, persistance SQLite, providers, WebSocket et terminal. Le package est nommé `@synara/cli`. |
+| Web               | `apps/web/`                                      | Interface React 19 construite avec Vite, TanStack Router, Zustand, Lexical et xterm.                                                      |
+| Marketing         | `apps/marketing/`                                | Site marketing et documentation Next.js.                                                                                                  |
+| Contrats partagés | `packages/contracts/`                            | Contrats et types partagés entre les applications.                                                                                        |
+| Code partagé      | `packages/shared/`                               | Utilitaires et abstractions communes, notamment processus, filesystem, plateformes et intégrations.                                       |
+| Scripts           | `scripts/`                                       | Build, release, vérifications de provenance, packaging desktop, migrations de manifestes et tests de smoke.                               |
+| Documentation     | `.docs/`, `docs/`, `plans/`, `.plans/`, `audit/` | Documentation d’architecture, plans, procédures, audits et notes de release.                                                              |
+| Ressources        | `assets/`, `apps/desktop/resources/`             | Ressources de développement, de production et ressources desktop.                                                                         |
 
 Il n’existe pas de répertoires racine `desktop/`, `server/`, `web/` ou `shared/` dans cette version. Les composants correspondants sont respectivement sous `apps/desktop`, `apps/server`, `apps/web` et `packages/shared`.
 
@@ -44,15 +44,15 @@ Le desktop est une application Electron. Son code se trouve dans `apps/desktop/s
 
 Les scripts desktop observés sont les suivants :
 
-| Commande | Fonction |
-| --- | --- |
-| `bun run --filter @synara/desktop dev` | Lance le flux de développement desktop. |
-| `bun run --filter @synara/desktop dev:bundle` | Recompile le bundle en mode watch. |
-| `bun run --filter @synara/desktop dev:electron` | Lance le processus Electron de développement. |
-| `bun run --filter @synara/desktop build` | Construit le bundle desktop. |
-| `bun run --filter @synara/desktop start` | Démarre Electron à partir du bundle construit. |
-| `bun run --filter @synara/desktop test` | Exécute les tests desktop avec Vitest. |
-| `bun run --filter @synara/desktop smoke-test` | Exécute le smoke test desktop. |
+| Commande                                        | Fonction                                       |
+| ----------------------------------------------- | ---------------------------------------------- |
+| `bun run --filter @synara/desktop dev`          | Lance le flux de développement desktop.        |
+| `bun run --filter @synara/desktop dev:bundle`   | Recompile le bundle en mode watch.             |
+| `bun run --filter @synara/desktop dev:electron` | Lance le processus Electron de développement.  |
+| `bun run --filter @synara/desktop build`        | Construit le bundle desktop.                   |
+| `bun run --filter @synara/desktop start`        | Démarre Electron à partir du bundle construit. |
+| `bun run --filter @synara/desktop test`         | Exécute les tests desktop avec Vitest.         |
+| `bun run --filter @synara/desktop smoke-test`   | Exécute le smoke test desktop.                 |
 
 Le desktop hydrate l’environnement du processus graphique avant de démarrer le backend. Les détails de plateforme sont centralisés dans le runtime partagé et dans les modules desktop. Le terminal utilise `node-pty`; sous Windows, la documentation source indique l’utilisation de ConPTY via node-pty même lorsque le backend est lancé sous Bun.
 
@@ -96,14 +96,14 @@ Le dépôt CORTEX IDE doit donc conserver `LICENSE` et toute notice tierce éven
 
 ## Modifications réalisées dans cette étape
 
-| Élément | Modification |
-| --- | --- |
-| Code applicatif | Aucune modification fonctionnelle volontaire. |
-| Structure | Structure complète conservée. |
-| Licence | `LICENSE` conservé. |
-| Documentation | Ajout de `CORTEX_IDE_AUDIT.md` et `CORTEX_IDE_ROADMAP.md`. |
-| Identité | Aucun grand rebranding du code ou de l’interface. |
-| GitHub | Création du dépôt de travail privé `Frankenstein-Labs/cortex-ide`. |
+| Élément         | Modification                                                       |
+| --------------- | ------------------------------------------------------------------ |
+| Code applicatif | Aucune modification fonctionnelle volontaire.                      |
+| Structure       | Structure complète conservée.                                      |
+| Licence         | `LICENSE` conservé.                                                |
+| Documentation   | Ajout de `CORTEX_IDE_AUDIT.md` et `CORTEX_IDE_ROADMAP.md`.         |
+| Identité        | Aucun grand rebranding du code ou de l’interface.                  |
+| GitHub          | Création du dépôt de travail privé `Frankenstein-Labs/cortex-ide`. |
 
 ## Références
 
@@ -122,7 +122,7 @@ Les commandes et résultats détaillés de l’installation, des tests et des bu
 
 [1] [2] [3] [4] [5] [6]
 
-*Document préparé par Manus AI.*
+_Document préparé par Manus AI._
 
 ---
 
