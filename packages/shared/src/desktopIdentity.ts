@@ -1,23 +1,23 @@
 // FILE: desktopIdentity.ts
 // Purpose: Defines the canonical desktop application identity across packaging and runtime.
 
-export const SYNARA_DESKTOP_SCHEME = "synara";
-export const SYNARA_DESKTOP_ORIGIN = `${SYNARA_DESKTOP_SCHEME}://app`;
-export const SYNARA_DESKTOP_ENTRY_URL = `${SYNARA_DESKTOP_ORIGIN}/index.html`;
-export const SYNARA_DESKTOP_UPDATE_CHANNEL = "synara";
-export const SYNARA_PRODUCTION_BUNDLE_ID = "com.emanueledipietro.synara";
-export const SYNARA_DEVELOPMENT_BUNDLE_ID = `${SYNARA_PRODUCTION_BUNDLE_ID}.dev`;
-export const SYNARA_CANARY_BUNDLE_ID = `${SYNARA_PRODUCTION_BUNDLE_ID}.canary`;
-export const SYNARA_CANARY_DESKTOP_SCHEME = "synara-canary";
-export const SYNARA_CANARY_DESKTOP_ORIGIN = `${SYNARA_CANARY_DESKTOP_SCHEME}://app`;
-export const SYNARA_CANARY_DESKTOP_ENTRY_URL = `${SYNARA_CANARY_DESKTOP_ORIGIN}/index.html`;
-export const SYNARA_SOURCE_DESKTOP_BUILD_MARKER = "synara-source-desktop-build-v2";
-export const SYNARA_DESKTOP_SMOKE_USER_DATA_ENV = "SYNARA_DESKTOP_SMOKE_USER_DATA";
+export const CORTEX_DESKTOP_SCHEME = "cortex";
+export const CORTEX_DESKTOP_ORIGIN = `${CORTEX_DESKTOP_SCHEME}://app`;
+export const CORTEX_DESKTOP_ENTRY_URL = `${CORTEX_DESKTOP_ORIGIN}/index.html`;
+export const CORTEX_DESKTOP_UPDATE_CHANNEL = "cortex";
+export const CORTEX_PRODUCTION_BUNDLE_ID = "com.emanueledipietro.cortex";
+export const CORTEX_DEVELOPMENT_BUNDLE_ID = `${CORTEX_PRODUCTION_BUNDLE_ID}.dev`;
+export const CORTEX_CANARY_BUNDLE_ID = `${CORTEX_PRODUCTION_BUNDLE_ID}.canary`;
+export const CORTEX_CANARY_DESKTOP_SCHEME = "cortex-canary";
+export const CORTEX_CANARY_DESKTOP_ORIGIN = `${CORTEX_CANARY_DESKTOP_SCHEME}://app`;
+export const CORTEX_CANARY_DESKTOP_ENTRY_URL = `${CORTEX_CANARY_DESKTOP_ORIGIN}/index.html`;
+export const CORTEX_SOURCE_DESKTOP_BUILD_MARKER = "cortex-source-desktop-build-v2";
+export const CORTEX_DESKTOP_SMOKE_USER_DATA_ENV = "CORTEX_DESKTOP_SMOKE_USER_DATA";
 
-export type SynaraDesktopFlavor = "production" | "development" | "canary";
+export type CortexDesktopFlavor = "production" | "development" | "canary";
 
-export interface SynaraDesktopIdentity {
-  readonly flavor: SynaraDesktopFlavor;
+export interface CortexDesktopIdentity {
+  readonly flavor: CortexDesktopFlavor;
   readonly displayName: string;
   readonly bundleId: string;
   readonly scheme: string;
@@ -28,11 +28,11 @@ export interface SynaraDesktopIdentity {
   readonly usesScriptedUpdates: boolean;
 }
 
-export function resolveSynaraDesktopFlavor(input: {
+export function resolveCortexDesktopFlavor(input: {
   readonly isDevelopment: boolean;
   readonly requestedFlavor?: string | undefined;
   readonly allowDevelopmentOverride?: boolean | undefined;
-}): SynaraDesktopFlavor {
+}): CortexDesktopFlavor {
   const requestedFlavor = input.requestedFlavor?.trim().toLowerCase();
   if (requestedFlavor === "canary") {
     return "canary";
@@ -46,42 +46,42 @@ export function resolveSynaraDesktopFlavor(input: {
   return input.isDevelopment ? "development" : "production";
 }
 
-export function synaraDesktopIdentity(flavor: SynaraDesktopFlavor): SynaraDesktopIdentity {
+export function cortexDesktopIdentity(flavor: CortexDesktopFlavor): CortexDesktopIdentity {
   if (flavor === "canary") {
     return {
       flavor,
-      displayName: "Synara Canary",
-      bundleId: SYNARA_CANARY_BUNDLE_ID,
-      scheme: SYNARA_CANARY_DESKTOP_SCHEME,
-      origin: SYNARA_CANARY_DESKTOP_ORIGIN,
-      entryUrl: SYNARA_CANARY_DESKTOP_ENTRY_URL,
-      userDataDirectoryName: "synara-canary",
-      defaultHomeDirectoryName: ".synara-canary",
+      displayName: "Cortex Canary",
+      bundleId: CORTEX_CANARY_BUNDLE_ID,
+      scheme: CORTEX_CANARY_DESKTOP_SCHEME,
+      origin: CORTEX_CANARY_DESKTOP_ORIGIN,
+      entryUrl: CORTEX_CANARY_DESKTOP_ENTRY_URL,
+      userDataDirectoryName: "cortex-canary",
+      defaultHomeDirectoryName: ".cortex-canary",
       usesScriptedUpdates: true,
     };
   }
   if (flavor === "development") {
     return {
       flavor,
-      displayName: "Synara (Dev)",
-      bundleId: SYNARA_DEVELOPMENT_BUNDLE_ID,
-      scheme: SYNARA_DESKTOP_SCHEME,
-      origin: SYNARA_DESKTOP_ORIGIN,
-      entryUrl: SYNARA_DESKTOP_ENTRY_URL,
-      userDataDirectoryName: "synara-dev",
-      defaultHomeDirectoryName: ".synara-dev",
+      displayName: "Cortex (Dev)",
+      bundleId: CORTEX_DEVELOPMENT_BUNDLE_ID,
+      scheme: CORTEX_DESKTOP_SCHEME,
+      origin: CORTEX_DESKTOP_ORIGIN,
+      entryUrl: CORTEX_DESKTOP_ENTRY_URL,
+      userDataDirectoryName: "cortex-dev",
+      defaultHomeDirectoryName: ".cortex-dev",
       usesScriptedUpdates: false,
     };
   }
   return {
     flavor,
-    displayName: "Synara",
-    bundleId: SYNARA_PRODUCTION_BUNDLE_ID,
-    scheme: SYNARA_DESKTOP_SCHEME,
-    origin: SYNARA_DESKTOP_ORIGIN,
-    entryUrl: SYNARA_DESKTOP_ENTRY_URL,
-    userDataDirectoryName: "synara",
-    defaultHomeDirectoryName: ".synara",
+    displayName: "Cortex",
+    bundleId: CORTEX_PRODUCTION_BUNDLE_ID,
+    scheme: CORTEX_DESKTOP_SCHEME,
+    origin: CORTEX_DESKTOP_ORIGIN,
+    entryUrl: CORTEX_DESKTOP_ENTRY_URL,
+    userDataDirectoryName: "cortex",
+    defaultHomeDirectoryName: ".cortex",
     usesScriptedUpdates: false,
   };
 }

@@ -16,7 +16,7 @@ import {
   type ToolLifecycleItemType,
   TurnId,
   type UserInputQuestion,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { Cause, Deferred, Effect, Exit, Layer, Option, Queue, Ref, Scope, Stream } from "effect";
 import type {
   AssistantMessage,
@@ -38,10 +38,10 @@ import {
   ProviderAdapterValidationError,
 } from "../Errors.ts";
 import {
-  SYNARA_HARNESS_POLICY_VERSION,
-  takeSynaraHarnessPolicyForProviderSession,
+  CORTEX_HARNESS_POLICY_VERSION,
+  takeCortexHarnessPolicyForProviderSession,
 } from "../../agentGateway/harnessPolicy.ts";
-import { buildOpenCodeMcpServer, SYNARA_MCP_SERVER_NAME } from "../../agentGateway/mcpInjection.ts";
+import { buildOpenCodeMcpServer, CORTEX_MCP_SERVER_NAME } from "../../agentGateway/mcpInjection.ts";
 import { AgentGatewayCredentials } from "../../agentGateway/Services/AgentGatewayCredentials.ts";
 import {
   acquireAgentGatewaySessionLease,
@@ -161,7 +161,7 @@ interface OpenCodeSessionContext {
   readonly pendingPermissions: Map<string, PermissionRequest>;
   readonly replyingPermissions: Map<string, "once" | "always" | "reject">;
   readonly settlingPermissions: Map<string, Deferred.Deferred<boolean>>;
-  /** Permission request ids resolved by Synara policy and never surfaced to the UI. */
+  /** Permission request ids resolved by Cortex policy and never surfaced to the UI. */
   readonly policyResolvedPermissionIds: Set<string>;
   /** Human replies settled from permission.list while their permission.replied echo is pending. */
   readonly locallyResolvedPermissionIds: Set<string>;
@@ -212,11 +212,11 @@ const installOpenCodeGatewayMcp = Effect.fn("installOpenCodeGatewayMcp")(functio
   const result = yield* runOpenCodeSdk("mcp.add", () =>
     input.client.mcp.add({
       directory: input.directory,
-      name: SYNARA_MCP_SERVER_NAME,
+      name: CORTEX_MCP_SERVER_NAME,
       config: buildOpenCodeMcpServer(input.connection),
     }),
   );
-  const status = result.data?.[SYNARA_MCP_SERVER_NAME];
+  const status = result.data?.[CORTEX_MCP_SERVER_NAME];
   if (status?.status === "connected") {
     return;
   }
@@ -224,8 +224,8 @@ const installOpenCodeGatewayMcp = Effect.fn("installOpenCodeGatewayMcp")(functio
     operation: "mcp.add",
     detail:
       status?.status === "failed"
-        ? `${input.displayName} Synara MCP connection failed: ${status.error}`
-        : `${input.displayName} Synara MCP connection did not become ready.`,
+        ? `${input.displayName} Cortex MCP connection failed: ${status.error}`
+        : `${input.displayName} Cortex MCP connection did not become ready.`,
   });
 });
 
@@ -966,7 +966,7 @@ function isMatchingHarnessPolicyDelivery(
 ): boolean {
   return (
     delivery?.sessionId === input.sessionId &&
-    delivery.policyVersion === SYNARA_HARNESS_POLICY_VERSION &&
+    delivery.policyVersion === CORTEX_HARNESS_POLICY_VERSION &&
     delivery.gatewayControlAvailable === input.gatewayControlAvailable
   );
 }
@@ -984,7 +984,7 @@ function buildOpenCodeResumeCursor(input: {
       ? {
           harnessPolicyDelivery: {
             sessionId: input.openCodeSessionId,
-            policyVersion: SYNARA_HARNESS_POLICY_VERSION,
+            policyVersion: CORTEX_HARNESS_POLICY_VERSION,
             gatewayControlAvailable: input.gatewayControlAvailable,
           },
         }
@@ -1713,7 +1713,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                   turnId,
                   messageId: deferredFinalAssistantMessageId,
                   raw: {
-                    source: "synara.opencode.deferred-idle-completion",
+                    source: "cortex.opencode.deferred-idle-completion",
                     event: raw,
                   },
                 }))
@@ -1730,7 +1730,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                 yield* completeOpenCodeTurn(context, {
                   turnId,
                   raw: {
-                    source: "synara.opencode.deferred-idle-local-part",
+                    source: "cortex.opencode.deferred-idle-local-part",
                     event: raw,
                   },
                   totalCostUsd: context.latestTurnCostUsd,
@@ -1757,7 +1757,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                   turnId,
                   messageId: retriedFinalAssistantMessageId,
                   raw: {
-                    source: "synara.opencode.deferred-idle-completion-retry",
+                    source: "cortex.opencode.deferred-idle-completion-retry",
                     event: raw,
                   },
                 }))
@@ -1771,7 +1771,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                 yield* completeOpenCodeTurn(context, {
                   turnId,
                   raw: {
-                    source: "synara.opencode.deferred-idle-local-part-retry",
+                    source: "cortex.opencode.deferred-idle-local-part-retry",
                     event: raw,
                   },
                   totalCostUsd: context.latestTurnCostUsd,
@@ -1786,7 +1786,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
             const completed = yield* completeOpenCodeTurn(context, {
               turnId,
               raw: {
-                source: "synara.opencode.idle-after-tool-calls",
+                source: "cortex.opencode.idle-after-tool-calls",
                 event: raw,
               },
               errorMessage: message,
@@ -1797,7 +1797,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                 threadId: context.session.threadId,
                 turnId,
                 raw: {
-                  source: "synara.opencode.idle-after-tool-calls",
+                  source: "cortex.opencode.idle-after-tool-calls",
                   event: raw,
                 },
               }),
@@ -2434,7 +2434,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
 
           case "permission.replied": {
             if (context.policyResolvedPermissionIds.has(event.properties.requestID)) {
-              // Synara policy resolved this request; nothing was surfaced to the UI.
+              // Cortex policy resolved this request; nothing was surfaced to the UI.
               break;
             }
             if (context.locallyResolvedPermissionIds.has(event.properties.requestID)) {
@@ -2576,7 +2576,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
           }
 
           // Newer OpenCode servers can emit session.next.* events for the active
-          // agent loop. Mirror them into Synara's canonical transcript stream.
+          // agent loop. Mirror them into Cortex's canonical transcript stream.
           case "session.next.text.delta": {
             if (!turnId || event.properties.delta.length === 0) {
               break;
@@ -3386,7 +3386,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
 
           // OpenCode's MCP registry is process/directory scoped, not session
           // scoped. Issue a gateway token only for a managed server isolated to
-          // this exact Synara thread.
+          // this exact Cortex thread.
           const agentGatewaySessionLease = serverUrl
             ? undefined
             : acquireAgentGatewaySessionLease(agentGatewayCredentials, input.threadId, provider);
@@ -3427,7 +3427,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                           Effect.sync(() => agentGatewaySessionLease?.release()).pipe(
                             Effect.andThen(
                               Effect.logWarning(
-                                `${adapterConfig.displayName} could not install thread-scoped Synara MCP control`,
+                                `${adapterConfig.displayName} could not install thread-scoped Cortex MCP control`,
                                 Cause.squash(cause),
                               ),
                             ),
@@ -3438,10 +3438,10 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                     }
                     const createSessionId = resumedSessionId
                       ? // A resumed provider may still be executing an interrupted Plan turn.
-                        // Install the read-only ruleset until Synara dispatches a new turn with a
+                        // Install the read-only ruleset until Cortex dispatches a new turn with a
                         // known interaction mode. This must succeed before the event pump starts:
                         // otherwise an already-running Full Access session could mutate state
-                        // without ever emitting a permission request for Synara to reject.
+                        // without ever emitting a permission request for Cortex to reject.
                         runOpenCodeSdk("session.update", () =>
                           client.session.update({
                             sessionID: resumedSessionId,
@@ -3468,7 +3468,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
                               : {}),
                             ...(initialAgent ? { agent: initialAgent } : {}),
                             permission: buildOpenCodePermissionRules(input.runtimeMode),
-                            title: `Synara ${input.threadId}`,
+                            title: `Cortex ${input.threadId}`,
                           };
                           return client.session.create(
                             sessionCreateInput as unknown as Parameters<
@@ -3705,7 +3705,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
             issue: `${adapterConfig.displayName} turns require text input or at least one attachment.`,
           });
         }
-        const harnessPolicy = takeSynaraHarnessPolicyForProviderSession(
+        const harnessPolicy = takeCortexHarnessPolicyForProviderSession(
           {
             ...(context.harnessPolicyDelivered ? { harnessPolicyDelivered: true } : {}),
           },
@@ -3739,9 +3739,9 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
         context.activeTurnFinalAssistantMessageId = undefined;
         context.activeTurnToolCallIdleWatchdogStarted = false;
         context.activeInteractionMode = interactionMode;
-        // Always pin Synara's interaction mode to OpenCode's primary agent.
+        // Always pin Cortex's interaction mode to OpenCode's primary agent.
         // Otherwise a user config with default agent=plan (or a stale options.agent=plan
-        // after leaving Synara plan mode) can trap default turns in plan mode.
+        // after leaving Cortex plan mode) can trap default turns in plan mode.
         const modePinnedAgent =
           interactionMode === "plan" ? adapterConfig.planAgent : adapterConfig.defaultAgent;
         context.activeAgent =
@@ -4168,7 +4168,7 @@ export function makeOpenCodeAdapterLive(options?: OpenCodeAdapterLiveOptions) {
             return yield* new ProviderAdapterValidationError({
               provider,
               operation: "forkThread",
-              issue: `The source ${adapterConfig.displayName} session has a turn in flight; Synara will rebuild the fork from its retained transcript.`,
+              issue: `The source ${adapterConfig.displayName} session has a turn in flight; Cortex will rebuild the fork from its retained transcript.`,
             });
           }
           const sourceSessionId =

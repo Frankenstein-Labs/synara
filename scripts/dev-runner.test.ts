@@ -22,16 +22,16 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
     const globalEnv = new Set(turboConfig.globalEnv ?? []);
 
     for (const name of [
-      "SYNARA_MODE",
-      "SYNARA_PORT",
-      "SYNARA_HOME",
-      "SYNARA_NO_BROWSER",
-      "SYNARA_AUTH_TOKEN",
-      "SYNARA_PUBLIC_URL",
-      "SYNARA_ALLOW_INSECURE_REMOTE",
-      "SYNARA_HOST",
-      "SYNARA_LOG_WS_EVENTS",
-      "SYNARA_AUTO_BOOTSTRAP_PROJECT_FROM_CWD",
+      "CORTEX_MODE",
+      "CORTEX_PORT",
+      "CORTEX_HOME",
+      "CORTEX_NO_BROWSER",
+      "CORTEX_AUTH_TOKEN",
+      "CORTEX_PUBLIC_URL",
+      "CORTEX_ALLOW_INSECURE_REMOTE",
+      "CORTEX_HOST",
+      "CORTEX_LOG_WS_EVENTS",
+      "CORTEX_AUTO_BOOTSTRAP_PROJECT_FROM_CWD",
       "VITE_WS_URL",
       "VITE_DEV_SERVER_URL",
     ]) {
@@ -40,12 +40,12 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
   });
 
   describe("resolveOffset", () => {
-    it.effect("uses explicit SYNARA_PORT_OFFSET when provided", () =>
+    it.effect("uses explicit CORTEX_PORT_OFFSET when provided", () =>
       Effect.sync(() => {
         const result = resolveOffset({ portOffset: 12, devInstance: undefined });
         assert.deepStrictEqual(result, {
           offset: 12,
-          source: "SYNARA_PORT_OFFSET=12",
+          source: "CORTEX_PORT_OFFSET=12",
         });
       }),
     );
@@ -67,7 +67,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           }),
         );
 
-        assert.ok(error.includes("Invalid SYNARA_PORT_OFFSET"));
+        assert.ok(error.includes("Invalid CORTEX_PORT_OFFSET"));
       }),
     );
   });
@@ -122,7 +122,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
     it.effect("rejects invalid boolean environment values", () =>
       Effect.gen(function* () {
         const error = yield* Effect.flip(
-          readDevRunnerBooleanEnvironment({ SYNARA_LOG_WS_EVENTS: "sometimes" }),
+          readDevRunnerBooleanEnvironment({ CORTEX_LOG_WS_EVENTS: "sometimes" }),
         );
 
         assert.match(String(error), /Failed to read boolean development-runner configuration/);
@@ -138,7 +138,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: { PATH: "/opt/homebrew/bin:/usr/bin" },
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -148,19 +148,19 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_PATH_HYDRATED, "1");
+        assert.equal(env.CORTEX_PATH_HYDRATED, "1");
         assert.match(env.PATH ?? "", /\/opt\/homebrew\/bin/);
       }),
     );
 
-    it.effect("defaults SYNARA_HOME to ~/.synara when not provided", () =>
+    it.effect("defaults CORTEX_HOME to ~/.cortex when not provided", () =>
       Effect.gen(function* () {
         const env = yield* createDevRunnerEnv({
           mode: "dev",
           baseEnv: {},
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -170,20 +170,20 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_HOME, resolve(homedir(), ".synara"));
-        assert.equal(env.SYNARA_HOST, "127.0.0.1");
+        assert.equal(env.CORTEX_HOME, resolve(homedir(), ".cortex"));
+        assert.equal(env.CORTEX_HOST, "127.0.0.1");
         assert.equal(env.VITE_WS_URL, "ws://127.0.0.1:3773");
       }),
     );
 
-    it.effect("defaults watched desktop development to ~/.synara-dev", () =>
+    it.effect("defaults watched desktop development to ~/.cortex-dev", () =>
       Effect.gen(function* () {
         const env = yield* createDevRunnerEnv({
           mode: "dev:desktop",
           baseEnv: {},
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -193,7 +193,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_HOME, resolve(homedir(), ".synara-dev"));
+        assert.equal(env.CORTEX_HOME, resolve(homedir(), ".cortex-dev"));
       }),
     );
 
@@ -201,10 +201,10 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
       Effect.gen(function* () {
         const env = yield* createDevRunnerEnv({
           mode: "dev:desktop",
-          baseEnv: { SYNARA_DESKTOP_FLAVOR: "canary" },
+          baseEnv: { CORTEX_DESKTOP_FLAVOR: "canary" },
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -214,7 +214,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_HOME, resolve(homedir(), ".synara-canary"));
+        assert.equal(env.CORTEX_HOME, resolve(homedir(), ".cortex-canary"));
       }),
     );
 
@@ -225,7 +225,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: {},
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -235,7 +235,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_HOST, "::1");
+        assert.equal(env.CORTEX_HOST, "::1");
         assert.equal(env.VITE_WS_URL, "ws://[::1]:3773");
       }),
     );
@@ -247,7 +247,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: {},
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: "/tmp/custom-synara",
+          cortexHome: "/tmp/custom-cortex",
           authToken: "secret",
           noBrowser: true,
           autoBootstrapProjectFromCwd: false,
@@ -257,12 +257,12 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: new URL("http://localhost:7331"),
         });
 
-        assert.equal(env.SYNARA_HOME, resolve("/tmp/custom-synara"));
-        assert.equal(env.SYNARA_PORT, "4222");
-        assert.equal(env.SYNARA_NO_BROWSER, "1");
-        assert.equal(env.SYNARA_AUTO_BOOTSTRAP_PROJECT_FROM_CWD, "0");
-        assert.equal(env.SYNARA_LOG_WS_EVENTS, "1");
-        assert.equal(env.SYNARA_HOST, "0.0.0.0");
+        assert.equal(env.CORTEX_HOME, resolve("/tmp/custom-cortex"));
+        assert.equal(env.CORTEX_PORT, "4222");
+        assert.equal(env.CORTEX_NO_BROWSER, "1");
+        assert.equal(env.CORTEX_AUTO_BOOTSTRAP_PROJECT_FROM_CWD, "0");
+        assert.equal(env.CORTEX_LOG_WS_EVENTS, "1");
+        assert.equal(env.CORTEX_HOST, "0.0.0.0");
         assert.equal(env.VITE_WS_URL, "ws://127.0.0.1:4222");
         assert.equal(env.VITE_DEV_SERVER_URL, "http://localhost:7331/");
       }),
@@ -273,11 +273,11 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
         const env = yield* createDevRunnerEnv({
           mode: "dev",
           baseEnv: {
-            SYNARA_LOG_WS_EVENTS: "keep-me-out",
+            CORTEX_LOG_WS_EVENTS: "keep-me-out",
           },
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -287,8 +287,8 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_MODE, "web");
-        assert.equal(env.SYNARA_LOG_WS_EVENTS, undefined);
+        assert.equal(env.CORTEX_MODE, "web");
+        assert.equal(env.CORTEX_LOG_WS_EVENTS, undefined);
       }),
     );
 
@@ -299,7 +299,7 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           baseEnv: {},
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: undefined,
+          cortexHome: undefined,
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -309,18 +309,18 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_LOG_WS_EVENTS, "0");
+        assert.equal(env.CORTEX_LOG_WS_EVENTS, "0");
       }),
     );
 
-    it.effect("uses custom synaraHome when provided", () =>
+    it.effect("uses custom cortexHome when provided", () =>
       Effect.gen(function* () {
         const env = yield* createDevRunnerEnv({
           mode: "dev",
           baseEnv: {},
           serverOffset: 0,
           webOffset: 0,
-          synaraHome: "/tmp/my-synara",
+          cortexHome: "/tmp/my-cortex",
           authToken: undefined,
           noBrowser: undefined,
           autoBootstrapProjectFromCwd: undefined,
@@ -330,9 +330,9 @@ it.layer(NodeServices.layer)("dev-runner", (it) => {
           devUrl: undefined,
         });
 
-        assert.equal(env.SYNARA_HOME, resolve("/tmp/my-synara"));
-        assert.equal(env.SYNARA_HOME, resolve("/tmp/my-synara"));
-        assert.equal(env.SYNARA_HOME, resolve("/tmp/my-synara"));
+        assert.equal(env.CORTEX_HOME, resolve("/tmp/my-cortex"));
+        assert.equal(env.CORTEX_HOME, resolve("/tmp/my-cortex"));
+        assert.equal(env.CORTEX_HOME, resolve("/tmp/my-cortex"));
       }),
     );
   });

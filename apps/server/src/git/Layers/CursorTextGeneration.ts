@@ -1,9 +1,9 @@
 import { Effect, Layer } from "effect";
 import { ChildProcessSpawner } from "effect/unstable/process";
 
-import type { CursorModelSelection, ProviderStartOptions } from "@synara/contracts";
-import { sanitizeGeneratedThreadTitle } from "@synara/shared/chatThreads";
-import { sanitizeBranchFragment, sanitizeFeatureBranchName } from "@synara/shared/git";
+import type { CursorModelSelection, ProviderStartOptions } from "@cortex/contracts";
+import { sanitizeGeneratedThreadTitle } from "@cortex/shared/chatThreads";
+import { sanitizeBranchFragment, sanitizeFeatureBranchName } from "@cortex/shared/git";
 
 import {
   applyCursorAcpModelSelection,
@@ -80,7 +80,7 @@ const cursorAcpConfig: AcpTextGenerationConfig<
       cursorSettings: settings,
       childProcessSpawner,
       cwd,
-      clientInfo: { name: "synara-git-text", version: "0.0.0" },
+      clientInfo: { name: "cortex-git-text", version: "0.0.0" },
     }),
   prepareRuntime: ({
     runtime,

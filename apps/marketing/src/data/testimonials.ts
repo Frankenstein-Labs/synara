@@ -1,5 +1,5 @@
 // FILE: data/testimonials.ts
-// Purpose: Canonical list of Synara testimonials sourced from X (Twitter) posts.
+// Purpose: Canonical list of Cortex testimonials sourced from X (Twitter) posts.
 // Layer: Static data
 // Notes: Each entry is keyed by its tweet id. The live tweet (author, avatar,
 //        full text, likes, media) is fetched at render time via lib/tweets.ts —
@@ -37,10 +37,10 @@ export const TESTIMONIALS: TestimonialSeed[] = [
     tier: 1,
     fallbackHandle: "LinearUncle",
     fallbackText:
-      "Synara — a coding GUI whose interface closely resembles Codex. I tried it and it really is a lot like Codex, so there's no learning curve at all. A common setup in the Chinese dev community is pairing it with Deepseek; it supports 8 popular coding agents like Pi, Claude Code, and OpenCode. I tested it with Pi + Deepseek and it works great — there's even a kanban board mode.",
+      "Cortex — a coding GUI whose interface closely resembles Codex. I tried it and it really is a lot like Codex, so there's no learning curve at all. A common setup in the Chinese dev community is pairing it with Deepseek; it supports 8 popular coding agents like Pi, Claude Code, and OpenCode. I tested it with Pi + Deepseek and it works great — there's even a kanban board mode.",
     fallbackUrl: "https://x.com/LinearUncle/status/2065270654019264867",
     translation:
-      "Synara — a coding GUI whose interface closely resembles Codex. I tried it and it really is a lot like Codex, so there's no learning curve at all. A common setup in the Chinese dev community is pairing it with Deepseek; it supports 8 popular coding agents like Pi, Claude Code, and OpenCode. I tested it with Pi + Deepseek and it works great — there's even a kanban board mode.",
+      "Cortex — a coding GUI whose interface closely resembles Codex. I tried it and it really is a lot like Codex, so there's no learning curve at all. A common setup in the Chinese dev community is pairing it with Deepseek; it supports 8 popular coding agents like Pi, Claude Code, and OpenCode. I tested it with Pi + Deepseek and it works great — there's even a kanban board mode.",
     translationLang: "zh",
   },
   {
@@ -55,14 +55,14 @@ export const TESTIMONIALS: TestimonialSeed[] = [
     id: "2065233838498865624",
     tier: 1,
     fallbackHandle: "uzairansar",
-    fallbackText: "The local server feature in @trySynara is lowkey goated",
+    fallbackText: "The local server feature in @tryCortex is lowkey goated",
     fallbackUrl: "https://x.com/uzairansar/status/2065233838498865624",
   },
   {
     id: "2065191018635329877",
     tier: 1,
     fallbackHandle: "maboroshidev",
-    fallbackText: "first reaction 10/10 @trySynara @emanueledpt",
+    fallbackText: "first reaction 10/10 @tryCortex @emanueledpt",
     fallbackUrl: "https://x.com/maboroshidev/status/2065191018635329877",
   },
   {
@@ -70,14 +70,14 @@ export const TESTIMONIALS: TestimonialSeed[] = [
     tier: 1,
     fallbackHandle: "alpes_aux_andes",
     fallbackText:
-      "Why nobody is talking about @trySynara ?\nThis app is so well designed I can't believe it",
+      "Why nobody is talking about @tryCortex ?\nThis app is so well designed I can't believe it",
     fallbackUrl: "https://x.com/alpes_aux_andes/status/2066574154741027134",
   },
   {
     id: "2066644113508749678",
     tier: 1,
     fallbackHandle: "danfq_dev",
-    fallbackText: "man i just CAN'T get enough of @trySynara\nit's just sooooo goooooooooooood",
+    fallbackText: "man i just CAN'T get enough of @tryCortex\nit's just sooooo goooooooooooood",
     fallbackUrl: "https://x.com/danfq_dev/status/2066644113508749678",
   },
   {
@@ -85,7 +85,7 @@ export const TESTIMONIALS: TestimonialSeed[] = [
     tier: 2,
     fallbackHandle: "HugoAssis_",
     fallbackText:
-      "I've been using @trySynara for a few hours now. I'm really impressed. I'd already tried T3 Chat, Orca, and Terax, but none of them managed to grab my attention quite like Synara did.",
+      "I've been using @tryCortex for a few hours now. I'm really impressed. I'd already tried T3 Chat, Orca, and Terax, but none of them managed to grab my attention quite like Cortex did.",
     fallbackUrl: "https://x.com/HugoAssis_/status/2062730056082850270",
   },
   {
@@ -93,7 +93,7 @@ export const TESTIMONIALS: TestimonialSeed[] = [
     tier: 2,
     fallbackHandle: "sanjaydotpro",
     fallbackText:
-      "@trySynara Use it almost daily, loving it so far, has almost become a part of my workflow. Founder here.",
+      "@tryCortex Use it almost daily, loving it so far, has almost become a part of my workflow. Founder here.",
     fallbackUrl: "https://x.com/sanjaydotpro/status/2066256453162385479",
   },
   {
@@ -101,50 +101,50 @@ export const TESTIMONIALS: TestimonialSeed[] = [
     tier: 2,
     fallbackHandle: "TxoriAGI",
     fallbackText:
-      "I recommend @emanueledpt open sourced Synara app. Pretty good if you want something similar to codex but with claude :)",
+      "I recommend @emanueledpt open sourced Cortex app. Pretty good if you want something similar to codex but with claude :)",
     fallbackUrl: "https://x.com/TxoriAGI/status/2065408122768814220",
   },
   {
     id: "2064376772318154825",
     tier: 2,
     fallbackHandle: "HugoAssis_",
-    fallbackText: "that's why we love synara.",
+    fallbackText: "that's why we love cortex.",
     fallbackUrl: "https://x.com/HugoAssis_/status/2064376772318154825",
   },
   {
     id: "2066131113979035883",
     tier: 3,
     fallbackHandle: "vkpdeveloper",
-    fallbackText: "i love this feature, I think now i'll have to switch to synara no matter what",
+    fallbackText: "i love this feature, I think now i'll have to switch to cortex no matter what",
     fallbackUrl: "https://x.com/vkpdeveloper/status/2066131113979035883",
   },
   {
     id: "2066183684026417180",
     tier: 3,
-    fallbackHandle: "synara",
+    fallbackHandle: "cortex",
     fallbackText:
-      "@trySynara's way of working with agents is exactly what I need. Of course, the design is also much better than AionUI. I knew about Synara before, but now I can finally use it since it has a Linux version.",
+      "@tryCortex's way of working with agents is exactly what I need. Of course, the design is also much better than AionUI. I knew about Cortex before, but now I can finally use it since it has a Linux version.",
     fallbackUrl: "https://x.com/i/status/2066183684026417180",
   },
   {
     id: "2065500826240450668",
     tier: 3,
-    fallbackHandle: "synara",
+    fallbackHandle: "cortex",
     fallbackText: "Wait this looks EXTREMELY clean. I'm downloading this rn",
     fallbackUrl: "https://x.com/i/status/2065500826240450668",
   },
   {
     id: "2064900969847300354",
     tier: 3,
-    fallbackHandle: "synara",
-    fallbackText: "Synara looking absolutely beautiful to work with now",
+    fallbackHandle: "cortex",
+    fallbackText: "Cortex looking absolutely beautiful to work with now",
     fallbackUrl: "https://x.com/i/status/2064900969847300354",
   },
   {
     id: "2066108708266869096",
     tier: 3,
-    fallbackHandle: "synara",
-    fallbackText: "Synara keeps getting better",
+    fallbackHandle: "cortex",
+    fallbackText: "Cortex keeps getting better",
     fallbackUrl: "https://x.com/i/status/2066108708266869096",
   },
 ];

@@ -1,4 +1,4 @@
-import { ProjectId, ThreadId } from "@synara/contracts";
+import { ProjectId, ThreadId } from "@cortex/contracts";
 import { describe, expect, it } from "vitest";
 
 import {

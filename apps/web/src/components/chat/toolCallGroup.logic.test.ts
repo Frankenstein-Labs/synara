@@ -93,7 +93,7 @@ describe("isSummarizableToolCallEntry", () => {
       isSummarizableToolCallEntry(
         workEntry({
           id: "threads",
-          synaraThreadCreation: {
+          cortexThreadCreation: {
             operationId: "op",
             requestedCount: 1,
             createdCount: 1,

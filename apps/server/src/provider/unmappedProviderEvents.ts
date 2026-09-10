@@ -1,4 +1,4 @@
-import type { ProviderEvent } from "@synara/contracts";
+import type { ProviderEvent } from "@cortex/contracts";
 
 import { isProviderCredentialKey } from "../providerChildEnvironment.ts";
 
@@ -509,7 +509,7 @@ export function sanitizeUnmappedProviderData(value: unknown): unknown {
     return redacted;
   }
   return {
-    __synaraTruncated: true,
+    __cortexTruncated: true,
     originalJsonChars: serialized.length,
     preview: `${serialized.slice(0, MAX_UNMAPPED_PROVIDER_PREVIEW_CHARS - 3)}...`,
   };

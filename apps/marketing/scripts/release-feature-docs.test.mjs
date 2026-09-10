@@ -84,9 +84,9 @@ test("v0.7.3 durable workflows are documented and connected", () => {
 
   assert.ok(workflowMeta.pages.includes("headless-server"));
   assert.ok(workflowIndex.includes("/docs/workflows/headless-server"));
-  assert.ok(headless.includes("synara-server-<version>.tar.gz"));
+  assert.ok(headless.includes("cortex-server-<version>.tar.gz"));
   assert.ok(headless.includes("server status"));
-  assert.ok(headless.includes("SYNARA_AUTH_TOKEN"));
+  assert.ok(headless.includes("CORTEX_AUTH_TOKEN"));
   assert.ok(browser.includes("Floating over the conversation"));
   assert.ok(browser.includes("two presentations of one task-scoped browser session"));
   assert.ok(commands.includes("`/side [provider] [prompt]`"));

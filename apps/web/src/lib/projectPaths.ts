@@ -3,7 +3,7 @@ import {
   isUncPath,
   isWindowsAbsolutePath,
   isWindowsDrivePath,
-} from "@synara/shared/path";
+} from "@cortex/shared/path";
 import { getNavigatorPlatform, isWindowsPlatform } from "./utils";
 
 function isRootPath(value: string): boolean {

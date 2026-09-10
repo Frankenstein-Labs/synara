@@ -6,7 +6,7 @@
 
 ## Summary
 
-The goal was to strengthen Synara's technical SEO, Search Console readiness, and AI-search discoverability. The site now has richer metadata, safer JSON-LD, a sitemap index, split sitemaps, explicit crawler guidance, dynamic LLM text files, a web manifest, stable sitemap dates, canonical repository links, and per-release changelog pages with unique visible content. Build, lint, endpoint smoke tests, and an in-app browser check passed.
+The goal was to strengthen Cortex's technical SEO, Search Console readiness, and AI-search discoverability. The site now has richer metadata, safer JSON-LD, a sitemap index, split sitemaps, explicit crawler guidance, dynamic LLM text files, a web manifest, stable sitemap dates, canonical repository links, and per-release changelog pages with unique visible content. Build, lint, endpoint smoke tests, and an in-app browser check passed.
 
 ---
 
@@ -35,12 +35,12 @@ The goal was to strengthen Synara's technical SEO, Search Console readiness, and
 | `src/app/changelog/[version]/page.tsx` | Modified | Per-release TechArticle and breadcrumb JSON-LD                                     |
 | `src/app/privacy/page.tsx`             | Modified | Privacy WebPage and breadcrumb JSON-LD                                             |
 | `src/components/FAQ.tsx`               | Modified | Uses shared FAQ data                                                               |
-| `src/components/Navbar.tsx`            | Modified | Uses canonical Synara GitHub repository URL                                        |
-| `src/components/ChangelogContent.tsx`  | Modified | Renders either the full archive or one release; uses canonical Synara releases URL |
+| `src/components/Navbar.tsx`            | Modified | Uses canonical Cortex GitHub repository URL                                        |
+| `src/components/ChangelogContent.tsx`  | Modified | Renders either the full archive or one release; uses canonical Cortex releases URL |
 | `src/components/ScrollToRelease.tsx`   | Deleted  | Removed because per-release pages no longer render the full archive                |
 | `src/components/AskAISection.tsx`      | Modified | Uses canonical non-www domain in AI prompt                                         |
-| `src/lib/githubStars.ts`               | Modified | Fetches stars from canonical Synara repository                                     |
-| `src/lib/installerCount.ts`            | Modified | Fetches installer counts from canonical Synara repository                          |
+| `src/lib/githubStars.ts`               | Modified | Fetches stars from canonical Cortex repository                                     |
+| `src/lib/installerCount.ts`            | Modified | Fetches installer counts from canonical Cortex repository                          |
 
 ---
 
@@ -48,7 +48,7 @@ The goal was to strengthen Synara's technical SEO, Search Console readiness, and
 
 ### Problem
 
-The site already had basic metadata, a single sitemap, robots.txt, and a static `llms.txt`, but several signals were shallow or inconsistent. Release pages all used build-time `new Date()` in the sitemap, AI/search crawlers were not called out explicitly, and repository links were split between the older project identity and the current `synara` identity.
+The site already had basic metadata, a single sitemap, robots.txt, and a static `llms.txt`, but several signals were shallow or inconsistent. Release pages all used build-time `new Date()` in the sitemap, AI/search crawlers were not called out explicitly, and repository links were split between the older project identity and the current `cortex` identity.
 
 ### Approach
 
@@ -107,7 +107,7 @@ flowchart TD
 
 ## High School Explanation
 
-Imagine Synara's website is a school project you want everyone to find.
+Imagine Cortex's website is a school project you want everyone to find.
 
 The sitemap is the table of contents. Google can now see the main pages and every release note page, with real dates instead of "today" stamped everywhere.
 
@@ -115,4 +115,4 @@ The robots file is the front desk sign. It says, "You can visit the public pages
 
 The JSON-LD is like labeled sticky notes on the project board. It tells search engines, "This is the app, this is the download page, these are FAQs, these are release notes."
 
-The LLM files are a cheat sheet for AI tools. If an AI assistant wants a quick, clean summary of Synara, it gets one without digging through the whole page.
+The LLM files are a cheat sheet for AI tools. If an AI assistant wants a quick, clean summary of Cortex, it gets one without digging through the whole page.

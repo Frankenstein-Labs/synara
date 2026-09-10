@@ -1,4 +1,4 @@
-import type { RuntimeTaskListItem } from "@synara/contracts";
+import type { RuntimeTaskListItem } from "@cortex/contracts";
 
 import {
   makeRuntimeTaskListItem,

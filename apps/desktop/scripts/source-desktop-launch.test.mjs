@@ -3,9 +3,9 @@ import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import {
-  SYNARA_DESKTOP_SMOKE_USER_DATA_ENV,
-  SYNARA_SOURCE_DESKTOP_BUILD_MARKER,
-} from "@synara/shared/desktopIdentity";
+  CORTEX_DESKTOP_SMOKE_USER_DATA_ENV,
+  CORTEX_SOURCE_DESKTOP_BUILD_MARKER,
+} from "@cortex/shared/desktopIdentity";
 import { spawnSourceDesktop } from "./source-desktop-launch.mjs";
 
 function captureSourceDesktopSpawn(environment, overrides = {}) {
@@ -18,7 +18,7 @@ function captureSourceDesktopSpawn(environment, overrides = {}) {
     environment,
     homeDirectory: "/Users/tester",
     platform: "darwin",
-    readBuiltMain: () => SYNARA_SOURCE_DESKTOP_BUILD_MARKER,
+    readBuiltMain: () => CORTEX_SOURCE_DESKTOP_BUILD_MARKER,
     spawnProcess,
     ...overrides,
   });
@@ -40,9 +40,9 @@ describe("source desktop launch", () => {
       cwd: "/workspace/apps/desktop",
       env: {
         PATH: "/usr/bin",
-        SYNARA_DESKTOP_FLAVOR: "development",
-        SYNARA_HOME: join("/Users/tester", ".synara-dev"),
-        SYNARA_SOURCE_DESKTOP_BUILD_MARKER,
+        CORTEX_DESKTOP_FLAVOR: "development",
+        CORTEX_HOME: join("/Users/tester", ".cortex-dev"),
+        CORTEX_SOURCE_DESKTOP_BUILD_MARKER,
       },
       stdio: "inherit",
     });
@@ -52,64 +52,64 @@ describe("source desktop launch", () => {
     });
   });
 
-  it("preserves an explicit Synara home", () => {
+  it("preserves an explicit Cortex home", () => {
     const readWindowsEnvironment = vi.fn(() => ({
-      SYNARA_HOME: "C:\\Users\\tester\\persisted-synara-home",
+      CORTEX_HOME: "C:\\Users\\tester\\persisted-cortex-home",
     }));
     const { spawnProcess } = captureSourceDesktopSpawn(
-      { SYNARA_HOME: "/tmp/custom-synara-home" },
+      { CORTEX_HOME: "/tmp/custom-cortex-home" },
       { platform: "win32", readWindowsEnvironment },
     );
 
     expect(spawnProcess.mock.calls[0][2].env).toMatchObject({
-      SYNARA_DESKTOP_FLAVOR: "development",
-      SYNARA_HOME: "/tmp/custom-synara-home",
+      CORTEX_DESKTOP_FLAVOR: "development",
+      CORTEX_HOME: "/tmp/custom-cortex-home",
     });
     expect(readWindowsEnvironment).not.toHaveBeenCalled();
   });
 
-  it("preserves a persisted Windows Synara home", () => {
+  it("preserves a persisted Windows Cortex home", () => {
     const { spawnProcess } = captureSourceDesktopSpawn(
       {},
       {
         platform: "win32",
         readWindowsEnvironment: () => ({
-          Synara_Home: "C:\\Users\\tester\\persisted-synara-home",
+          Cortex_Home: "C:\\Users\\tester\\persisted-cortex-home",
         }),
       },
     );
 
-    expect(spawnProcess.mock.calls[0][2].env.SYNARA_HOME).toBe(
-      "C:\\Users\\tester\\persisted-synara-home",
+    expect(spawnProcess.mock.calls[0][2].env.CORTEX_HOME).toBe(
+      "C:\\Users\\tester\\persisted-cortex-home",
     );
   });
 
   it("preserves Canary flavor and storage defaults", () => {
     const { spawnProcess } = captureSourceDesktopSpawn({
-      SYNARA_DESKTOP_FLAVOR: "canary",
+      CORTEX_DESKTOP_FLAVOR: "canary",
     });
 
     expect(spawnProcess.mock.calls[0][2].env).toMatchObject({
-      SYNARA_DESKTOP_FLAVOR: "canary",
-      SYNARA_HOME: join("/Users/tester", ".synara-canary"),
+      CORTEX_DESKTOP_FLAVOR: "canary",
+      CORTEX_HOME: join("/Users/tester", ".cortex-canary"),
     });
   });
 
   it("guards and spawns the smoke desktop with its isolated environment", () => {
-    const smokeHome = "/tmp/synara-desktop-smoke";
+    const smokeHome = "/tmp/cortex-desktop-smoke";
     const smokeUserData = join(smokeHome, "electron-user-data");
     const stdio = ["pipe", "pipe", "pipe"];
     const { spawnProcess } = captureSourceDesktopSpawn(
       {
-        SYNARA_HOME: smokeHome,
-        [SYNARA_DESKTOP_SMOKE_USER_DATA_ENV]: smokeUserData,
+        CORTEX_HOME: smokeHome,
+        [CORTEX_DESKTOP_SMOKE_USER_DATA_ENV]: smokeUserData,
       },
       { stdio },
     );
 
     expect(spawnProcess.mock.calls[0][2].env).toMatchObject({
-      SYNARA_HOME: smokeHome,
-      [SYNARA_DESKTOP_SMOKE_USER_DATA_ENV]: smokeUserData,
+      CORTEX_HOME: smokeHome,
+      [CORTEX_DESKTOP_SMOKE_USER_DATA_ENV]: smokeUserData,
     });
     expect(spawnProcess.mock.calls[0][2].stdio).toBe(stdio);
   });

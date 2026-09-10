@@ -12,7 +12,7 @@ import {
   ThreadId,
   TurnId,
   ProviderKind,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { Effect, PubSub, Stream } from "effect";
 
 import {

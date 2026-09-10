@@ -1,4 +1,4 @@
-import { type ModelSlug, type ProviderKind, type ServerProviderStatus } from "@synara/contracts";
+import { type ModelSlug, type ProviderKind, type ServerProviderStatus } from "@cortex/contracts";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { page } from "vitest/browser";

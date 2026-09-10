@@ -6,8 +6,8 @@ import {
   ThreadId,
   type OrchestrationThread,
   type ProviderMentionReference,
-} from "@synara/contracts";
-import { isThreadMentionPath, threadIdFromThreadMentionPath } from "@synara/shared/threadMentions";
+} from "@cortex/contracts";
+import { isThreadMentionPath, threadIdFromThreadMentionPath } from "@cortex/shared/threadMentions";
 import { Effect, Option } from "effect";
 
 import { paginateThreadMessages } from "../agentGateway/threadSummary.ts";

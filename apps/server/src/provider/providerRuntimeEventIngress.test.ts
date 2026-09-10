@@ -1,4 +1,4 @@
-import { EventId, ThreadId, TurnId, type ProviderRuntimeEvent } from "@synara/contracts";
+import { EventId, ThreadId, TurnId, type ProviderRuntimeEvent } from "@cortex/contracts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -49,7 +49,7 @@ describe("provider runtime event ingress sizing", () => {
 
     expect(sized.event).not.toBe(event);
     expect(sized.event.raw?.payload).toMatchObject({
-      synaraTruncated: true,
+      cortexTruncated: true,
       originalBytes: expect.any(Number),
     });
     expect(callsBeforeAssertion).toBe(2);

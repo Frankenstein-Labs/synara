@@ -1,6 +1,6 @@
 ---
 title: Tasks and runtime
-description: Diagnose waiting, stuck, interrupted, failed, or inconsistent Synara tasks without losing the working state.
+description: Diagnose waiting, stuck, interrupted, failed, or inconsistent Cortex tasks without losing the working state.
 ---
 
 A task can be blocked on user action, actively working, interrupted, idle, or in an error state. Read the task state before deciding that the provider is stuck.
@@ -95,11 +95,11 @@ Try this sequence:
 1. Preserve the working tree.
 2. Record the provider, model, task ID, and last successful turn.
 3. Retry resume once after confirming the provider is healthy.
-4. Start a new provider session in the same task when Synara supports that recovery path.
+4. Start a new provider session in the same task when Cortex supports that recovery path.
 5. Use a [provider handoff](/docs/workflows/handoffs) when another provider should continue the same environment.
 6. Create a new task only when you want a new ownership and review boundary.
 
-A new provider session may preserve the Synara task and working environment without preserving every provider-native internal state.
+A new provider session may preserve the Cortex task and working environment without preserving every provider-native internal state.
 
 ## Repeated runtime errors
 
@@ -113,16 +113,16 @@ When the same error repeats:
 - Update the provider only after recording the failing version
 - Remove one optional extension, hook, MCP server, or custom option at a time
 
-This separates a repository-specific failure from a provider-wide or Synara-wide failure.
+This separates a repository-specific failure from a provider-wide or Cortex-wide failure.
 
 ## Journal or event-delivery warnings
 
-Synara persists orchestration state and provider runtime events. A warning about a journal, delivery, or quarantined provider event should be treated as an operational failure, not dismissed as cosmetic.
+Cortex persists orchestration state and provider runtime events. A warning about a journal, delivery, or quarantined provider event should be treated as an operational failure, not dismissed as cosmetic.
 
 1. Stop adding new work to the affected task.
 2. Preserve the working tree and final visible response.
 3. Record the exact warning and time.
-4. Use `synara_diagnose_thread` when an authorized Agent Gateway session is available.
+4. Use `cortex_diagnose_thread` when an authorized Agent Gateway session is available.
 5. Inspect durable thread events and provider-runtime coverage.
 6. Start a new task only after the current work is safely preserved.
 

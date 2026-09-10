@@ -13,7 +13,7 @@ import {
   type ServerLocalServerProcess,
   type ThreadBrowserState,
   type ThreadId,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -30,18 +30,18 @@ import {
   XIcon,
 } from "~/lib/icons";
 
-import { localServerPrimaryLabel } from "@synara/shared/localServers";
-import { resolveDesktopDipRectFromCssRect } from "@synara/shared/desktopChrome";
+import { localServerPrimaryLabel } from "@cortex/shared/localServers";
+import { resolveDesktopDipRectFromCssRect } from "@cortex/shared/desktopChrome";
 import {
   BROWSER_BLANK_URL,
   isBlankBrowserTabUrl,
   resolveCopyableBrowserTabUrl,
   resolveFloatingBrowserGuestLayout,
-} from "@synara/shared/browserSession";
+} from "@cortex/shared/browserSession";
 import {
   BROWSER_COPY_LINK_TOAST_TITLE,
   isBrowserCopyLinkChord,
-} from "@synara/shared/browserShortcuts";
+} from "@cortex/shared/browserShortcuts";
 
 import { isElectron } from "~/env";
 import { CentralIcon } from "~/lib/central-icons";
@@ -104,9 +104,9 @@ interface BrowserPanelProps {
 
 const BROWSER_BOUNDS_SYNC_BURST_FRAMES = 30;
 const BROWSER_BOUNDS_SYNC_STABLE_FRAME_TARGET = 2;
-const BROWSER_WEBVIEW_PARTITION = "persist:synara-browser";
+const BROWSER_WEBVIEW_PARTITION = "persist:cortex-browser";
 const BROWSER_PERF_SAMPLE_INTERVAL_MS = 5_000;
-const SYNARA_BROWSER_LABEL = "Synara browser";
+const CORTEX_BROWSER_LABEL = "Cortex browser";
 const browserPanelHideScheduler = createBrowserPanelHideScheduler();
 const browserPanelRendererHandoff = createBrowserPanelRendererHandoff();
 const BROWSER_ACTION_MENU_PANEL_CLASS_NAME = "w-52 min-w-52";
@@ -375,7 +375,7 @@ function isBrowserPerfLoggingEnabled(): boolean {
   }
 
   try {
-    return window.localStorage.getItem("synara:browser-perf") === "1";
+    return window.localStorage.getItem("cortex:browser-perf") === "1";
   } catch {
     return false;
   }
@@ -1089,7 +1089,7 @@ export function BrowserPanel({
     }
 
     const intervalId = window.setInterval(() => {
-      console.info(`[${SYNARA_BROWSER_LABEL} panel perf]`, {
+      console.info(`[${CORTEX_BROWSER_LABEL} panel perf]`, {
         threadId,
         ...perfCountersRef.current,
       });

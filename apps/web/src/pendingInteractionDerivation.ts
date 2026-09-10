@@ -4,12 +4,12 @@ import {
   type OrchestrationThreadActivity,
   type TurnId,
   type UserInputQuestion,
-} from "@synara/contracts";
-import { isPendingInteractionResponseClaimable } from "@synara/shared/pendingInteractions";
+} from "@cortex/contracts";
+import { isPendingInteractionResponseClaimable } from "@cortex/shared/pendingInteractions";
 import {
   approvalRequestKindFromRequestType,
   pendingRequestInstanceKey,
-} from "@synara/shared/threadSummary";
+} from "@cortex/shared/threadSummary";
 
 import { isStalePendingRequestFailureDetail } from "./lib/pendingInteraction";
 import { orderedActivities } from "./workLog";

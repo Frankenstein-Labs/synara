@@ -10,7 +10,7 @@ import type {
   ProviderApprovalDecision,
   ProviderInteractionMode,
   RuntimeMode,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   type ConsoleState,
   createOpencodeClient,
@@ -42,7 +42,7 @@ import * as Semaphore from "effect/Semaphore";
 import { ChildProcessSpawner } from "effect/unstable/process";
 import { makeEffectProcessCommand } from "../platform/effectProcessRuntime.ts";
 
-import { NetService, type NetServiceShape } from "@synara/shared/Net";
+import { NetService, type NetServiceShape } from "@cortex/shared/Net";
 import { buildProviderChildEnvironment } from "../providerChildEnvironment.ts";
 import { readOpenCodeAuthFileUtf8 } from "./openCodeAuthPaths.ts";
 import {
@@ -1458,7 +1458,7 @@ const makeOpenCodeRuntime = (options?: OpenCodeRuntimeLiveOptions) =>
   });
 
 export class OpenCodeRuntime extends ServiceMap.Service<OpenCodeRuntime, OpenCodeRuntimeShape>()(
-  "synara/provider/opencodeRuntime",
+  "cortex/provider/opencodeRuntime",
 ) {}
 
 export const makeOpenCodeRuntimeLive = (options?: OpenCodeRuntimeLiveOptions) =>

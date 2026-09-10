@@ -8,8 +8,8 @@ import {
   PROVIDER_DISPLAY_NAMES,
   type GitTextGenerationProvider,
   type ProviderKind,
-} from "@synara/contracts";
-import { getModelOptions, normalizeModelSlug } from "@synara/shared/model";
+} from "@cortex/contracts";
+import { getModelOptions, normalizeModelSlug } from "@cortex/shared/model";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 

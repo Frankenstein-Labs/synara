@@ -11,7 +11,7 @@ import {
   type GitPullRequestSnapshotResult,
   type GitResolvedPullRequest,
   type GitStatusResult,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { page } from "vitest/browser";
@@ -26,7 +26,7 @@ const threadId = ThreadId.makeUnsafe("thread-pr-fix-actions");
 const pullRequest = {
   number: 321,
   title: "Keep PR context visible",
-  url: "https://github.com/example/synara/pull/321",
+  url: "https://github.com/example/cortex/pull/321",
   baseBranch: "main",
   headBranch: "fix/pr-panel",
   state: "open",
@@ -99,7 +99,7 @@ function renderSection(queryClient: QueryClient, onClose = vi.fn()) {
         activeThreadId={threadId}
         // No project: Merge/Status stay hidden and View PR falls back to the URL handler.
         projectId={null}
-        configuredRepositories={[{ nameWithOwner: "example/synara" }]}
+        configuredRepositories={[{ nameWithOwner: "example/cortex" }]}
         onOpenUrl={vi.fn()}
         onClose={onClose}
       />

@@ -14,8 +14,8 @@ import {
   type ReactNode,
 } from "react";
 
-import type { OrchestrationThreadPullRequest, ProjectId, ThreadId } from "@synara/contracts";
-import { resolveThreadEnvironmentMode } from "@synara/shared/threadEnvironment";
+import type { OrchestrationThreadPullRequest, ProjectId, ThreadId } from "@cortex/contracts";
+import { resolveThreadEnvironmentMode } from "@cortex/shared/threadEnvironment";
 
 import {
   AddPlusIcon,
@@ -363,7 +363,7 @@ function ActivityScopeMenu({
     scopeSelection === null
       ? "All activity"
       : scopeSelection === "chats"
-        ? "Synara"
+        ? "Cortex"
         : resolveThreadProjectLabel(projectById.get(scopeSelection));
 
   return (
@@ -416,7 +416,7 @@ function ActivityScopeMenu({
                 <span className="min-w-0 flex-1 truncate">
                   {option.kind === "project"
                     ? resolveThreadProjectLabel(projectById.get(option.projectId))
-                    : "Synara"}
+                    : "Cortex"}
                 </span>
                 <span className="ml-2 shrink-0 tabular-nums text-muted-foreground/60">
                   {option.threadCount}
@@ -740,7 +740,7 @@ export function SidebarActivityView({
     activeScope === null
       ? "No activity yet"
       : activeScope === "chats"
-        ? "No activity in Synara chats"
+        ? "No activity in Cortex chats"
         : "No activity for this project";
 
   return (
@@ -800,7 +800,7 @@ export function SidebarActivityView({
             <ActivitySectionLabel
               label={
                 group.kind === "chats"
-                  ? "Synara"
+                  ? "Cortex"
                   : resolveThreadProjectLabel(projectById.get(group.projectId))
               }
               {...(group.kind === "project"

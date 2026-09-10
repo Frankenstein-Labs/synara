@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   WORKTREE_BRANCH_PREFIX,
-  buildSynaraBranchName,
+  buildCortexBranchName,
   buildTemporaryWorktreeBranchName,
   isTemporaryWorktreeBranch,
-  resolveUniqueSynaraBranchName,
+  resolveUniqueCortexBranchName,
   resolveThreadBranchRegressionGuard,
 } from "./git";
 
@@ -70,37 +70,37 @@ describe("resolveThreadBranchRegressionGuard", () => {
   });
 });
 
-describe("buildSynaraBranchName", () => {
-  it("uses synara as the branch namespace", () => {
-    expect(buildSynaraBranchName("fix toast copy")).toBe("synara/fix-toast-copy");
+describe("buildCortexBranchName", () => {
+  it("uses cortex as the branch namespace", () => {
+    expect(buildCortexBranchName("fix toast copy")).toBe("cortex/fix-toast-copy");
   });
 
-  it("keeps non-Synara namespaces inside the Synara branch", () => {
-    expect(buildSynaraBranchName("feature/refine-toolbar-actions")).toBe(
-      "synara/feature/refine-toolbar-actions",
+  it("keeps non-Cortex namespaces inside the Cortex branch", () => {
+    expect(buildCortexBranchName("feature/refine-toolbar-actions")).toBe(
+      "cortex/feature/refine-toolbar-actions",
     );
   });
 
   it("normalizes legacy prefixes before rebuilding the branch", () => {
     for (const namespace of PRE_CUTOVER_NAMESPACE_FIXTURES) {
-      expect(buildSynaraBranchName(`${namespace}/refine toolbar actions`)).toBe(
-        "synara/refine-toolbar-actions",
+      expect(buildCortexBranchName(`${namespace}/refine toolbar actions`)).toBe(
+        "cortex/refine-toolbar-actions",
       );
     }
   });
 
-  it("falls back to synara/update when no preferred name is provided", () => {
-    expect(buildSynaraBranchName()).toBe("synara/update");
+  it("falls back to cortex/update when no preferred name is provided", () => {
+    expect(buildCortexBranchName()).toBe("cortex/update");
   });
 });
 
-describe("resolveUniqueSynaraBranchName", () => {
-  it("increments suffix when the Synara branch already exists", () => {
+describe("resolveUniqueCortexBranchName", () => {
+  it("increments suffix when the Cortex branch already exists", () => {
     expect(
-      resolveUniqueSynaraBranchName(
-        ["main", "synara/fix-toast-copy", "synara/fix-toast-copy-2"],
+      resolveUniqueCortexBranchName(
+        ["main", "cortex/fix-toast-copy", "cortex/fix-toast-copy-2"],
         "fix toast copy",
       ),
-    ).toBe("synara/fix-toast-copy-3");
+    ).toBe("cortex/fix-toast-copy-3");
   });
 });

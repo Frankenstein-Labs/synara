@@ -1,5 +1,5 @@
 {
-  "name": "@synara/shared",
+  "name": "@cortex/shared",
   "version": "0.0.0-alpha.1",
   "private": true,
   "type": "module",
@@ -40,9 +40,9 @@
       "types": "./src/loginShellEnvironment.ts",
       "import": "./src/loginShellEnvironment.ts"
     },
-    "./synaraHome": {
-      "types": "./src/synaraHome.ts",
-      "import": "./src/synaraHome.ts"
+    "./cortexHome": {
+      "types": "./src/cortexHome.ts",
+      "import": "./src/cortexHome.ts"
     },
     "./staticSnapshot": {
       "types": "./src/staticSnapshot.ts",
@@ -321,7 +321,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@synara/contracts": "workspace:*",
+    "@cortex/contracts": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

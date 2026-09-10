@@ -77,7 +77,7 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-workspace
 
-      - name: Verify Synara identity
+      - name: Verify Cortex identity
         run: bun run brand:check
 
       - name: Verify Windows runtime boundary
@@ -122,18 +122,18 @@ jobs:
       matrix:
         include:
           - pkg: contracts
-            filter: "@synara/contracts"
+            filter: "@cortex/contracts"
           - pkg: shared
-            filter: "@synara/shared"
+            filter: "@cortex/shared"
           - pkg: scripts
-            filter: "@synara/scripts"
+            filter: "@cortex/scripts"
           - pkg: desktop
-            filter: "@synara/desktop"
+            filter: "@cortex/desktop"
           - pkg: web
-            filter: "@synara/web"
-          # Server lane tests the CLI package (package name @synara/cli).
+            filter: "@cortex/web"
+          # Server lane tests the CLI package (package name @cortex/cli).
           - pkg: server
-            filter: "@synara/cli"
+            filter: "@cortex/cli"
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -407,7 +407,7 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile --ignore-scripts
 
-      - name: Verify Synara identity
+      - name: Verify Cortex identity
         run: bun run brand:check
 
       - name: Exercise release-only workflow steps

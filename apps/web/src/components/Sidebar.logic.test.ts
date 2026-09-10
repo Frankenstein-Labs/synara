@@ -51,7 +51,7 @@ import {
   sortProjectsForSidebar,
   sortThreadsForSidebar,
 } from "./Sidebar.logic";
-import { ProjectId, ThreadId } from "@synara/contracts";
+import { ProjectId, ThreadId } from "@cortex/contracts";
 import {
   DEFAULT_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
@@ -124,7 +124,7 @@ describe("shouldUseLivePullRequestForSidebarThread", () => {
   it("trusts the checked-out branch for a dedicated worktree when persisted metadata is stale", () => {
     expect(
       shouldUseLivePullRequestForSidebarThread({
-        threadBranch: "synara/original-branch",
+        threadBranch: "cortex/original-branch",
         liveBranch: "feat/agent-created-branch",
         hasDedicatedWorktree: true,
       }),
@@ -151,7 +151,7 @@ describe("shouldUseLivePullRequestForSidebarThread", () => {
   it("does not use live PR data for a detached worktree", () => {
     expect(
       shouldUseLivePullRequestForSidebarThread({
-        threadBranch: "synara/original-branch",
+        threadBranch: "cortex/original-branch",
         liveBranch: null,
         hasDedicatedWorktree: true,
       }),
@@ -221,12 +221,12 @@ describe("resolveSidebarThreadPullRequest", () => {
     const live = openPr(575, "feat/current-branch");
     expect(
       resolveSidebarThreadPullRequest({
-        threadBranch: "synara/stale-branch",
+        threadBranch: "cortex/stale-branch",
         liveBranch: "feat/current-branch",
         hasLiveStatus: true,
         hasDedicatedWorktree: true,
         livePullRequest: live,
-        persistedPullRequest: openPr(574, "synara/stale-branch"),
+        persistedPullRequest: openPr(574, "cortex/stale-branch"),
       }),
     ).toBe(live);
   });
@@ -441,24 +441,24 @@ describe("resolveThreadHoverCardMetadata", () => {
     const metadata = resolveThreadHoverCardMetadata({
       thread: makeSidebarThreadSummary({
         envMode: "worktree",
-        branch: "codex/synara-mobile",
+        branch: "codex/cortex-mobile",
         worktreePath: "/Users/me/.codex/worktrees/1234/Remodex",
         associatedWorktreePath: "/Users/me/.codex/worktrees/1234/Remodex",
-        associatedWorktreeBranch: "codex/synara-mobile",
+        associatedWorktreeBranch: "codex/cortex-mobile",
       }),
       project: {
         kind: "project",
-        name: "synara-mobile",
+        name: "cortex-mobile",
         folderName: "Remodex",
         cwd: "/Users/me/Developer/Remodex",
       },
     });
 
     expect(metadata).toEqual({
-      projectName: "synara-mobile",
+      projectName: "cortex-mobile",
       projectCwd: "/Users/me/Developer/Remodex",
       sourceProjectName: "Remodex",
-      branch: "codex/synara-mobile",
+      branch: "codex/cortex-mobile",
       worktreeName: "Remodex",
     });
   });
@@ -470,15 +470,15 @@ describe("resolveThreadHoverCardMetadata", () => {
       }),
       project: {
         kind: "project",
-        name: "synara",
-        folderName: "synara",
-        cwd: "/Users/me/Developer/synara",
+        name: "cortex",
+        folderName: "cortex",
+        cwd: "/Users/me/Developer/cortex",
       },
     });
 
     expect(metadata).toEqual({
-      projectName: "synara",
-      projectCwd: "/Users/me/Developer/synara",
+      projectName: "cortex",
+      projectCwd: "/Users/me/Developer/cortex",
       sourceProjectName: null,
       branch: "main",
       worktreeName: null,
@@ -490,7 +490,7 @@ describe("resolveThreadHoverCardMetadata", () => {
       envMode: "worktree",
       branch: "feat/current-branch",
       worktreePath: "/repo/.worktrees/thread",
-      associatedWorktreeBranch: "synara/stale-branch",
+      associatedWorktreeBranch: "cortex/stale-branch",
     });
 
     expect(resolveThreadDisplayBranch(thread)).toBe("feat/current-branch");
@@ -499,8 +499,8 @@ describe("resolveThreadHoverCardMetadata", () => {
         thread,
         project: {
           kind: "project",
-          name: "synara",
-          folderName: "synara",
+          name: "cortex",
+          folderName: "cortex",
           cwd: "/repo",
         },
       }).branch,
@@ -520,18 +520,18 @@ describe("resolveThreadHoverCardMetadata", () => {
     ).toBeNull();
   });
 
-  it("labels project-less chat containers as Synara instead of the slug folder", () => {
+  it("labels project-less chat containers as Cortex instead of the slug folder", () => {
     const metadata = resolveThreadHoverCardMetadata({
       thread: makeSidebarThreadSummary({ branch: null }),
       project: {
         kind: "chat",
         name: "open-the-browser-search-house-music",
         folderName: "open-the-browser-search-house-music",
-        cwd: "/Users/me/Documents/Synara/2026-08-01/open-the-browser-search-house-music",
+        cwd: "/Users/me/Documents/Cortex/2026-08-01/open-the-browser-search-house-music",
       },
     });
 
-    expect(metadata.projectName).toBe("Synara");
+    expect(metadata.projectName).toBe("Cortex");
   });
 });
 
@@ -908,7 +908,7 @@ describe("add-project error helpers", () => {
 
   it("explains root-absolute add-project paths that probably missed the home directory", () => {
     expect(
-      describeAddProjectError("Failed to create project directory: /Developer/Testing/synara"),
+      describeAddProjectError("Failed to create project directory: /Developer/Testing/cortex"),
     ).toContain("/Users/<name>/Developer");
   });
 

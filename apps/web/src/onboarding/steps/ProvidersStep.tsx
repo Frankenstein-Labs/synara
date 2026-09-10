@@ -5,8 +5,8 @@
 //          link for missing ones.
 // Layer: Web UI component
 
-import type { ProviderKind, ServerProviderStatus } from "@synara/contracts";
-import { PROVIDER_DESCRIPTORS } from "@synara/shared/providerMetadata";
+import type { ProviderKind, ServerProviderStatus } from "@cortex/contracts";
+import { PROVIDER_DESCRIPTORS } from "@cortex/shared/providerMetadata";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 

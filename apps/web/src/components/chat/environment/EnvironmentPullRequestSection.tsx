@@ -16,9 +16,9 @@ import type {
   PullRequestDetailInput,
   PullRequestMergeMethod,
   ThreadId,
-} from "@synara/contracts";
-import { githubAvatarUrlForLogin } from "@synara/shared/githubAvatar";
-import { parseGitHubRepositoryNameWithOwnerFromPullRequestUrl } from "@synara/shared/githubRepository";
+} from "@cortex/contracts";
+import { githubAvatarUrlForLogin } from "@cortex/shared/githubAvatar";
+import { parseGitHubRepositoryNameWithOwnerFromPullRequestUrl } from "@cortex/shared/githubRepository";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 

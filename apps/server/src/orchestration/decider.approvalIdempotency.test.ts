@@ -6,8 +6,8 @@ import {
   EventId,
   ProjectId,
   ThreadId,
-} from "@synara/contracts";
-import type { OrchestrationReadModel } from "@synara/contracts";
+} from "@cortex/contracts";
+import type { OrchestrationReadModel } from "@cortex/contracts";
 import { describe, expect, it } from "vitest";
 import { Effect } from "effect";
 

@@ -1,4 +1,4 @@
-import { BROWSER_TOOL_NAMES, utf8ByteLength } from "@synara/contracts";
+import { BROWSER_TOOL_NAMES, utf8ByteLength } from "@cortex/contracts";
 import { Schema } from "effect";
 import { describe, expect, it } from "vitest";
 

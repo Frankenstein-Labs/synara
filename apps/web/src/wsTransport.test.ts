@@ -18,7 +18,7 @@ import {
   WS_PROJECT_FILE_WATCH_CAPABILITY,
   WsCompatibilityError,
   type WsBootstrapNegotiateResult,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 
 import {
   shouldKeepServerLifecycleStream,
@@ -391,9 +391,9 @@ describe("WsTransport", () => {
       kind: "completed" as const,
       result: {
         worktree: {
-          path: "/repo/.codex/worktrees/generated/synara",
+          path: "/repo/.codex/worktrees/generated/cortex",
           ref: "0123456789abcdef0123456789abcdef01234567",
-          branch: "synara/abcd1234",
+          branch: "cortex/abcd1234",
         },
       },
     };

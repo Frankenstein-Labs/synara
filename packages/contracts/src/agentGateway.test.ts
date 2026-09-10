@@ -2,16 +2,16 @@ import { assert, describe, it } from "@effect/vitest";
 import { Schema } from "effect";
 
 import {
-  SynaraCapabilitiesResult,
-  SynaraCreateThreadsInput,
-  SynaraCreateThreadsResult,
-  SynaraGatewayErrorResult,
-  SynaraWaitForThreadsInput,
-  SynaraWaitForThreadsResult,
+  CortexCapabilitiesResult,
+  CortexCreateThreadsInput,
+  CortexCreateThreadsResult,
+  CortexGatewayErrorResult,
+  CortexWaitForThreadsInput,
+  CortexWaitForThreadsResult,
 } from "./agentGateway";
 
-const decodeCreate = Schema.decodeUnknownSync(SynaraCreateThreadsInput);
-const decodeWait = Schema.decodeUnknownSync(SynaraWaitForThreadsInput);
+const decodeCreate = Schema.decodeUnknownSync(CortexCreateThreadsInput);
+const decodeWait = Schema.decodeUnknownSync(CortexWaitForThreadsInput);
 
 const thread = {
   prompt: "Explain this repository",
@@ -80,7 +80,7 @@ describe("agent gateway contracts", () => {
 
   it("decodes typed capability, creation, wait, and error results", () => {
     assert.doesNotThrow(() =>
-      Schema.decodeUnknownSync(SynaraCapabilitiesResult)({
+      Schema.decodeUnknownSync(CortexCapabilitiesResult)({
         targetConstruction: {
           codex: {
             modelValueSource: "providers[].models[].slug",
@@ -130,7 +130,7 @@ describe("agent gateway contracts", () => {
       }),
     );
     assert.doesNotThrow(() =>
-      Schema.decodeUnknownSync(SynaraCreateThreadsResult)({
+      Schema.decodeUnknownSync(CortexCreateThreadsResult)({
         operationId: "gateway:create:1",
         requestId: "request-1",
         requestedCount: 1,
@@ -155,7 +155,7 @@ describe("agent gateway contracts", () => {
       }),
     );
     assert.doesNotThrow(() =>
-      Schema.decodeUnknownSync(SynaraWaitForThreadsResult)({
+      Schema.decodeUnknownSync(CortexWaitForThreadsResult)({
         callerThreadId: "thread-parent",
         runIds: ["turn-1"],
         allTerminal: true,
@@ -171,7 +171,7 @@ describe("agent gateway contracts", () => {
             summaryTruncated: false,
             error: null,
             readThread: {
-              tool: "synara_read_thread",
+              tool: "cortex_read_thread",
               arguments: { threadId: "thread-1" },
             },
           },
@@ -179,7 +179,7 @@ describe("agent gateway contracts", () => {
       }),
     );
     assert.doesNotThrow(() =>
-      Schema.decodeUnknownSync(SynaraGatewayErrorResult)({
+      Schema.decodeUnknownSync(CortexGatewayErrorResult)({
         error: { code: "creation_plan_locked", message: "A plan already exists." },
       }),
     );

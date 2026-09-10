@@ -4,7 +4,7 @@ import {
   TurnId,
   type OrchestrationPendingInteraction,
   type OrchestrationThreadActivity,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { describe, expect, it } from "vitest";
 
 import { derivePendingApprovals, derivePendingUserInputs } from "./pendingInteractionDerivation";

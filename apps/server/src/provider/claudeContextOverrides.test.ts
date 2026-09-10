@@ -3,7 +3,7 @@ import {
   getModelCapabilities,
   normalizeClaudeModelOptions,
   resolveApiModelId,
-} from "@synara/shared/model";
+} from "@cortex/shared/model";
 import {
   resolveSelectedClaudeAutoCompactWindow,
   resolveClaudeApiModelIdContextWindowMaxTokens,

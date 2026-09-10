@@ -9,8 +9,8 @@ import type {
   OrchestrationThread,
   OrchestrationThreadShell,
   ServerProviderStatus,
-} from "@synara/contracts";
-import { MessageId, ProjectId, TurnId } from "@synara/contracts";
+} from "@cortex/contracts";
+import { MessageId, ProjectId, TurnId } from "@cortex/contracts";
 import { Effect, Fiber, Layer, Option, Stream } from "effect";
 import * as SqlClient from "effect/unstable/sql/SqlClient";
 import { afterEach, describe, expect, it } from "vitest";
@@ -114,7 +114,7 @@ afterEach(() => {
 
 describe("external MCP gateway stdio flow", () => {
   it("pairs, filters tools, creates one safe task, waits, reads, and audits without prompt leakage", async () => {
-    const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "synara-external-e2e-"));
+    const baseDir = fs.mkdtempSync(path.join(os.tmpdir(), "cortex-external-e2e-"));
     temporaryDirectories.push(baseDir);
     const workspaceRoot = path.join(baseDir, "project");
     const worktreesDir = path.join(baseDir, "worktrees");
@@ -426,14 +426,14 @@ describe("external MCP gateway stdio flow", () => {
           }
         ).tools;
         expect(listedTools.map((tool) => tool.name)).toEqual([
-          "synara_overview",
-          "synara_capabilities",
-          "synara_list_allowed_projects",
-          "synara_create_task",
-          "synara_wait_for_task",
-          "synara_read_task",
+          "cortex_overview",
+          "cortex_capabilities",
+          "cortex_list_allowed_projects",
+          "cortex_create_task",
+          "cortex_wait_for_task",
+          "cortex_read_task",
         ]);
-        const readTaskProperties = listedTools.find((tool) => tool.name === "synara_read_task")
+        const readTaskProperties = listedTools.find((tool) => tool.name === "cortex_read_task")
           ?.inputSchema.properties;
         expect(readTaskProperties?.maxMessageChars).toMatchObject({
           type: "integer",
@@ -458,7 +458,7 @@ describe("external MCP gateway stdio flow", () => {
             id: 2,
             method: "tools/call",
             params: {
-              name: "synara_create_task",
+              name: "cortex_create_task",
               arguments: {
                 requestId: "external-e2e-request",
                 projectId: PROJECT_ID,
@@ -494,7 +494,7 @@ describe("external MCP gateway stdio flow", () => {
             id: 3,
             method: "tools/call",
             params: {
-              name: "synara_wait_for_task",
+              name: "cortex_wait_for_task",
               arguments: { threadId, timeoutMs: 1_000 },
             },
           })}\n`,
@@ -523,7 +523,7 @@ describe("external MCP gateway stdio flow", () => {
             jsonrpc: "2.0",
             id: 4,
             method: "tools/call",
-            params: { name: "synara_read_task", arguments: { threadId } },
+            params: { name: "cortex_read_task", arguments: { threadId } },
           })}\n`,
         );
         yield* Effect.promise(() => waitForOutput(outputLines, 4));
@@ -541,7 +541,7 @@ describe("external MCP gateway stdio flow", () => {
               id: index + 5,
               method: "tools/call",
               params: {
-                name: "synara_read_task",
+                name: "cortex_read_task",
                 arguments: {
                   threadId,
                   messageIndex: 1,
@@ -604,7 +604,7 @@ describe("external MCP gateway stdio flow", () => {
               id: "interrupted-wait",
               method: "tools/call",
               params: {
-                name: "synara_wait_for_task",
+                name: "cortex_wait_for_task",
                 arguments: { threadId, runId: "turn-not-projected", timeoutMs: 60_000 },
               },
             },
@@ -627,7 +627,7 @@ describe("external MCP gateway stdio flow", () => {
             jsonrpc: "2.0",
             id: "denied",
             method: "tools/call",
-            params: { name: "synara_create_task", arguments: {} },
+            params: { name: "cortex_create_task", arguments: {} },
           },
         });
         expect(JSON.stringify(denied.body)).toContain("capability_denied");
@@ -638,7 +638,7 @@ describe("external MCP gateway stdio flow", () => {
             jsonrpc: "2.0",
             id: "overview",
             method: "tools/call",
-            params: { name: "synara_overview", arguments: {} },
+            params: { name: "cortex_overview", arguments: {} },
           },
         });
         const overviewJson = JSON.stringify(overview.body);
@@ -651,7 +651,7 @@ describe("external MCP gateway stdio flow", () => {
         expect(overviewJson).not.toContain("recentThreads");
         const overviewPayload = toolPayload(overview.body as Record<string, unknown>);
         expect(overviewPayload.nextSteps).toEqual([
-          "Call synara_capabilities with a projectId to list the exact provider/model targets available to this integration.",
+          "Call cortex_capabilities with a projectId to list the exact provider/model targets available to this integration.",
         ]);
 
         const auditRows = yield* sql<{
@@ -700,7 +700,7 @@ describe("external MCP gateway stdio flow", () => {
             jsonrpc: "2.0",
             id: "audit-failure-does-not-replace-result",
             method: "tools/call",
-            params: { name: "synara_list_allowed_projects", arguments: {} },
+            params: { name: "cortex_list_allowed_projects", arguments: {} },
           },
         });
         expect(successfulDespiteAuditFailure.status).toBe(200);

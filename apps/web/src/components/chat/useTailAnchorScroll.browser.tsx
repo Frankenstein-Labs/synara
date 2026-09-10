@@ -1,4 +1,4 @@
-import { MessageId } from "@synara/contracts";
+import { MessageId } from "@cortex/contracts";
 import { useRef } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";

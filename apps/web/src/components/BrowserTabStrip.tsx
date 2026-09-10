@@ -5,8 +5,8 @@
 // Depends on: BrowserPanel.logic chrome styles/status, contracts BrowserTabState
 
 import { useLayoutEffect, useRef } from "react";
-import type { BrowserTabState } from "@synara/contracts";
-import { isBlankBrowserTabUrl } from "@synara/shared/browserSession";
+import type { BrowserTabState } from "@cortex/contracts";
+import { isBlankBrowserTabUrl } from "@cortex/shared/browserSession";
 
 import { GlobeIcon, PlusIcon, XIcon } from "~/lib/icons";
 import { cn } from "~/lib/utils";

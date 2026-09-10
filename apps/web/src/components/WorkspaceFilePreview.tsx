@@ -10,18 +10,18 @@ import type {
   ProjectFileChangeEvent,
   ProjectFileLineEnding,
   ProjectReadFileResult,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   isSupportedLocalImagePath,
   isSupportedLocalPdfPath,
   lowerCaseExtensionOf,
-} from "@synara/shared/localPreviewFiles";
+} from "@cortex/shared/localPreviewFiles";
 import {
   isLocalAbsolutePath,
   isWorkspaceRelativePathSafe,
   joinWorkspaceRelativePath,
-} from "@synara/shared/path";
-import { isScratchWorkspacePath } from "@synara/shared/threadWorkspace";
+} from "@cortex/shared/path";
+import { isScratchWorkspacePath } from "@cortex/shared/threadWorkspace";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Component,

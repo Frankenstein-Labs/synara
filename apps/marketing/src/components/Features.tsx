@@ -113,8 +113,8 @@ export default function Features() {
           </p>
           <h2 className={`${heading} mt-3`}>Keep the runtimes you already trust.</h2>
           <p className={body}>
-            Synara sits around your coding agents rather than replacing them. Each provider keeps
-            its own authentication, models, tools, and permissions while Synara gives the work a
+            Cortex sits around your coding agents rather than replacing them. Each provider keeps
+            its own authentication, models, tools, and permissions while Cortex gives the work a
             consistent task, environment, review, and delivery layer.
           </p>
 
@@ -155,7 +155,7 @@ export default function Features() {
             One workspace. Separate tasks. Shared control.
           </h2>
           <p className={body}>
-            A coding agent is only one part of the job. Synara keeps the objective, environment,
+            A coding agent is only one part of the job. Cortex keeps the objective, environment,
             live processes, verification evidence, and delivery state attached to the work from
             first prompt to pull request.
           </p>

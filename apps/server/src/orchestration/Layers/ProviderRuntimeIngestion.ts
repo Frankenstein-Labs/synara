@@ -17,18 +17,18 @@ import {
   type ProviderKind,
   type ProviderRuntimeEvent,
   type RuntimeMode,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { Cache, Cause, Deferred, Duration, Effect, Layer, Option, Ref, Stream } from "effect";
 import * as Semaphore from "effect/Semaphore";
-import { makeDrainableWorker, startDrainableWorkerProducers } from "@synara/shared/DrainableWorker";
-import { providerSupportsNativeTurnSteering } from "@synara/shared/providerMetadata";
-import { buildStalePendingRequestFailureDetail } from "@synara/shared/threadSummary";
+import { makeDrainableWorker, startDrainableWorkerProducers } from "@cortex/shared/DrainableWorker";
+import { providerSupportsNativeTurnSteering } from "@cortex/shared/providerMetadata";
+import { buildStalePendingRequestFailureDetail } from "@cortex/shared/threadSummary";
 import {
   buildSubagentIdentityDirectory,
   collectSubagentProviderThreadIds,
   extractSubagentIdentityHints,
   resolveSubagentIdentityFromDirectory,
-} from "@synara/shared/subagents";
+} from "@cortex/shared/subagents";
 
 import {
   generatedImageMarkdown,
@@ -134,7 +134,7 @@ const MAX_BUFFERED_TOOL_OUTPUT_CHARS = 24_000;
 const MAX_BUFFERED_REASONING_SUMMARY_CHARS = 8_000;
 const MAX_BUFFERED_REASONING_SUMMARY_PARTS = 24;
 const BUFFERED_TEXT_TRUNCATION_MARKER = "... [truncated]";
-const STRICT_PROVIDER_LIFECYCLE_GUARD = process.env.SYNARA_STRICT_PROVIDER_LIFECYCLE_GUARD !== "0";
+const STRICT_PROVIDER_LIFECYCLE_GUARD = process.env.CORTEX_STRICT_PROVIDER_LIFECYCLE_GUARD !== "0";
 
 /**
  * Back off the durable-journal safety poll while the live persisted-event
@@ -1974,7 +1974,7 @@ const make = Effect.gen(function* () {
                   id: overflowId,
                   tone: "error",
                   kind: "subagent.materialization.capped",
-                  summary: `Synara limited this provider turn to ${MAX_NATIVE_CHILDREN_PER_PARENT_TURN} visible native subagents.`,
+                  summary: `Cortex limited this provider turn to ${MAX_NATIVE_CHILDREN_PER_PARENT_TURN} visible native subagents.`,
                   payload: {
                     source: "provider_native",
                     cap: MAX_NATIVE_CHILDREN_PER_PARENT_TURN,
@@ -2290,7 +2290,7 @@ const make = Effect.gen(function* () {
             event.provider === "devin" &&
             event.type === "turn.completed" &&
             event.payload.state === "cancelled" &&
-            event.payload.stopReason === "synara.devin.wedge-recovery";
+            event.payload.stopReason === "cortex.devin.wedge-recovery";
           if (isTerminalTurnEvent && !isDevinWedgeRecoveryCancellation) {
             // The command read model advances synchronously with goal tools.
             // Reading it here prevents a fast terminal provider event from
@@ -2695,7 +2695,7 @@ const make = Effect.gen(function* () {
           // recovery can now pause its goal. Never pause a different turn.
           if (
             event.provider === "devin" &&
-            asObject(event.payload.detail)?.reason === "synara.devin.wedge-recovery" &&
+            asObject(event.payload.detail)?.reason === "cortex.devin.wedge-recovery" &&
             eventTurnId !== undefined &&
             thread.latestTurn?.turnId === eventTurnId
           ) {

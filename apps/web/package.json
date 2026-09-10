@@ -1,5 +1,5 @@
 {
-  "name": "@synara/web",
+  "name": "@cortex/web",
   "version": "0.8.3",
   "private": true,
   "type": "module",
@@ -30,8 +30,8 @@
     "@legendapp/list": "3.3.3",
     "@lexical/react": "^0.41.0",
     "@pierre/diffs": "^1.2.12",
-    "@synara/contracts": "workspace:*",
-    "@synara/shared": "workspace:*",
+    "@cortex/contracts": "workspace:*",
+    "@cortex/shared": "workspace:*",
     "@tabler/icons-react": "^3.44.0",
     "@tanstack/react-pacer": "^0.19.4",
     "@tanstack/react-query": "^5.90.0",

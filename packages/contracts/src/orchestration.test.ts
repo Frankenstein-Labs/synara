@@ -51,7 +51,7 @@ it.effect("decodes the AI-reviewed auto runtime mode", () =>
   }),
 );
 
-it.effect("decodes the Synara-controlled debug interaction mode", () =>
+it.effect("decodes the Cortex-controlled debug interaction mode", () =>
   Effect.gen(function* () {
     assert.strictEqual(yield* decodeProviderInteractionMode("debug"), "debug");
   }),
@@ -648,7 +648,7 @@ it.effect("strips client-sent dispatchOrigin from thread.turn.start commands", (
 
 it.effect("strips client-sent agent dispatchOrigin from thread.turn.start commands", () =>
   Effect.gen(function* () {
-    // The "agent" origin is reserved for turns dispatched through the Synara
+    // The "agent" origin is reserved for turns dispatched through the Cortex
     // agent gateway; WS clients must not be able to spoof it either.
     const command = yield* decodeClientOrchestrationCommand({
       type: "thread.turn.start",

@@ -8,14 +8,14 @@ import type {
   GitStackedAction,
   ModelSelection,
   ProviderStartOptions,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   resolveAutoFeatureBranchName,
   sanitizeBranchFragment,
   sanitizeFeatureBranchName,
-} from "@synara/shared/git";
-import { parseGitHubRepositoryNameWithOwnerFromRemoteUrl } from "@synara/shared/githubRepository";
-import { resolveWorktreeHandoffIntent } from "@synara/shared/worktreeHandoff";
+} from "@cortex/shared/git";
+import { parseGitHubRepositoryNameWithOwnerFromRemoteUrl } from "@cortex/shared/githubRepository";
+import { resolveWorktreeHandoffIntent } from "@cortex/shared/worktreeHandoff";
 
 import { GitManagerError } from "../Errors.ts";
 import {
@@ -158,7 +158,7 @@ function resolvePullRequestWorktreeLocalBranchName(
 
   const sanitizedHeadBranch = sanitizeBranchFragment(pullRequest.headBranch).trim();
   const suffix = sanitizedHeadBranch.length > 0 ? sanitizedHeadBranch : "head";
-  return `synara/pr-${pullRequest.number}/${suffix}`;
+  return `cortex/pr-${pullRequest.number}/${suffix}`;
 }
 
 function parseRepositoryOwnerLogin(nameWithOwner: string | null): string | null {
@@ -1316,7 +1316,7 @@ export const makeGitManager = Effect.gen(function* () {
         prBody ??= generated.body;
       }
 
-      const bodyFile = path.join(tempDir, `synara-pr-body-${process.pid}-${randomUUID()}.md`);
+      const bodyFile = path.join(tempDir, `cortex-pr-body-${process.pid}-${randomUUID()}.md`);
       yield* fileSystem
         .writeFileString(bodyFile, prBody)
         .pipe(
@@ -2102,11 +2102,11 @@ The local stash entry was kept for recovery.`,
 
       const preservedLocalStash = yield* stashWorkingTree(
         input.cwd,
-        `synara preserve local handoff ${randomUUID()}`,
+        `cortex preserve local handoff ${randomUUID()}`,
       );
       const sourceStash = yield* stashWorkingTree(
         input.worktreePath,
-        `synara handoff to local ${randomUUID()}`,
+        `cortex handoff to local ${randomUUID()}`,
       );
 
       yield* gitCore
@@ -2269,7 +2269,7 @@ The local stash entry was kept for recovery.`,
 
     const sourceStash = yield* stashWorkingTree(
       input.cwd,
-      `synara handoff to worktree ${randomUUID()}`,
+      `cortex handoff to worktree ${randomUUID()}`,
     );
     const sourceBranch = currentLocalStatus.branch ?? input.currentBranch ?? null;
     const sourceHeadRef = yield* readHeadRef(input.cwd);

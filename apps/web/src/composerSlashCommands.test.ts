@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { THREAD_GOAL_MAX_CHARS } from "@synara/contracts";
+import { THREAD_GOAL_MAX_CHARS } from "@cortex/contracts";
 
 import {
   buildReviewPrompt,
@@ -398,7 +398,7 @@ describe("composerSlashCommands", () => {
     }
   });
 
-  it("keeps Feedback Synara ahead of provider-native /feedback", () => {
+  it("keeps Feedback Cortex ahead of provider-native /feedback", () => {
     const availableCommands = getAvailableComposerSlashCommands({
       provider: "claudeAgent",
       supportsFastSlashCommand: true,
@@ -414,7 +414,7 @@ describe("composerSlashCommands", () => {
     expect(shouldHideProviderNativeCommandFromComposerMenu("claudeAgent", "feedback")).toBe(true);
   });
 
-  it("only exposes Synara-owned app commands for claude", () => {
+  it("only exposes Cortex-owned app commands for claude", () => {
     const commands = getAvailableComposerSlashCommands({
       provider: "claudeAgent",
       supportsFastSlashCommand: true,

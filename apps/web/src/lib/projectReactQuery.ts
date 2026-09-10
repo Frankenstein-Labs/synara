@@ -8,9 +8,9 @@ import type {
   ProjectSearchContentResult,
   ProjectSearchEntriesResult,
   ProjectSearchLocalEntriesResult,
-} from "@synara/contracts";
-import { PROJECT_SEARCH_CONTENT_MIN_QUERY_LENGTH } from "@synara/contracts";
-import { isLocalAbsolutePath } from "@synara/shared/path";
+} from "@cortex/contracts";
+import { PROJECT_SEARCH_CONTENT_MIN_QUERY_LENGTH } from "@cortex/contracts";
+import { isLocalAbsolutePath } from "@cortex/shared/path";
 import { queryOptions, type QueryClient } from "@tanstack/react-query";
 import { ensureNativeApi } from "~/nativeApi";
 import {

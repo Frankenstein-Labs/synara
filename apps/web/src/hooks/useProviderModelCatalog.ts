@@ -8,7 +8,7 @@ import type {
   ProviderAgentDescriptor,
   ProviderKind,
   ProviderModelDescriptor,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 

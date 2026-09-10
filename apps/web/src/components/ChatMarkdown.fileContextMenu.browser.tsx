@@ -1,8 +1,8 @@
 // FILE: ChatMarkdown.fileContextMenu.browser.tsx
-// Purpose: Verifies assistant file links replace the browser menu with Synara's file actions.
+// Purpose: Verifies assistant file links replace the browser menu with Cortex's file actions.
 // Layer: Web chat browser tests
 
-import type { NativeApi } from "@synara/contracts";
+import type { NativeApi } from "@cortex/contracts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "vitest-browser-react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -64,7 +64,7 @@ describe("ChatMarkdown file context menu", () => {
       <WorkspaceFileOpenerContext.Provider value={{ openFile }}>
         <ChatMarkdown
           text="See `.../scripts/delete_uploadthing.py`."
-          cwd="/Users/tester/synara-issue-793"
+          cwd="/Users/tester/cortex-issue-793"
           isStreaming={false}
           knownAbsoluteFilePaths={[
             "/Users/tester/.agents/skills/annotate-pr/scripts/delete_uploadthing.py",
@@ -153,7 +153,7 @@ describe("ChatMarkdown file context menu", () => {
       <QueryClientProvider client={makeQueryClient()}>
         <ChatMarkdown
           text="See `scripts/upsert_pr_proof.py`."
-          cwd="/Users/tester/Documents/Synara/thread"
+          cwd="/Users/tester/Documents/Cortex/thread"
           isStreaming={false}
         />
       </QueryClientProvider>,

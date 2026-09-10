@@ -6,9 +6,9 @@
 // Layer: web profile feature.
 
 import { forwardRef, type ReactNode } from "react";
-import type { ProfileStats, ProfileTokenStats } from "@synara/contracts";
+import type { ProfileStats, ProfileTokenStats } from "@cortex/contracts";
 import { ProviderIcon } from "~/components/ProviderIcon";
-import { SynaraLogo } from "~/components/SynaraLogo";
+import { CortexLogo } from "~/components/CortexLogo";
 import { ActivityHeatmap, CARD_HEATMAP_INTENSITY_CLASSES } from "./ActivityHeatmap";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { formatCompact, formatDays } from "./profileFormatting";
@@ -121,8 +121,8 @@ export const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function Sha
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2 text-slate-600">
-          <SynaraLogo className="size-6 text-slate-700" />
-          <span className="text-xl font-normal tracking-tight">Synara</span>
+          <CortexLogo className="size-6 text-slate-700" />
+          <span className="text-xl font-normal tracking-tight">Cortex</span>
         </div>
       </div>
 

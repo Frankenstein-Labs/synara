@@ -15,7 +15,7 @@ import {
   shouldInlineSkillForProvider,
 } from "./skillPromptInjection.ts";
 
-const synaraSkillPath = "/Users/me/.synara/skills/reviewer/SKILL.md";
+const cortexSkillPath = "/Users/me/.cortex/skills/reviewer/SKILL.md";
 const codexSkillPath = "/Users/me/.codex/skills/reviewer/SKILL.md";
 const claudeSkillPath = "/Users/me/.claude/skills/reviewer/SKILL.md";
 const cursorSkillPath = "/Users/me/.cursor/skills/reviewer/SKILL.md";
@@ -27,29 +27,29 @@ const windsurfSkillPath = "/repo/.windsurf/skills/reviewer/SKILL.md";
 const codeiumSkillPath = "/Users/me/.codeium/windsurf/skills/reviewer/SKILL.md";
 
 describe("shouldInlineSkillForProvider", () => {
-  it("skips codex-native and synara roots for codex but inlines foreign provider roots", () => {
-    // Codex loads .codex roots natively and ~/.synara/skills via the extra
+  it("skips codex-native and cortex roots for codex but inlines foreign provider roots", () => {
+    // Codex loads .codex roots natively and ~/.cortex/skills via the extra
     // skill root registered at session start.
-    expect(shouldInlineSkillForProvider("codex", synaraSkillPath)).toBe(false);
+    expect(shouldInlineSkillForProvider("codex", cortexSkillPath)).toBe(false);
     expect(shouldInlineSkillForProvider("codex", codexSkillPath)).toBe(false);
     expect(shouldInlineSkillForProvider("codex", claudeSkillPath)).toBe(true);
     expect(shouldInlineSkillForProvider("codex", cursorSkillPath)).toBe(true);
   });
 
-  it("inlines only Synara-owned paths for cursor", () => {
-    expect(shouldInlineSkillForProvider("cursor", synaraSkillPath)).toBe(true);
+  it("inlines only Cortex-owned paths for cursor", () => {
+    expect(shouldInlineSkillForProvider("cursor", cortexSkillPath)).toBe(true);
     expect(shouldInlineSkillForProvider("cursor", cursorSkillPath)).toBe(false);
     expect(shouldInlineSkillForProvider("cursor", codexSkillPath)).toBe(false);
   });
 
   it("inlines everything except .claude paths for claudeAgent", () => {
     expect(shouldInlineSkillForProvider("claudeAgent", claudeSkillPath)).toBe(false);
-    expect(shouldInlineSkillForProvider("claudeAgent", synaraSkillPath)).toBe(true);
+    expect(shouldInlineSkillForProvider("claudeAgent", cortexSkillPath)).toBe(true);
     expect(shouldInlineSkillForProvider("claudeAgent", codexSkillPath)).toBe(true);
   });
 
   it("inlines cross-provider paths for pi but not pi-native skills", () => {
-    expect(shouldInlineSkillForProvider("pi", synaraSkillPath)).toBe(true);
+    expect(shouldInlineSkillForProvider("pi", cortexSkillPath)).toBe(true);
     expect(shouldInlineSkillForProvider("pi", claudeSkillPath)).toBe(true);
     expect(shouldInlineSkillForProvider("pi", piSkillPath)).toBe(false);
   });
@@ -66,14 +66,14 @@ describe("shouldInlineSkillForProvider", () => {
     ]) {
       expect(shouldInlineSkillForProvider("devin", nativePath)).toBe(false);
     }
-    for (const foreignPath of [synaraSkillPath, codexSkillPath, cursorSkillPath, piSkillPath]) {
+    for (const foreignPath of [cortexSkillPath, codexSkillPath, cursorSkillPath, piSkillPath]) {
       expect(shouldInlineSkillForProvider("devin", foreignPath)).toBe(true);
     }
   });
 
   it("always inlines for providers without native skill support", () => {
     for (const provider of ["antigravity", "grok", "opencode"] as const) {
-      expect(shouldInlineSkillForProvider(provider, synaraSkillPath)).toBe(true);
+      expect(shouldInlineSkillForProvider(provider, cortexSkillPath)).toBe(true);
       expect(shouldInlineSkillForProvider(provider, claudeSkillPath)).toBe(true);
     }
   });
@@ -82,7 +82,7 @@ describe("shouldInlineSkillForProvider", () => {
 describe("buildInlineSkillInstructions", () => {
   it("inlines skill content for non-native providers and skips unreadable paths", async () => {
     const root = mkdtempSync(path.join(os.tmpdir(), "skill-inline-"));
-    const skillDir = path.join(root, ".synara", "skills", "reviewer");
+    const skillDir = path.join(root, ".cortex", "skills", "reviewer");
     try {
       await mkdir(skillDir, { recursive: true });
       const skillPath = path.join(skillDir, "SKILL.md");
@@ -92,7 +92,7 @@ describe("buildInlineSkillInstructions", () => {
         provider: "antigravity",
         skills: [
           { name: "reviewer", path: skillPath },
-          { name: "missing", path: path.join(root, ".synara", "skills", "missing", "SKILL.md") },
+          { name: "missing", path: path.join(root, ".cortex", "skills", "missing", "SKILL.md") },
         ],
         maxChars: 10_000,
       });
@@ -107,7 +107,7 @@ describe("buildInlineSkillInstructions", () => {
 
   it("returns empty text when nothing fits in the budget", async () => {
     const root = mkdtempSync(path.join(os.tmpdir(), "skill-inline-budget-"));
-    const skillDir = path.join(root, ".synara", "skills", "reviewer");
+    const skillDir = path.join(root, ".cortex", "skills", "reviewer");
     try {
       await mkdir(skillDir, { recursive: true });
       const skillPath = path.join(skillDir, "SKILL.md");
@@ -125,10 +125,10 @@ describe("buildInlineSkillInstructions", () => {
     }
   });
 
-  it("does not inline synara-rooted skills for codex (covered by the extra skill root)", async () => {
+  it("does not inline cortex-rooted skills for codex (covered by the extra skill root)", async () => {
     const text = await buildInlineSkillInstructions({
       provider: "codex",
-      skills: [{ name: "reviewer", path: synaraSkillPath }],
+      skills: [{ name: "reviewer", path: cortexSkillPath }],
       maxChars: 10_000,
     });
     expect(text).toBe("");

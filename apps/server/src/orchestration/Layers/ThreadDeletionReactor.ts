@@ -1,5 +1,5 @@
-import { ThreadId, type OrchestrationEvent } from "@synara/contracts";
-import { makeDrainableWorker, startDrainableWorkerProducers } from "@synara/shared/DrainableWorker";
+import { ThreadId, type OrchestrationEvent } from "@cortex/contracts";
+import { makeDrainableWorker, startDrainableWorkerProducers } from "@cortex/shared/DrainableWorker";
 import { Cause, Effect, Layer, Option, Stream } from "effect";
 
 import { ServerConfig } from "../../config";

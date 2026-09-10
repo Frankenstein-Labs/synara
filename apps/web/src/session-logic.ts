@@ -5,8 +5,8 @@ import {
   type ProviderKind,
   type ThreadId,
   type TurnId,
-} from "@synara/contracts";
-import { PROVIDER_DESCRIPTORS } from "@synara/shared/providerMetadata";
+} from "@cortex/contracts";
+import { PROVIDER_DESCRIPTORS } from "@cortex/shared/providerMetadata";
 
 import { orderedActivities, parseTaskListTasks } from "./workLog";
 
@@ -40,8 +40,8 @@ export {
   type WorkLogLiveActivityState,
   type WorkLogSubagent,
   type WorkLogSubagentAction,
-  type WorkLogSynaraCreatedThread,
-  type WorkLogSynaraThreadCreation,
+  type WorkLogCortexCreatedThread,
+  type WorkLogCortexThreadCreation,
 } from "./workLog";
 
 export type ProviderPickerKind = ProviderKind;

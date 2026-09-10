@@ -10,8 +10,8 @@ import {
   type ProviderListModelsResult,
   type ProviderModelDescriptor,
   type ServerProviderAuthStatus,
-} from "@synara/contracts";
-import { getClaudeContextWindowSuffix } from "@synara/shared/model";
+} from "@cortex/contracts";
+import { getClaudeContextWindowSuffix } from "@cortex/shared/model";
 import { Effect } from "effect";
 
 import type { ProviderDiscoveryServiceShape } from "../provider/Services/ProviderDiscoveryService.ts";
@@ -271,7 +271,7 @@ export function loadAgentGatewayProviderCatalog(input: {
   const availability = input.availability ?? { enabled: true };
   const unavailableReason =
     availability.enabled === false
-      ? `Provider "${input.provider}" is disabled in Synara settings.`
+      ? `Provider "${input.provider}" is disabled in Cortex settings.`
       : availability.available === false
         ? (availability.message ?? `Provider "${input.provider}" is not available.`)
         : availability.authStatus === "unauthenticated"
@@ -674,7 +674,7 @@ export function resolveAgentGatewayTarget(input: {
       return yield* Effect.fail(
         new AgentGatewayTargetError(
           "model_unavailable",
-          `Model "${input.target.model}" is not available for ${input.target.provider}. Use an exact slug from synara_capabilities.`,
+          `Model "${input.target.model}" is not available for ${input.target.provider}. Use an exact slug from cortex_capabilities.`,
           {
             provider: input.target.provider,
             requestedModel: input.target.model,

@@ -6,30 +6,30 @@ import {
   type ProviderKind,
   type ToolLifecycleItemType,
   type TurnId,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   decodeSubagentAgentStates,
   extractSubagentIdentityHints,
   decodeSubagentReceiverAgents,
   decodeSubagentReceiverThreadIds,
-} from "@synara/shared/subagents";
+} from "@cortex/shared/subagents";
 import {
   approvalRequestKindFromRequestType,
   type ApprovalRequestKind,
-} from "@synara/shared/threadSummary";
+} from "@cortex/shared/threadSummary";
 import {
   stripTrailingToolExitCode,
   summarizeToolRawOutput,
-} from "@synara/shared/toolOutputSummary";
-import { pluralize } from "@synara/shared/text";
-import { PROVIDER_DESCRIPTORS } from "@synara/shared/providerMetadata";
+} from "@cortex/shared/toolOutputSummary";
+import { pluralize } from "@cortex/shared/text";
+import { PROVIDER_DESCRIPTORS } from "@cortex/shared/providerMetadata";
 import {
   deriveReadableToolTitle,
-  deriveSynaraMcpToolTitle,
+  deriveCortexMcpToolTitle,
   isGenericToolTitle,
   normalizeCompactToolLabel,
   normalizeToolTextForComparison,
-  type SynaraMcpToolStatus,
+  type CortexMcpToolStatus,
 } from "./lib/toolCallLabel";
 import { toolArgumentSummaryToolName } from "./lib/toolArgumentSummary";
 import {
@@ -83,7 +83,7 @@ export interface WorkLogEntry {
   toolTitle?: string;
   toolName?: string;
   toolCallId?: string;
-  toolStatus?: SynaraMcpToolStatus;
+  toolStatus?: CortexMcpToolStatus;
   liveActivity?: WorkLogLiveActivity;
   toolDetails?: WorkLogToolDetails;
   itemType?: ToolLifecycleItemType;
@@ -91,7 +91,7 @@ export interface WorkLogEntry {
   subagents?: ReadonlyArray<WorkLogSubagent>;
   subagentAction?: WorkLogSubagentAction;
   automation?: WorkLogAutomation;
-  synaraThreadCreation?: WorkLogSynaraThreadCreation;
+  cortexThreadCreation?: WorkLogCortexThreadCreation;
   providerContextLifecycle?: ProviderContextLifecycleInfo;
   // Source activity kind, kept so the timeline can pick a kind-specific icon
   // (e.g. user-input.requested -> question glyph) instead of the generic
@@ -131,7 +131,7 @@ export interface WorkLogAutomation {
   proposalState?: "pending" | "accepted" | "dismissed";
 }
 
-export interface WorkLogSynaraCreatedThread {
+export interface WorkLogCortexCreatedThread {
   threadId: string;
   title: string;
   provider: ProviderKind;
@@ -140,11 +140,11 @@ export interface WorkLogSynaraCreatedThread {
   status: string;
 }
 
-export interface WorkLogSynaraThreadCreation {
+export interface WorkLogCortexThreadCreation {
   operationId: string;
   requestedCount: number;
   createdCount: number;
-  threads: ReadonlyArray<WorkLogSynaraCreatedThread>;
+  threads: ReadonlyArray<WorkLogCortexCreatedThread>;
 }
 
 export interface WorkLogSubagent {
@@ -434,9 +434,9 @@ function extractWorkLogAutomation(
   };
 }
 
-function extractWorkLogSynaraThreadCreation(
+function extractWorkLogCortexThreadCreation(
   payload: Record<string, unknown> | null,
-): WorkLogSynaraThreadCreation | null {
+): WorkLogCortexThreadCreation | null {
   if (!payload) {
     return null;
   }
@@ -445,7 +445,7 @@ function extractWorkLogSynaraThreadCreation(
   if (!operationId || rawThreads.length === 0) {
     return null;
   }
-  const threads = rawThreads.flatMap((value): WorkLogSynaraCreatedThread[] => {
+  const threads = rawThreads.flatMap((value): WorkLogCortexCreatedThread[] => {
     const thread = asRecord(value);
     const threadId = asTrimmedString(thread?.threadId);
     const title = asTrimmedString(thread?.title);
@@ -694,10 +694,10 @@ function toDerivedWorkLogEntry(activity: OrchestrationThreadActivity): DerivedWo
       entry.automation = automation;
     }
   }
-  if (activity.kind === "synara.threads.created") {
-    const synaraThreadCreation = extractWorkLogSynaraThreadCreation(payload);
-    if (synaraThreadCreation) {
-      entry.synaraThreadCreation = synaraThreadCreation;
+  if (activity.kind === "cortex.threads.created") {
+    const cortexThreadCreation = extractWorkLogCortexThreadCreation(payload);
+    if (cortexThreadCreation) {
+      entry.cortexThreadCreation = cortexThreadCreation;
     }
   }
   if (activity.kind === PROVIDER_CONTEXT_LIFECYCLE_ACTIVITY_KIND) {
@@ -708,7 +708,7 @@ function toDerivedWorkLogEntry(activity: OrchestrationThreadActivity): DerivedWo
   }
   const readableTitle =
     extractCollabActionTitle(payload) ??
-    deriveSynaraMcpToolTitle({
+    deriveCortexMcpToolTitle({
       toolName,
       title: commandActionDisplay?.title ?? title,
       fallbackLabel: activity.summary,
@@ -806,7 +806,7 @@ function deriveProviderRuntimeReconciliationCollapseKey(
 function deriveToolLifecycleStatus(
   activityKind: OrchestrationThreadActivity["kind"],
   payload: Record<string, unknown> | null,
-): SynaraMcpToolStatus | undefined {
+): CortexMcpToolStatus | undefined {
   if (!isRenderableToolLifecycleActivity(activityKind)) return undefined;
   if (isFailedToolLifecyclePayload(payload)) return "failed";
   if (isCancelledToolLifecyclePayload(payload)) return "cancelled";
@@ -1232,7 +1232,7 @@ function mergeDerivedWorkLogEntries(
     : (next.requestKind ?? previous.requestKind);
   const subagents = next.subagents ?? previous.subagents;
   const subagentAction = next.subagentAction ?? previous.subagentAction;
-  const synaraThreadCreation = next.synaraThreadCreation ?? previous.synaraThreadCreation;
+  const cortexThreadCreation = next.cortexThreadCreation ?? previous.cortexThreadCreation;
   const collapseKey = next.collapseKey ?? previous.collapseKey;
   const toolName = next.toolName ?? previous.toolName;
   const toolCallId = next.toolCallId ?? previous.toolCallId;
@@ -1266,7 +1266,7 @@ function mergeDerivedWorkLogEntries(
     ...(requestKind ? { requestKind } : {}),
     ...(subagents ? { subagents } : {}),
     ...(subagentAction ? { subagentAction } : {}),
-    ...(synaraThreadCreation ? { synaraThreadCreation } : {}),
+    ...(cortexThreadCreation ? { cortexThreadCreation } : {}),
     ...(collapseKey ? { collapseKey } : {}),
     ...(toolName ? { toolName } : {}),
     ...(toolCallId ? { toolCallId } : {}),

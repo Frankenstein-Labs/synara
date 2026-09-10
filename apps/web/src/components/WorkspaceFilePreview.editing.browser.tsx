@@ -9,7 +9,7 @@ import type {
   ProjectFileChangeEvent,
   ProjectReadFileResult,
   ProjectWatchFileInput,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { page } from "vitest/browser";
 import { afterEach, expect, it, vi } from "vitest";

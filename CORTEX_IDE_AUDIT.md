@@ -1,13 +1,13 @@
-# CORTEX IDE — Audit initial de la base Synara
+# CORTEX IDE — Audit initial de la base Cortex
 
-**Statut :** audit initial réalisé le 9 septembre 2026.  
-**Source examinée :** [`Emanuele-web04/synara`](https://github.com/Emanuele-web04/synara)  
-**Commit source examiné :** `4bb3dccfa2cfdafb432bc4cdbc474921a379f6be`  
+**Statut :** audit initial réalisé le 9 septembre 2026.
+**Source examinée :** [`Emanuele-web04/cortex`](https://github.com/Emanuele-web04/cortex)
+**Commit source examiné :** `4bb3dccfa2cfdafb432bc4cdbc474921a379f6be`
 **Dépôt de travail :** [`Frankenstein-Labs/cortex-ide`](https://github.com/Frankenstein-Labs/cortex-ide)
 
 ## Conclusion
 
-CORTEX IDE est initialisé comme une copie de travail complète de la base Synara. La structure applicative, les packages, les scripts, les tests, les configurations de build et les fichiers de licence sont conservés. Aucun grand rebranding, aucune suppression de fonctionnalité et aucune transformation en prototype n’ont été réalisés dans cette étape.
+CORTEX IDE est initialisé comme une copie de travail complète de la base Cortex. La structure applicative, les packages, les scripts, les tests, les configurations de build et les fichiers de licence sont conservés. Aucun grand rebranding, aucune suppression de fonctionnalité et aucune transformation en prototype n’ont été réalisés dans cette étape.
 
 Le dépôt est une monorepo TypeScript orientée Bun. Elle contient une application desktop Electron, un serveur local/CLI, une application web React/Vite, une application marketing Next.js, deux packages partagés et un ensemble important de scripts de build, de release et de vérification.
 
@@ -21,7 +21,7 @@ L’analyse a porté sur l’arborescence Git complète, les manifestes `package
 | ----------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Applications      | `apps/`                                          | Conteneur des applications produit.                                                                                                       |
 | Desktop           | `apps/desktop/`                                  | Client desktop Electron, bootstrap principal, preload, ponts IPC, intégration backend et scripts de démarrage.                            |
-| Serveur / CLI     | `apps/server/`                                   | Serveur applicatif et CLI local, orchestration, persistance SQLite, providers, WebSocket et terminal. Le package est nommé `@synara/cli`. |
+| Serveur / CLI     | `apps/server/`                                   | Serveur applicatif et CLI local, orchestration, persistance SQLite, providers, WebSocket et terminal. Le package est nommé `@cortex/cli`. |
 | Web               | `apps/web/`                                      | Interface React 19 construite avec Vite, TanStack Router, Zustand, Lexical et xterm.                                                      |
 | Marketing         | `apps/marketing/`                                | Site marketing et documentation Next.js.                                                                                                  |
 | Contrats partagés | `packages/contracts/`                            | Contrats et types partagés entre les applications.                                                                                        |
@@ -46,13 +46,13 @@ Les scripts desktop observés sont les suivants :
 
 | Commande                                        | Fonction                                       |
 | ----------------------------------------------- | ---------------------------------------------- |
-| `bun run --filter @synara/desktop dev`          | Lance le flux de développement desktop.        |
-| `bun run --filter @synara/desktop dev:bundle`   | Recompile le bundle en mode watch.             |
-| `bun run --filter @synara/desktop dev:electron` | Lance le processus Electron de développement.  |
-| `bun run --filter @synara/desktop build`        | Construit le bundle desktop.                   |
-| `bun run --filter @synara/desktop start`        | Démarre Electron à partir du bundle construit. |
-| `bun run --filter @synara/desktop test`         | Exécute les tests desktop avec Vitest.         |
-| `bun run --filter @synara/desktop smoke-test`   | Exécute le smoke test desktop.                 |
+| `bun run --filter @cortex/desktop dev`          | Lance le flux de développement desktop.        |
+| `bun run --filter @cortex/desktop dev:bundle`   | Recompile le bundle en mode watch.             |
+| `bun run --filter @cortex/desktop dev:electron` | Lance le processus Electron de développement.  |
+| `bun run --filter @cortex/desktop build`        | Construit le bundle desktop.                   |
+| `bun run --filter @cortex/desktop start`        | Démarre Electron à partir du bundle construit. |
+| `bun run --filter @cortex/desktop test`         | Exécute les tests desktop avec Vitest.         |
+| `bun run --filter @cortex/desktop smoke-test`   | Exécute le smoke test desktop.                 |
 
 Le desktop hydrate l’environnement du processus graphique avant de démarrer le backend. Les détails de plateforme sont centralisés dans le runtime partagé et dans les modules desktop. Le terminal utilise `node-pty`; sous Windows, la documentation source indique l’utilisation de ConPTY via node-pty même lorsque le backend est lancé sous Bun.
 
@@ -70,15 +70,15 @@ Les agents et providers sont donc intégrés au serveur et à son orchestration 
 
 ## Serveur
 
-Le package serveur se trouve sous `apps/server` et expose le binaire `synara`. Ses commandes principales sont `dev`, `build`, `start`, `typecheck` et `test`. Le code couvre l’orchestration des tours, les providers, le serveur WebSocket, la persistance, les migrations, les projets, le terminal et les intégrations externes.
+Le package serveur se trouve sous `apps/server` et expose le binaire `cortex`. Ses commandes principales sont `dev`, `build`, `start`, `typecheck` et `test`. Le code couvre l’orchestration des tours, les providers, le serveur WebSocket, la persistance, les migrations, les projets, le terminal et les intégrations externes.
 
-Le serveur utilise une base SQLite et possède des tests de migrations, de persistance, de runtime de processus, de providers, d’orchestration et d’intégration. Le serveur peut être exécuté en développement avec `bun run --filter @synara/cli dev` et à partir du build avec `bun run --filter @synara/cli start`.
+Le serveur utilise une base SQLite et possède des tests de migrations, de persistance, de runtime de processus, de providers, d’orchestration et d’intégration. Le serveur peut être exécuté en développement avec `bun run --filter @cortex/cli dev` et à partir du build avec `bun run --filter @cortex/cli start`.
 
 ## Web
 
 L’application `apps/web` est une application React construite avec Vite. Elle utilise notamment TanStack Router, React Query, Zustand, Lexical, xterm et des bibliothèques de rendu Markdown/diff. Ses commandes déclarées couvrent `dev`, `build`, `preview`, `typecheck`, les tests Vitest, les tests navigateur Playwright et les tests Electron end-to-end.
 
-Le web consomme les contrats et utilitaires des workspaces `@synara/contracts` et `@synara/shared`. Aucun remplacement de l’interface existante par une landing page CORTEX n’a été effectué.
+Le web consomme les contrats et utilitaires des workspaces `@cortex/contracts` et `@cortex/shared`. Aucun remplacement de l’interface existante par une landing page CORTEX n’a été effectué.
 
 ## Build et packaging
 
@@ -92,7 +92,7 @@ Les signatures, la notarisation macOS, l’authentification Windows et la public
 
 Le dépôt source contient un fichier `LICENSE` sous licence MIT. La copie de travail conserve ce fichier ainsi que les notices, attributions, fichiers de contribution et métadonnées source. La licence MIT impose notamment de conserver la notice de copyright et la notice de permission dans les copies ou portions substantielles du logiciel.
 
-Le dépôt CORTEX IDE doit donc conserver `LICENSE` et toute notice tierce éventuellement ajoutée par les dépendances ou par les futurs imports. Les changements futurs devront éviter de supprimer les attributions Synara sans analyse juridique préalable. Cet audit ne constitue pas un avis juridique.
+Le dépôt CORTEX IDE doit donc conserver `LICENSE` et toute notice tierce éventuellement ajoutée par les dépendances ou par les futurs imports. Les changements futurs devront éviter de supprimer les attributions Cortex sans analyse juridique préalable. Cet audit ne constitue pas un avis juridique.
 
 ## Modifications réalisées dans cette étape
 
@@ -107,7 +107,7 @@ Le dépôt CORTEX IDE doit donc conserver `LICENSE` et toute notice tierce éven
 
 ## Références
 
-[1]: https://github.com/Emanuele-web04/synara "Dépôt source Synara"
+[1]: https://github.com/Emanuele-web04/cortex "Dépôt source Cortex"
 [2]: https://github.com/Frankenstein-Labs/cortex-ide "Dépôt de travail CORTEX IDE"
 [3]: https://opensource.org/license/mit "Texte de la licence MIT"
 [4]: https://bun.sh/docs/install "Documentation d’installation de Bun"
@@ -126,7 +126,7 @@ _Document préparé par Manus AI._
 
 ---
 
-[1]: https://github.com/Emanuele-web04/synara "Dépôt source Synara"
+[1]: https://github.com/Emanuele-web04/cortex "Dépôt source Cortex"
 [2]: https://github.com/Frankenstein-Labs/cortex-ide "Dépôt de travail CORTEX IDE"
 [3]: https://opensource.org/license/mit "Texte de la licence MIT"
 [4]: https://bun.sh/docs/install "Documentation d’installation de Bun"

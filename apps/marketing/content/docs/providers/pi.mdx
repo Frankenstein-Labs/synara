@@ -1,9 +1,9 @@
 ---
 title: Pi
-description: Install, authenticate, verify, and run the Pi coding agent through Synara.
+description: Install, authenticate, verify, and run the Pi coding agent through Cortex.
 ---
 
-Synara integrates the Pi coding-agent runtime and its model registry. Pi owns provider credentials, models, extensions, skills, commands, and session behavior; Synara supplies the durable task, working environment, transcript, review surfaces, Agent Gateway connection, and Git lifecycle around it.
+Cortex integrates the Pi coding-agent runtime and its model registry. Pi owns provider credentials, models, extensions, skills, commands, and session behavior; Cortex supplies the durable task, working environment, transcript, review surfaces, Agent Gateway connection, and Git lifecycle around it.
 
 ## Install
 
@@ -45,7 +45,7 @@ Pi can also use provider API keys from environment variables or its credential s
 export ANTHROPIC_API_KEY="..."
 ```
 
-Do not commit credentials or paste them into Synara tasks. Pi normally stores its user state under `~/.pi/agent/`.
+Do not commit credentials or paste them into Cortex tasks. Pi normally stores its user state under `~/.pi/agent/`.
 
 ## Verify
 
@@ -58,23 +58,23 @@ pi
 
 Confirm that `/login` or the configured API-key provider makes at least one model available. Use `/model` to inspect the catalog, then ask Pi to summarize the repository without making changes.
 
-This verifies the package, provider credentials, model registry, and working directory before Synara is involved.
+This verifies the package, provider credentials, model registry, and working directory before Cortex is involved.
 
-## Connect to Synara
+## Connect to Cortex
 
 <Steps>
 <Step>
 
 ### Enable Pi
 
-Open provider settings and confirm that Synara detects `pi`.
+Open provider settings and confirm that Cortex detects `pi`.
 
 </Step>
 <Step>
 
 ### Confirm provider credentials
 
-Use Pi’s own `/login`, environment variables, or supported auth file. Synara reads the resulting model availability rather than duplicating the secret.
+Use Pi’s own `/login`, environment variables, or supported auth file. Cortex reads the resulting model availability rather than duplicating the secret.
 
 </Step>
 <Step>
@@ -83,7 +83,7 @@ Use Pi’s own `/login`, environment variables, or supported auth file. Synara r
 
 Confirm that the model picker shows the expected provider/model combinations and the thinking levels supported by the selected model.
 
-In Synara 0.8.1 and later, the Anthropic catalog repair keeps Claude Fable 5.1 selectable even when Pi's authenticated upstream catalog predates that model entry. Fable 5.1 uses always-on thinking with Low through Max effort and no fast-mode lane.
+In Cortex 0.8.1 and later, the Anthropic catalog repair keeps Claude Fable 5.1 selectable even when Pi's authenticated upstream catalog predates that model entry. Fable 5.1 uses always-on thinking with Low through Max effort and no fast-mode lane.
 
 </Step>
 <Step>
@@ -95,7 +95,7 @@ Start with Pi’s built-in tools and a clean test repository before adding proje
 </Step>
 </Steps>
 
-## Capabilities in Synara
+## Capabilities in Cortex
 
 Pi sessions can expose:
 
@@ -105,13 +105,13 @@ Pi sessions can expose:
 - Commands, skills, attachments, and project instructions
 - Session history and continuation behavior
 - Tool output, task progress, usage, and context information
-- User-input requests surfaced in the Synara conversation
+- User-input requests surfaced in the Cortex conversation
 - Native steering of a running turn
-- Synara’s terminal, browser, diff, checkpoint, worktree, and Git delivery surfaces
+- Cortex’s terminal, browser, diff, checkpoint, worktree, and Git delivery surfaces
 
-Native steering lets Synara queue a follow-up for a supported active Pi session without cancelling the turn first. The runtime still decides when it can incorporate the message.
+Native steering lets Cortex queue a follow-up for a supported active Pi session without cancelling the turn first. The runtime still decides when it can incorporate the message.
 
-Pi extensions and packages execute with the permissions of your user account. Review third-party code before enabling it in a repository Synara will operate.
+Pi extensions and packages execute with the permissions of your user account. Review third-party code before enabling it in a repository Cortex will operate.
 
 ## Updating
 
@@ -127,7 +127,7 @@ To update only the CLI:
 pi update --self
 ```
 
-You can also update the global npm package through the package manager that installed it. Restart Synara after changing the runtime.
+You can also update the global npm package through the package manager that installed it. Restart Cortex after changing the runtime.
 
 ## Model catalog refresh
 
@@ -141,14 +141,14 @@ Discovery shares cached results and bounds retries. The currently selected provi
 
 1. Run `pi --version` from a fresh terminal.
 2. Confirm the global package-manager binary directory is on `PATH`.
-3. Check the custom binary path in Synara.
-4. Restart Synara after installation or shell changes.
+3. Check the custom binary path in Cortex.
+4. Restart Cortex after installation or shell changes.
 
 ### No models are available
 
-Run Pi directly and use `/login`, or configure a supported provider API key. Confirm `/model` shows at least one authenticated model before refreshing Synara.
+Run Pi directly and use `/login`, or configure a supported provider API key. Confirm `/model` shows at least one authenticated model before refreshing Cortex.
 
-If Anthropic authentication works but Fable 5.1 is missing, refresh Pi in Synara and start a new task. Synara can repair the known Anthropic catalog entry, but it cannot grant model access that the configured account or provider rejects.
+If Anthropic authentication works but Fable 5.1 is missing, refresh Pi in Cortex and start a new task. Cortex can repair the known Anthropic catalog entry, but it cannot grant model access that the configured account or provider rejects.
 
 ### The model catalog differs between projects
 

@@ -4,7 +4,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { ThreadId, type TurnId } from "@synara/contracts";
+import { ThreadId, type TurnId } from "@cortex/contracts";
 import type { FileDiffMetadata } from "@pierre/diffs/react";
 import * as Schema from "effect/Schema";
 import { Columns2Icon, CopyIcon, EllipsisIcon, FolderIcon, Rows3Icon, XIcon } from "~/lib/icons";
@@ -395,7 +395,7 @@ export default function DiffPanel({
   const { resolvedTheme } = useTheme();
   const { settings } = useAppSettings();
   const [diffRenderMode, setDiffRenderMode] = useLocalStorage(
-    "synara:diff-render-mode:v1",
+    "cortex:diff-render-mode:v1",
     "split",
     DiffRenderModeSchema,
   );
