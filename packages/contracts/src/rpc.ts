@@ -24,6 +24,14 @@ import {
 } from "./automation";
 import { OpenInEditorInput } from "./editor";
 import {
+  OpenVSXDownloadExtensionInput,
+  OpenVSXDownloadResult,
+  OpenVSXExtension,
+  OpenVSXGetExtensionDetailsInput,
+  OpenVSXSearchExtensionsInput,
+  OpenVSXSearchResult,
+} from "./openvsx";
+import {
   ExternalMcpCreateIntegrationInput,
   ExternalMcpCreateIntegrationResult,
   ExternalMcpIntegration,
@@ -531,6 +539,24 @@ export const WsStudioListThreadOutputsRpc = Rpc.make(WS_METHODS.studioListThread
 export const WsFilesystemBrowseRpc = Rpc.make(WS_METHODS.filesystemBrowse, {
   payload: FilesystemBrowseInput,
   success: FilesystemBrowseResult,
+  error: WsRpcError,
+});
+
+export const WsOpenVSXSearchExtensionsRpc = Rpc.make(WS_METHODS.openVSXSearchExtensions, {
+  payload: OpenVSXSearchExtensionsInput,
+  success: OpenVSXSearchResult,
+  error: WsRpcError,
+});
+
+export const WsOpenVSXGetExtensionDetailsRpc = Rpc.make(WS_METHODS.openVSXGetExtensionDetails, {
+  payload: OpenVSXGetExtensionDetailsInput,
+  success: OpenVSXExtension,
+  error: WsRpcError,
+});
+
+export const WsOpenVSXDownloadExtensionRpc = Rpc.make(WS_METHODS.openVSXDownloadExtension, {
+  payload: OpenVSXDownloadExtensionInput,
+  success: OpenVSXDownloadResult,
   error: WsRpcError,
 });
 
@@ -1285,6 +1311,9 @@ export const WsFeatureRpcGroup = RpcGroup.make(
   WsProjectsProvisionFromGitHubRpc,
   WsStudioListThreadOutputsRpc,
   WsFilesystemBrowseRpc,
+  WsOpenVSXSearchExtensionsRpc,
+  WsOpenVSXGetExtensionDetailsRpc,
+  WsOpenVSXDownloadExtensionRpc,
   WsShellOpenInEditorRpc,
   WsGitGithubRepositoryRpc,
   WsGitStatusRpc,

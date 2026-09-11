@@ -40,3 +40,4 @@ export * from "./device";
 export * from "./rpc";
 export * from "./instincts";
 export * from "./lsp";
+export * from "./openvsx";

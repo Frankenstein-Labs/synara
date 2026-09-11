@@ -158,6 +158,11 @@ import {
   ExternalMcpRevokeIntegrationInput,
 } from "./externalMcp";
 import {
+  OpenVSXDownloadExtensionInput,
+  OpenVSXGetExtensionDetailsInput,
+  OpenVSXSearchExtensionsInput,
+} from "./openvsx";
+import {
   GitHubProjectProvisionInput,
   GitHubProjectProvisionProgressEvent,
 } from "./githubProjectProvisioning";
@@ -293,6 +298,11 @@ export const WS_METHODS = {
   automationArchiveRun: "automation.archiveRun",
   automationResolveProposal: "automation.resolveProposal",
   subscribeAutomationEvents: "automation.subscribe",
+
+  // Open VSX extension registry
+  openVSXSearchExtensions: "openvsx.searchExtensions",
+  openVSXGetExtensionDetails: "openvsx.getExtensionDetails",
+  openVSXDownloadExtension: "openvsx.downloadExtension",
 } as const;
 
 // ── Push Event Channels ──────────────────────────────────────────────
@@ -376,6 +386,11 @@ const WebSocketRequestBody = Schema.Union([
   tagRequestBody(WS_METHODS.projectsListDevServers, Schema.Struct({})),
   tagRequestBody(WS_METHODS.subscribeProjectDevServerEvents, Schema.Struct({})),
   tagRequestBody(WS_METHODS.projectsProvisionFromGitHub, GitHubProjectProvisionInput),
+
+  // Open VSX registry
+  tagRequestBody(WS_METHODS.openVSXSearchExtensions, OpenVSXSearchExtensionsInput),
+  tagRequestBody(WS_METHODS.openVSXGetExtensionDetails, OpenVSXGetExtensionDetailsInput),
+  tagRequestBody(WS_METHODS.openVSXDownloadExtension, OpenVSXDownloadExtensionInput),
 
   // Filesystem browse
   // Studio

@@ -110,6 +110,7 @@ import { ProfileStatsQuery } from "./profileStats";
 import { redactSensitiveProcessArgs } from "./processArgumentRedaction";
 import { ServerEnvironment } from "./environment/Services/ServerEnvironment";
 import { ExternalMcpService } from "./externalMcp/Services/ExternalMcpService";
+import { OpenVSXService } from "./openvsx/Services/OpenVSXService";
 import { ServerLifecycleEvents } from "./serverLifecycleEvents";
 import { ServerRuntimeStartup } from "./serverRuntimeStartup";
 import { ServerSettingsService } from "./serverSettings";
@@ -346,6 +347,7 @@ const makeWsRpcHandlersLayer = () =>
       const devServerManager = yield* DevServerManager;
       const fileSystem = yield* FileSystem.FileSystem;
       const externalMcp = yield* ExternalMcpService;
+      const openVSX = yield* OpenVSXService;
       const git = yield* GitCore;
       const github = yield* GitHubCli;
       const gitManager = yield* GitManager;
@@ -2000,6 +2002,12 @@ const makeWsRpcHandlersLayer = () =>
           rpcEffect(providerDiscoveryService.listModels(input), "Failed to list models"),
         [WS_METHODS.providerListAgents]: (input) =>
           rpcEffect(providerDiscoveryService.listAgents(input), "Failed to list agents"),
+        [WS_METHODS.openVSXSearchExtensions]: (input) =>
+          rpcEffect(openVSX.searchExtensions(input), "Failed to search Open VSX extensions"),
+        [WS_METHODS.openVSXGetExtensionDetails]: (input) =>
+          rpcEffect(openVSX.getExtensionDetails(input), "Failed to load Open VSX extension details"),
+        [WS_METHODS.openVSXDownloadExtension]: (input) =>
+          rpcEffect(openVSX.downloadExtension(input), "Failed to download Open VSX extension"),
         [WS_METHODS.automationList]: (input) =>
           rpcEffect(automationService.list(input), "Failed to list automations"),
         [WS_METHODS.automationGetMemory]: ({ automationId }) =>

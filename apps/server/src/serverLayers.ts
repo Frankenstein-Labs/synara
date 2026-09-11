@@ -45,6 +45,8 @@ import { ProjectFaviconResolverLive } from "./project/Layers/ProjectFaviconResol
 import { ExternalMcpRepositoryLive } from "./externalMcp/Layers/ExternalMcpRepository";
 import { ExternalMcpServiceLive } from "./externalMcp/Layers/ExternalMcpService";
 import { ExternalMcpGatewayLive } from "./externalMcp/Layers/ExternalMcpGateway";
+import { OpenVSXServiceLive } from "./openvsx/Services/OpenVSXService";
+import { LanguageServerManagerLive } from "./lsp/Services/LanguageServerManager";
 import { ServerEnvironmentLive } from "./environment/Layers/ServerEnvironment";
 import { AutomationRepositoryLive } from "./persistence/Layers/AutomationRepository";
 import { ProjectPullRequestPinsLive } from "./persistence/Layers/ProjectPullRequestPins";
@@ -195,6 +197,9 @@ export function makeServerRuntimeServicesLayer(
     Layer.provideMerge(ServerSettingsLive),
     Layer.provideMerge(providerHealthLayer),
   );
+  const languageServerManagerLayer = LanguageServerManagerLive.pipe(
+    Layer.provideMerge(OpenVSXServiceLive),
+  );
   const agentGatewayLayer = AgentGatewayLive.pipe(
     Layer.provideMerge(agentGatewayCredentialsLayer),
     Layer.provideMerge(automationServiceLayer),
@@ -231,6 +236,8 @@ export function makeServerRuntimeServicesLayer(
     ExternalMcpRepositoryLive,
     externalMcpServiceLayer,
     externalMcpGatewayLayer,
+    OpenVSXServiceLive,
+    languageServerManagerLayer,
     providerHealthLayer,
     ProjectPullRequestPinsLive,
     pullRequestServiceLayer,
