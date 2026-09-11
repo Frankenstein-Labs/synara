@@ -75,6 +75,20 @@ export const OpenVSXDownloadResult = Schema.Struct({
 });
 export type OpenVSXDownloadResult = typeof OpenVSXDownloadResult.Type;
 
+export const OpenVSXInstalledExtension = Schema.Struct({
+  namespace: TrimmedNonEmptyString,
+  name: TrimmedNonEmptyString,
+  version: TrimmedNonEmptyString,
+  sha256: TrimmedNonEmptyString,
+  installedAt: TrimmedNonEmptyString,
+});
+export type OpenVSXInstalledExtension = typeof OpenVSXInstalledExtension.Type;
+
+export const OpenVSXListInstalledResult = Schema.Struct({
+  extensions: Schema.Array(OpenVSXInstalledExtension),
+});
+export type OpenVSXListInstalledResult = typeof OpenVSXListInstalledResult.Type;
+
 export const OpenVSXSearchExtensionsInput = Schema.Struct({
   query: TrimmedNonEmptyString,
   options: Schema.optional(OpenVSXSearchOptions),
@@ -94,6 +108,13 @@ export const OpenVSXDownloadExtensionInput = Schema.Struct({
   projectId: Schema.optional(ProjectId),
 });
 export type OpenVSXDownloadExtensionInput = typeof OpenVSXDownloadExtensionInput.Type;
+
+export const OpenVSXUninstallExtensionInput = Schema.Struct({
+  namespace: TrimmedNonEmptyString,
+  name: TrimmedNonEmptyString,
+  version: Schema.optional(TrimmedNonEmptyString),
+});
+export type OpenVSXUninstallExtensionInput = typeof OpenVSXUninstallExtensionInput.Type;
 
 export const OpenVSXCacheExtensionInput = Schema.Struct({
   namespace: TrimmedNonEmptyString,

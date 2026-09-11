@@ -161,6 +161,7 @@ import {
   OpenVSXDownloadExtensionInput,
   OpenVSXGetExtensionDetailsInput,
   OpenVSXSearchExtensionsInput,
+  OpenVSXUninstallExtensionInput,
 } from "./openvsx";
 import {
   GitHubProjectProvisionInput,
@@ -303,6 +304,9 @@ export const WS_METHODS = {
   openVSXSearchExtensions: "openvsx.searchExtensions",
   openVSXGetExtensionDetails: "openvsx.getExtensionDetails",
   openVSXDownloadExtension: "openvsx.downloadExtension",
+  openVSXListInstalledExtensions: "openvsx.listInstalledExtensions",
+  openVSXInstallExtension: "openvsx.installExtension",
+  openVSXUninstallExtension: "openvsx.uninstallExtension",
 } as const;
 
 // ── Push Event Channels ──────────────────────────────────────────────
@@ -391,6 +395,9 @@ const WebSocketRequestBody = Schema.Union([
   tagRequestBody(WS_METHODS.openVSXSearchExtensions, OpenVSXSearchExtensionsInput),
   tagRequestBody(WS_METHODS.openVSXGetExtensionDetails, OpenVSXGetExtensionDetailsInput),
   tagRequestBody(WS_METHODS.openVSXDownloadExtension, OpenVSXDownloadExtensionInput),
+  tagRequestBody(WS_METHODS.openVSXListInstalledExtensions, Schema.Struct({})),
+  tagRequestBody(WS_METHODS.openVSXInstallExtension, OpenVSXDownloadExtensionInput),
+  tagRequestBody(WS_METHODS.openVSXUninstallExtension, OpenVSXUninstallExtensionInput),
 
   // Filesystem browse
   // Studio

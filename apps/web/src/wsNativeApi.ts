@@ -553,6 +553,15 @@ export function createWsNativeApi(): NativeApi {
     filesystem: {
       browse: (input) => transport.request(WS_METHODS.filesystemBrowse, input),
     },
+    extensions: {
+      search: (input) => transport.request(WS_METHODS.openVSXSearchExtensions, input),
+      details: (input) => transport.request(WS_METHODS.openVSXGetExtensionDetails, input),
+      download: (input) => transport.request(WS_METHODS.openVSXDownloadExtension, input),
+      listInstalled: () => transport.request(WS_METHODS.openVSXListInstalledExtensions),
+      install: (input) =>
+        transport.request(WS_METHODS.openVSXInstallExtension, input, { timeoutMs: 300_000 }),
+      uninstall: (input) => transport.request(WS_METHODS.openVSXUninstallExtension, input),
+    },
     studio: {
       listThreadOutputs: (input) => transport.request(WS_METHODS.studioListThreadOutputs, input),
     },

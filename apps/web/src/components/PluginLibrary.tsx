@@ -64,10 +64,11 @@ import {
   useDesktopTopBarWindowControlsGutterClassName,
 } from "~/hooks/useDesktopTopBarGutter";
 import { Skeleton } from "./ui/skeleton";
+import { ExtensionsLibrary } from "./ExtensionsLibrary";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type DiscoveryTab = "plugins" | "skills";
+type DiscoveryTab = "plugins" | "extensions" | "skills";
 type ProviderCapabilities = { plugins: boolean; skills: boolean };
 type PluginEntry = {
   marketplaceName: string;
@@ -378,8 +379,10 @@ export function PluginLibrary() {
   const [selectedProvider, setSelectedProvider] = useState<ProviderKind>(preferredProvider);
   const [selectedTab, setSelectedTab] = useState<DiscoveryTab>("plugins");
   const [pluginSearch, setPluginSearch] = useState("");
+  const [extensionSearch, setExtensionSearch] = useState("");
   const [skillSearch, setSkillSearch] = useState("");
   const deferredPluginSearch = useDeferredValue(pluginSearch);
+  const deferredExtensionSearch = useDeferredValue(extensionSearch);
   const deferredSkillSearch = useDeferredValue(skillSearch);
   const providerThreadId = focusedThreadId;
 
@@ -550,36 +553,51 @@ export function PluginLibrary() {
               onClick={() => setSelectedTab("plugins")}
             />
             <TabButton
+              label="Extensions"
+              active={selectedTab === "extensions"}
+              onClick={() => setSelectedTab("extensions")}
+            />
+            <TabButton
               label="Skills"
               active={selectedTab === "skills"}
               onClick={() => setSelectedTab("skills")}
             />
           </div>
           <div className="flex-1" />
-          <div className="inline-flex rounded-full border border-border/60 bg-background/60 p-0.5">
-            {DEFAULT_PROVIDER_ORDER.map((provider) => {
-              const capabilities = providerCapabilities[provider];
-              const label = PROVIDER_DISPLAY_NAMES[provider];
-              return (
-                <ProviderToggleButton
-                  key={provider}
-                  label={label}
-                  provider={provider}
-                  active={effectiveProvider === provider}
-                  disabled={!capabilities.plugins && !capabilities.skills}
-                  onClick={() => {
-                    setSelectedProvider(provider);
-                    if (selectedTab === "plugins" && !capabilities.plugins && capabilities.skills) {
-                      setSelectedTab("skills");
-                    }
-                    if (selectedTab === "skills" && !capabilities.skills && capabilities.plugins) {
-                      setSelectedTab("plugins");
-                    }
-                  }}
-                />
-              );
-            })}
-          </div>
+          {selectedTab !== "extensions" ? (
+            <div className="inline-flex rounded-full border border-border/60 bg-background/60 p-0.5">
+              {DEFAULT_PROVIDER_ORDER.map((provider) => {
+                const capabilities = providerCapabilities[provider];
+                const label = PROVIDER_DISPLAY_NAMES[provider];
+                return (
+                  <ProviderToggleButton
+                    key={provider}
+                    label={label}
+                    provider={provider}
+                    active={effectiveProvider === provider}
+                    disabled={!capabilities.plugins && !capabilities.skills}
+                    onClick={() => {
+                      setSelectedProvider(provider);
+                      if (
+                        selectedTab === "plugins" &&
+                        !capabilities.plugins &&
+                        capabilities.skills
+                      ) {
+                        setSelectedTab("skills");
+                      }
+                      if (
+                        selectedTab === "skills" &&
+                        !capabilities.skills &&
+                        capabilities.plugins
+                      ) {
+                        setSelectedTab("plugins");
+                      }
+                    }}
+                  />
+                );
+              })}
+            </div>
+          ) : null}
         </div>
 
         {/* ── Scrollable body ───────────────────────────────────────────── */}
@@ -587,7 +605,9 @@ export function PluginLibrary() {
           {/* Hero */}
           <div className="px-6 py-10 text-center">
             <h1 className="text-[28px] font-semibold text-foreground">
-              Make {providerLabel} work your way
+              {selectedTab === "extensions"
+                ? "Extend Cortex Studio"
+                : `Make ${providerLabel} work your way`}
             </h1>
           </div>
 
@@ -600,12 +620,25 @@ export function PluginLibrary() {
                 </InputGroupText>
               </InputGroupAddon>
               <InputGroupInput
-                value={selectedTab === "plugins" ? pluginSearch : skillSearch}
+                value={
+                  selectedTab === "plugins"
+                    ? pluginSearch
+                    : selectedTab === "extensions"
+                      ? extensionSearch
+                      : skillSearch
+                }
                 onChange={(e) => {
                   if (selectedTab === "plugins") setPluginSearch(e.target.value);
+                  else if (selectedTab === "extensions") setExtensionSearch(e.target.value);
                   else setSkillSearch(e.target.value);
                 }}
-                placeholder={selectedTab === "plugins" ? "Search plugins" : "Search skills"}
+                placeholder={
+                  selectedTab === "plugins"
+                    ? "Search plugins"
+                    : selectedTab === "extensions"
+                      ? "Search Open VSX extensions"
+                      : "Search skills"
+                }
                 className="text-sm"
               />
             </InputGroup>
@@ -638,7 +671,9 @@ export function PluginLibrary() {
 
           {/* Grid content */}
           <div className="px-3 pb-10 sm:px-5">
-            {selectedTab === "plugins" ? (
+            {selectedTab === "extensions" ? (
+              <ExtensionsLibrary query={deferredExtensionSearch} />
+            ) : selectedTab === "plugins" ? (
               <>
                 {!canListPlugins ? (
                   <div className="mx-auto max-w-2xl">
