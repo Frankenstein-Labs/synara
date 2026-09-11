@@ -52,8 +52,8 @@ describe("projectScripts helpers", () => {
     });
 
     expect(env).toMatchObject({
-      SYNARA_PROJECT_ROOT: "/repo",
-      SYNARA_WORKTREE_PATH: "/repo/worktree-a",
+      CORTEX_PROJECT_ROOT: "/repo",
+      CORTEX_WORKTREE_PATH: "/repo/worktree-a",
     });
   });
 
@@ -61,13 +61,13 @@ describe("projectScripts helpers", () => {
     const env = projectScriptRuntimeEnv({
       project: { cwd: "/repo" },
       extraEnv: {
-        SYNARA_PROJECT_ROOT: "/custom-root",
+        CORTEX_PROJECT_ROOT: "/custom-root",
         CUSTOM_FLAG: "1",
       },
     });
 
-    expect(env.SYNARA_PROJECT_ROOT).toBe("/custom-root");
+    expect(env.CORTEX_PROJECT_ROOT).toBe("/custom-root");
     expect(env.CUSTOM_FLAG).toBe("1");
-    expect(env.SYNARA_WORKTREE_PATH).toBeUndefined();
+    expect(env.CORTEX_WORKTREE_PATH).toBeUndefined();
   });
 });

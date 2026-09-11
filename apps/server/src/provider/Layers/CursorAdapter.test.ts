@@ -1,26 +1,26 @@
 // FILE: CursorAdapter.test.ts
-// Purpose: Characterizes Cursor's private Synara host-policy delivery.
+// Purpose: Characterizes Cursor's private Cortex host-policy delivery.
 // Layer: Provider adapter tests
 
-import { SYNARA_HARNESS_POLICY_MARKER } from "../../agentGateway/harnessPolicy.ts";
+import { CORTEX_HARNESS_POLICY_MARKER } from "../../agentGateway/harnessPolicy.ts";
 import { describe, expect, it } from "vitest";
 
-import { takeCursorSynaraHarnessPolicyTextPart } from "./CursorAdapter.ts";
+import { takeCursorCortexHarnessPolicyTextPart } from "./CursorAdapter.ts";
 
-describe("Cursor Synara harness policy", () => {
+describe("Cursor Cortex harness policy", () => {
   it("delivers scoped MCP host context exactly once per fresh/load/fork session", () => {
     for (const lifecycle of ["fresh", "load", "fork"] as const) {
       const state: { harnessPolicyDelivered?: boolean } = {};
-      const first = takeCursorSynaraHarnessPolicyTextPart(state, true);
-      expect(first?.text, lifecycle).toContain(SYNARA_HARNESS_POLICY_MARKER);
-      expect(first?.text, lifecycle).toContain("Use the synara_* tools");
-      expect(takeCursorSynaraHarnessPolicyTextPart(state, true), lifecycle).toBeNull();
+      const first = takeCursorCortexHarnessPolicyTextPart(state, true);
+      expect(first?.text, lifecycle).toContain(CORTEX_HARNESS_POLICY_MARKER);
+      expect(first?.text, lifecycle).toContain("Use the cortex_* tools");
+      expect(takeCursorCortexHarnessPolicyTextPart(state, true), lifecycle).toBeNull();
     }
   });
 
   it("stays truthful without a scoped gateway connection", () => {
-    expect(takeCursorSynaraHarnessPolicyTextPart({}, false)?.text).toContain(
-      "Synara MCP control is unavailable",
+    expect(takeCursorCortexHarnessPolicyTextPart({}, false)?.text).toContain(
+      "Cortex MCP control is unavailable",
     );
   });
 });

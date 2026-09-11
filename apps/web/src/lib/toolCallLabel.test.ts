@@ -4,12 +4,12 @@ import {
   deriveInlineCommandCall,
   deriveReadableCommandDisplay,
   deriveReadableToolTitle,
-  deriveSynaraMcpToolTitle,
+  deriveCortexMcpToolTitle,
   extractWebFetchUrl,
-  isSynaraBrowserToolCall,
+  isCortexBrowserToolCall,
   normalizeCompactToolLabel,
   resolveCommandVisualKind,
-  sanitizeSynaraMcpToolPreview,
+  sanitizeCortexMcpToolPreview,
 } from "./toolCallLabel";
 
 describe("extractWebFetchUrl", () => {
@@ -71,217 +71,217 @@ describe("normalizeCompactToolLabel", () => {
   });
 });
 
-describe("deriveSynaraMcpToolTitle", () => {
-  it("uses stable action-first names for Synara browser tools", () => {
+describe("deriveCortexMcpToolTitle", () => {
+  it("uses stable action-first names for Cortex browser tools", () => {
     for (const status of ["running", "completed", "failed"] as const) {
       expect(
-        deriveSynaraMcpToolTitle({
-          toolName: "mcp__synara__browser_open",
+        deriveCortexMcpToolTitle({
+          toolName: "mcp__cortex__browser_open",
           status,
         }),
       ).toBe("Open browser tab");
     }
 
     expect(
-      deriveSynaraMcpToolTitle({
-        title: "Synara: Browser Snapshot",
+      deriveCortexMcpToolTitle({
+        title: "Cortex: Browser Snapshot",
         status: "completed",
       }),
     ).toBe("Snapshot browser page");
   });
 
-  it("has intentional running and completed copy for every Synara gateway action", () => {
+  it("has intentional running and completed copy for every Cortex gateway action", () => {
     const cases = [
-      ["synara_context", "Synara is checking its context", "Synara checked its context"],
+      ["cortex_context", "Cortex is checking its context", "Cortex checked its context"],
       [
-        "synara_capabilities",
-        "Synara is checking available agents",
-        "Synara checked available agents",
+        "cortex_capabilities",
+        "Cortex is checking available agents",
+        "Cortex checked available agents",
       ],
-      ["synara_list_projects", "Synara is listing projects", "Synara listed projects"],
-      ["synara_list_threads", "Synara is listing threads", "Synara listed threads"],
-      ["synara_read_thread", "Synara is reading a thread", "Synara read a thread"],
+      ["cortex_list_projects", "Cortex is listing projects", "Cortex listed projects"],
+      ["cortex_list_threads", "Cortex is listing threads", "Cortex listed threads"],
+      ["cortex_read_thread", "Cortex is reading a thread", "Cortex read a thread"],
       [
-        "synara_read_thread_activity",
-        "Synara is reading thread activity",
-        "Synara read thread activity",
+        "cortex_read_thread_activity",
+        "Cortex is reading thread activity",
+        "Cortex read thread activity",
       ],
-      ["synara_read_thread_events", "Synara is reading thread events", "Synara read thread events"],
+      ["cortex_read_thread_events", "Cortex is reading thread events", "Cortex read thread events"],
       [
-        "synara_read_thread_runtime_events",
-        "Synara is reading thread runtime events",
-        "Synara read thread runtime events",
+        "cortex_read_thread_runtime_events",
+        "Cortex is reading thread runtime events",
+        "Cortex read thread runtime events",
       ],
-      ["synara_diagnose_thread", "Synara is diagnosing a thread", "Synara diagnosed a thread"],
-      ["synara_create_thread", "Synara is creating a thread", "Synara created a thread"],
-      ["synara_create_threads", "Synara is creating threads", "Synara created threads"],
+      ["cortex_diagnose_thread", "Cortex is diagnosing a thread", "Cortex diagnosed a thread"],
+      ["cortex_create_thread", "Cortex is creating a thread", "Cortex created a thread"],
+      ["cortex_create_threads", "Cortex is creating threads", "Cortex created threads"],
       [
-        "synara_wait_for_threads",
-        "Synara is waiting for threads",
-        "Synara finished waiting for threads",
+        "cortex_wait_for_threads",
+        "Cortex is waiting for threads",
+        "Cortex finished waiting for threads",
       ],
-      ["synara_send_message", "Synara is sending a message", "Synara sent a message"],
-      ["synara_interrupt_thread", "Synara is interrupting a thread", "Synara interrupted a thread"],
-      ["synara_set_thread_title", "Synara is renaming a thread", "Synara renamed a thread"],
-      ["synara_set_thread_archived", "Synara is updating a thread", "Synara updated a thread"],
+      ["cortex_send_message", "Cortex is sending a message", "Cortex sent a message"],
+      ["cortex_interrupt_thread", "Cortex is interrupting a thread", "Cortex interrupted a thread"],
+      ["cortex_set_thread_title", "Cortex is renaming a thread", "Cortex renamed a thread"],
+      ["cortex_set_thread_archived", "Cortex is updating a thread", "Cortex updated a thread"],
       [
-        "synara_create_automation",
-        "Synara is creating an automation",
-        "Synara created an automation",
+        "cortex_create_automation",
+        "Cortex is creating an automation",
+        "Cortex created an automation",
       ],
-      ["synara_list_automations", "Synara is listing automations", "Synara listed automations"],
+      ["cortex_list_automations", "Cortex is listing automations", "Cortex listed automations"],
       [
-        "synara_cancel_automation",
-        "Synara is stopping an automation",
-        "Synara stopped an automation",
+        "cortex_cancel_automation",
+        "Cortex is stopping an automation",
+        "Cortex stopped an automation",
       ],
-      ["synara_overview", "Synara is gathering an overview", "Synara gathered an overview"],
+      ["cortex_overview", "Cortex is gathering an overview", "Cortex gathered an overview"],
       [
-        "synara_list_allowed_projects",
-        "Synara is listing allowed projects",
-        "Synara listed allowed projects",
+        "cortex_list_allowed_projects",
+        "Cortex is listing allowed projects",
+        "Cortex listed allowed projects",
       ],
-      ["synara_create_task", "Synara is creating a task", "Synara created a task"],
+      ["cortex_create_task", "Cortex is creating a task", "Cortex created a task"],
       [
-        "synara_wait_for_task",
-        "Synara is waiting for a task",
-        "Synara finished waiting for a task",
+        "cortex_wait_for_task",
+        "Cortex is waiting for a task",
+        "Cortex finished waiting for a task",
       ],
-      ["synara_read_task", "Synara is reading a task", "Synara read a task"],
+      ["cortex_read_task", "Cortex is reading a task", "Cortex read a task"],
     ] as const;
 
     for (const [toolName, running, completed] of cases) {
-      expect(deriveSynaraMcpToolTitle({ toolName, status: "running" })).toBe(running);
-      expect(deriveSynaraMcpToolTitle({ toolName, status: "completed" })).toBe(completed);
+      expect(deriveCortexMcpToolTitle({ toolName, status: "running" })).toBe(running);
+      expect(deriveCortexMcpToolTitle({ toolName, status: "completed" })).toBe(completed);
     }
 
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "synara_create_threads",
+      deriveCortexMcpToolTitle({
+        toolName: "cortex_create_threads",
         status: "failed",
       }),
-    ).toBe("Synara couldn't create threads");
+    ).toBe("Cortex couldn't create threads");
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "synara_create_thread",
+      deriveCortexMcpToolTitle({
+        toolName: "cortex_create_thread",
         status: "cancelled",
       }),
-    ).toBe("Synara stopped creating a thread");
+    ).toBe("Cortex stopped creating a thread");
   });
 
   it("turns provider-specific create-thread identifiers into activity sentences", () => {
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "Synara__synara_create_thread",
+      deriveCortexMcpToolTitle({
+        toolName: "Cortex__cortex_create_thread",
         status: "running",
       }),
-    ).toBe("Synara is creating a thread");
+    ).toBe("Cortex is creating a thread");
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "mcp__synara__synara_create_thread",
+      deriveCortexMcpToolTitle({
+        toolName: "mcp__cortex__cortex_create_thread",
         status: "completed",
       }),
-    ).toBe("Synara created a thread");
+    ).toBe("Cortex created a thread");
   });
 
-  it("recognizes bare and already-humanized Synara tool names", () => {
-    expect(deriveSynaraMcpToolTitle({ toolName: "synara_send_message", status: "running" })).toBe(
-      "Synara is sending a message",
+  it("recognizes bare and already-humanized Cortex tool names", () => {
+    expect(deriveCortexMcpToolTitle({ toolName: "cortex_send_message", status: "running" })).toBe(
+      "Cortex is sending a message",
     );
     expect(
-      deriveSynaraMcpToolTitle({ title: "Synara: Synara List Threads", status: "completed" }),
-    ).toBe("Synara listed threads");
+      deriveCortexMcpToolTitle({ title: "Cortex: Cortex List Threads", status: "completed" }),
+    ).toBe("Cortex listed threads");
   });
 
   it("ignores tools from other MCP servers", () => {
     expect(
-      deriveSynaraMcpToolTitle({
+      deriveCortexMcpToolTitle({
         toolName: "mcp__codex_apps__github_fetch_pr",
         status: "running",
       }),
     ).toBeNull();
   });
 
-  it("keeps future Synara actions branded without exposing raw identifiers", () => {
+  it("keeps future Cortex actions branded without exposing raw identifiers", () => {
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "mcp__synara__synara_delete_project",
+      deriveCortexMcpToolTitle({
+        toolName: "mcp__cortex__cortex_delete_project",
         status: "running",
       }),
-    ).toBe("Synara is handling delete project");
+    ).toBe("Cortex is handling delete project");
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "Synara__synara_delete_project",
+      deriveCortexMcpToolTitle({
+        toolName: "Cortex__cortex_delete_project",
         status: "completed",
       }),
-    ).toBe("Synara handled delete project");
+    ).toBe("Cortex handled delete project");
     expect(
-      deriveSynaraMcpToolTitle({
-        toolName: "synara_is_handling_delete_project",
+      deriveCortexMcpToolTitle({
+        toolName: "cortex_is_handling_delete_project",
         status: "completed",
       }),
-    ).toBe("Synara handled delete project");
+    ).toBe("Cortex handled delete project");
   });
 
   it("does not reinterpret free text beginning with fallback status copy", () => {
     expect(
-      deriveSynaraMcpToolTitle({
-        title: "Synara is handling delete project after recovery",
+      deriveCortexMcpToolTitle({
+        title: "Cortex is handling delete project after recovery",
         status: "completed",
       }),
     ).toBeNull();
     expect(
-      deriveSynaraMcpToolTitle({
-        title: "Synara handled delete project after recovery",
+      deriveCortexMcpToolTitle({
+        title: "Cortex handled delete project after recovery",
         status: "running",
       }),
     ).toBeNull();
     expect(
-      deriveSynaraMcpToolTitle({
-        title: "Synara couldn't handle delete project after recovery",
+      deriveCortexMcpToolTitle({
+        title: "Cortex couldn't handle delete project after recovery",
         status: "failed",
       }),
     ).toBeNull();
   });
 
-  it("leaves free-text activity summaries starting with Synara untouched", () => {
+  it("leaves free-text activity summaries starting with Cortex untouched", () => {
     expect(
-      deriveSynaraMcpToolTitle({
-        title: "Synara recovered a stale running state",
+      deriveCortexMcpToolTitle({
+        title: "Cortex recovered a stale running state",
         status: "completed",
       }),
     ).toBeNull();
     expect(
-      deriveSynaraMcpToolTitle({
-        fallbackLabel: "Synara restarted the provider session",
+      deriveCortexMcpToolTitle({
+        fallbackLabel: "Cortex restarted the provider session",
         status: "running",
       }),
     ).toBeNull();
   });
 
-  it("removes transport identifiers without hiding meaningful Synara details", () => {
+  it("removes transport identifiers without hiding meaningful Cortex details", () => {
     expect(
-      sanitizeSynaraMcpToolPreview({
-        preview: "Synara__synara_create_threads",
-        heading: "Synara created threads",
+      sanitizeCortexMcpToolPreview({
+        preview: "Cortex__cortex_create_threads",
+        heading: "Cortex created threads",
         status: "completed",
       }),
     ).toBeNull();
     expect(
-      sanitizeSynaraMcpToolPreview({
+      sanitizeCortexMcpToolPreview({
         preview: 'Unexpected key "reasoningEffort" for Claude Agent',
-        heading: "Synara couldn't create threads",
+        heading: "Cortex couldn't create threads",
         status: "failed",
       }),
     ).toBe('Unexpected key "reasoningEffort" for Claude Agent');
   });
 });
 
-describe("isSynaraBrowserToolCall", () => {
+describe("isCortexBrowserToolCall", () => {
   it("recognizes canonical presentation titles without a tool identifier", () => {
-    expect(isSynaraBrowserToolCall({ title: "Open browser tab" })).toBe(true);
-    expect(isSynaraBrowserToolCall({ fallbackLabel: "Snapshot browser page" })).toBe(true);
-    expect(isSynaraBrowserToolCall({ title: "Synara listed threads" })).toBe(false);
+    expect(isCortexBrowserToolCall({ title: "Open browser tab" })).toBe(true);
+    expect(isCortexBrowserToolCall({ fallbackLabel: "Snapshot browser page" })).toBe(true);
+    expect(isCortexBrowserToolCall({ title: "Cortex listed threads" })).toBe(false);
   });
 });
 
@@ -472,13 +472,13 @@ describe("deriveReadableCommandDisplay", () => {
   it("removes env and timeout wrappers from inline command summaries", () => {
     expect(
       deriveReadableCommandDisplay(
-        "env -u SYNARA_AUTH_TOKEN SYNARA_PORT_OFFSET=3158 timeout 180s bun run dev",
+        "env -u CORTEX_AUTH_TOKEN CORTEX_PORT_OFFSET=3158 timeout 180s bun run dev",
         true,
       ),
     ).toEqual({
       verb: "Running",
       target: "bun run dev",
-      fullCommand: "env -u SYNARA_AUTH_TOKEN SYNARA_PORT_OFFSET=3158 timeout 180s bun run dev",
+      fullCommand: "env -u CORTEX_AUTH_TOKEN CORTEX_PORT_OFFSET=3158 timeout 180s bun run dev",
     });
   });
 

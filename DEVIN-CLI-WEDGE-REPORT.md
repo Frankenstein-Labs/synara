@@ -6,7 +6,7 @@
 
 ## Failure shape 1 — sandbox_manager lock acquisition hang
 
-Timeline (all UTC, 2026-09-02, Synara thread `cdfc2c36-60db-4554-b199-6142a5241213`, turn `da774825`):
+Timeline (all UTC, 2026-09-02, Cortex thread `cdfc2c36-60db-4554-b199-6142a5241213`, turn `da774825`):
 
 - 04:01:30 — exec session `a7dd87` created (`python3 .local/share/mind/mind.py recall "agent weights"`); at 04:01:30.662 the previous session's stop begins: `toolbox_core::tools::context: Waiting for stop token c872bc02-... to stop`
 - 04:01:50 — next exec (`wc -w chunk1.md && wc -w chunk1_raw.txt`, session `8d75e9`): `acquiring additional_env lock` → acquired → `acquiring sandbox_manager lock` → **never acquired**
@@ -30,7 +30,7 @@ Evidence: `~/.local/share/devin/cli/logs/devin_20260902-100836_95905.log` (lines
 
 Both wedges occurred during rapid successive exec tool calls where the previous exec session was still alive or mid-teardown. A sweep of all 3,015 local CLI logs found the shape-1 signature in exactly one file (the incident). Bigger working sessions (more tool calls per turn, long-running commands) widen the collision window — the affected workload was a transcript-processing task with many rapid exec/read calls.
 
-## Host-side corroboration (Synara)
+## Host-side corroboration (Cortex)
 
 - The host's transport was healthy at both onsets: the child's last `tool.started` notification reached the host's event log within ~10ms of the CLI's create_session log lines (04:01:50.228 vs 04:01:50.227; 04:43:31.308 vs 04:43:31.297). Not a host backpressure issue.
 - The host now detects both shapes via the child's mirrored stderr (shape 1 directly; shape 2 via the missing `waiting for shell ready` within 30s) and auto-recovers by killing + resuming the session + sending "continue", which works: a controlled experiment (SIGKILL mid-turn → `session/load` → "continue") showed the CLI persists partial turn state and the resumed agent completes the remaining work correctly.
@@ -45,15 +45,15 @@ Rapid alternating exec calls with short-lived sessions (the incidents had ~5s ga
 
 ## Synthetic ACP validation (2026-09-02)
 
-Because the live SWE 1.7 ACP sessions exhausted their daily usage quota, a dependency-free mock ACP child was built to exercise Synara's real adapter/runtime recovery.
+Because the live SWE 1.7 ACP sessions exhausted their daily usage quota, a dependency-free mock ACP child was built to exercise Cortex's real adapter/runtime recovery.
 
-- Mock: `/tmp/synara-pr912/mock/acp-devin-wedge-mock.mjs`.
+- Mock: `/tmp/cortex-pr912/mock/acp-devin-wedge-mock.mjs`.
 - Mock acceptance harness: 41/41 checks, covering `stall-watch`, `spawn-stall`, healthy `none`, `unwedge` (progress clears spawn stall), and wire logging.
-- Integration script: `/tmp/synara-pr912/integration/run-adapter-recovery.mjs`.
+- Integration script: `/tmp/cortex-pr912/integration/run-adapter-recovery.mjs`.
 - Integration result (real timers, real `DevinAdapter`, real `makeDevinAcpRuntime`):
   - `stall-watch`: wedged turn cancelled → session restarted with `session/resume` → `"continue"` turn completed, warning emitted.
   - `spawn-stall`: same cancellation/resume/continue flow completed.
   - Exit code 0, `recovery success: true`, session `ready` after recovery.
 - One synthetic race was mitigated in the fixture: the mock emits `affogato::stall_watch` ~1 ms after progress events, and the adapter's notification loop clears stall state on turn progress. The real Devin stall warning is emitted only after 30 s of silence, so this ordering does not occur in production; the fixture delays stderr by 0.4 s to preserve the natural "progress first, warning later" ordering.
-- Full-stack browser test: 5 independent wedge/recovery cycles through the real Synara web UI using the `stall-watch` mock. Each cycle produced `devin.acp.wedge_recovery_started`, a resumed session, and a completed `continue` turn. The UI showed the persisted runtime-warning row "Devin stopped responding; restarting this session automatically and continuing the task." and a non-alarmingly continued conversation (assistant message `starting work`). Screenshot: `/tmp/synara-pr912/browser/screenshot.png`.
+- Full-stack browser test: 5 independent wedge/recovery cycles through the real Cortex web UI using the `stall-watch` mock. Each cycle produced `devin.acp.wedge_recovery_started`, a resumed session, and a completed `continue` turn. The UI showed the persisted runtime-warning row "Devin stopped responding; restarting this session automatically and continuing the task." and a non-alarmingly continued conversation (assistant message `starting work`). Screenshot: `/tmp/cortex-pr912/browser/screenshot.png`.
 - Live SWE 1.7 stress: three clean sequential iterations (180 exec sessions, no wedge signatures) and four useful parallel iterations before the daily quota (`-32011 resource_exhausted`) halted further reproduction. The original deadlock was not reproduced.

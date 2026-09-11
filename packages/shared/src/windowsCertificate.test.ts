@@ -8,9 +8,9 @@ import { matchesDistinguishedName, parseDistinguishedName } from "./windowsCerti
 
 describe("windowsCertificate", () => {
   it("parses quoted and escaped distinguished-name values", () => {
-    const parsed = parseDistinguishedName('CN=Synara, O="Acme, Inc.", OU=Tools\\2C Desktop');
+    const parsed = parseDistinguishedName('CN=Cortex, O="Acme, Inc.", OU=Tools\\2C Desktop');
 
-    expect(parsed.get("CN")).toBe("Synara");
+    expect(parsed.get("CN")).toBe("Cortex");
     expect(parsed.get("O")).toBe("Acme, Inc.");
     expect(parsed.get("OU")).toBe("Tools, Desktop");
   });
@@ -18,15 +18,15 @@ describe("windowsCertificate", () => {
   it("matches expected fields independent of order and extra certificate fields", () => {
     expect(
       matchesDistinguishedName(
-        "CN=Synara, O=Acme Tools",
-        "C=US, O=Acme Tools, CN=Synara, SERIALNUMBER=1234",
+        "CN=Cortex, O=Acme Tools",
+        "C=US, O=Acme Tools, CN=Cortex, SERIALNUMBER=1234",
       ),
     ).toBe(true);
   });
 
   it("rejects incomplete pins and mismatched signer fields", () => {
-    expect(matchesDistinguishedName("CN=Synara", "CN=Synara, O=Acme Tools")).toBe(false);
-    expect(matchesDistinguishedName("CN=Synara, O=Acme Tools", "CN=Synara, O=Other Tools")).toBe(
+    expect(matchesDistinguishedName("CN=Cortex", "CN=Cortex, O=Acme Tools")).toBe(false);
+    expect(matchesDistinguishedName("CN=Cortex, O=Acme Tools", "CN=Cortex, O=Other Tools")).toBe(
       false,
     );
   });

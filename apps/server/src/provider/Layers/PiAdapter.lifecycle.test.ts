@@ -10,7 +10,7 @@ import type {
   InlineExtension,
 } from "@earendil-works/pi-coding-agent";
 import { Effect, Layer, Stream } from "effect";
-import { ThreadId, type ProviderRuntimeEvent, type TurnId } from "@synara/contracts";
+import { ThreadId, type ProviderRuntimeEvent, type TurnId } from "@cortex/contracts";
 import { afterEach, expect, it, vi } from "vitest";
 import {
   AgentGatewayCredentials,
@@ -140,7 +140,7 @@ async function withAdapter(
   credentials?: AgentGatewayCredentialsShape,
 ) {
   vi.stubEnv("PI_OFFLINE", "1");
-  const cwd = mkdtempSync(path.join(tmpdir(), "synara-pi-lifecycle-"));
+  const cwd = mkdtempSync(path.join(tmpdir(), "cortex-pi-lifecycle-"));
   dirs.push(cwd);
   writeFileSync(
     path.join(cwd, "auth.json"),
@@ -160,7 +160,7 @@ async function withAdapter(
       result: {
         tools: [
           {
-            name: "synara_list_threads",
+            name: "cortex_list_threads",
             description: "List threads",
             inputSchema: { type: "object", properties: {} },
           },

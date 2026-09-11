@@ -9,11 +9,11 @@ import * as Path from "node:path";
 import {
   matchesDistinguishedName,
   parseDistinguishedName,
-} from "@synara/shared/windowsCertificate";
-import { execProcessFile, spawnProcessSync } from "@synara/shared/processRuntime";
-import { resolveWindowsPowerShellExecutable } from "@synara/shared/platformEnvironment";
+} from "@cortex/shared/windowsCertificate";
+import { execProcessFile, spawnProcessSync } from "@cortex/shared/processRuntime";
+import { resolveWindowsPowerShellExecutable } from "@cortex/shared/platformEnvironment";
 
-export { parseDistinguishedName } from "@synara/shared/windowsCertificate";
+export { parseDistinguishedName } from "@cortex/shared/windowsCertificate";
 
 type Logger = {
   info?(message: string): void;
@@ -27,7 +27,7 @@ type UpdaterModule = {
 
 type UpdaterPrototype = {
   spawnSyncLog?: (cmd: string, args?: string[], env?: Record<string, string>) => string;
-  __synaraSpawnSyncLogPatched?: boolean;
+  __cortexSpawnSyncLogPatched?: boolean;
 };
 
 type UpdaterWithSignatureVerifier = {
@@ -269,7 +269,7 @@ export function hardenElectronUpdater(
     typeof updaterModule.BaseUpdater === "function"
       ? ((updaterModule.BaseUpdater as { prototype?: UpdaterPrototype }).prototype ?? null)
       : null;
-  if (prototype && !prototype.__synaraSpawnSyncLogPatched) {
+  if (prototype && !prototype.__cortexSpawnSyncLogPatched) {
     prototype.spawnSyncLog = function spawnSyncLog(
       this: { _logger?: Logger },
       cmd: string,
@@ -294,7 +294,7 @@ export function hardenElectronUpdater(
       }
       return (stdout ?? "").trim();
     };
-    prototype.__synaraSpawnSyncLogPatched = true;
+    prototype.__cortexSpawnSyncLogPatched = true;
   }
 
   const nsisUpdater = updater as UpdaterWithSignatureVerifier | null;

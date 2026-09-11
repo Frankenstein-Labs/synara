@@ -1,5 +1,5 @@
-import type { PinnedMessage } from "@synara/contracts";
-import { MessageId, THREAD_NOTES_MAX_CHARS } from "@synara/contracts";
+import type { PinnedMessage } from "@cortex/contracts";
+import { MessageId, THREAD_NOTES_MAX_CHARS } from "@cortex/contracts";
 import { describe, expect, it } from "vitest";
 
 import {

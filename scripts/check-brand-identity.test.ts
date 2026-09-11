@@ -13,23 +13,23 @@ const firstSpacedDisplayName = `${characters(84, 51)} Code`;
 const secondName = characters(100, 112, 99, 111, 100, 101);
 const companyDisplayName = `${characters(84, 51)} ${characters(84, 111, 111, 108, 115)}`;
 const legalNotice = `Copyright (c) 2026 ${companyDisplayName} Inc.`;
-const originsAttribution = `Synara began as a clone of [${firstDisplayName}](https://github.com/pingdotgg/${firstName}), but it has since become a substantially different product with its own branding, packaging, release system, provider orchestration, desktop app behavior, and product direction.`;
-const releaseAttribution = `**A review of the Synara codebase found an analytics configuration that came from the original ${firstSpacedDisplayName} codebase when Synara was created as a clone in March. We did not add it, and we have no access to the PostHog project receiving the events.**`;
-const inAppReleaseAttribution = `"A review of the Synara codebase found an analytics configuration that came from the original ${firstSpacedDisplayName} codebase when Synara was created as a clone in March.",`;
+const originsAttribution = `Cortex began as a clone of [${firstDisplayName}](https://github.com/pingdotgg/${firstName}), but it has since become a substantially different product with its own branding, packaging, release system, provider orchestration, desktop app behavior, and product direction.`;
+const releaseAttribution = `**A review of the Cortex codebase found an analytics configuration that came from the original ${firstSpacedDisplayName} codebase when Cortex was created as a clone in March. We did not add it, and we have no access to the PostHog project receiving the events.**`;
+const inAppReleaseAttribution = `"A review of the Cortex codebase found an analytics configuration that came from the original ${firstSpacedDisplayName} codebase when Cortex was created as a clone in March.",`;
 
 describe("brand identity guard", () => {
   it("detects retired names in paths and text", () => {
     const violations = findBrandIdentityViolations([
-      { path: `docs/${firstName}.md`, contents: "Synara" },
+      { path: `docs/${firstName}.md`, contents: "Cortex" },
       { path: "source.ts", contents: `const value = "${secondName}:state";` },
     ]);
     expect(violations).toHaveLength(2);
   });
 
-  it("does not match ordinary numeric type names or canonical Synara text", () => {
+  it("does not match ordinary numeric type names or canonical Cortex text", () => {
     expect(
       findBrandIdentityViolations([
-        { path: "source.ts", contents: "const value = new Uint32Array(); // Synara" },
+        { path: "source.ts", contents: "const value = new Uint32Array(); // Cortex" },
       ]),
     ).toEqual([]);
   });
@@ -86,8 +86,8 @@ describe("brand identity guard", () => {
   });
 
   it("requires user-facing raster assets to match a visually approved digest", () => {
-    const approvedContents = new TextEncoder().encode("approved Synara screenshot");
-    const approvedDigest = "a553296ca5a2d3ad7b64a6bc1b36c2834da750eae6611642177482b99ba85bd8";
+    const approvedContents = new TextEncoder().encode("approved Cortex screenshot");
+    const approvedDigest = "6f78141aa9395e260b33ce1ff251c0715766742c0d9925e3b639c5fa399b5fe3";
     const approvedDigests = new Map([["screenshot.jpeg", approvedDigest]]);
 
     expect(

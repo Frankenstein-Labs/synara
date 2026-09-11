@@ -7,7 +7,7 @@ import {
   isWorkspaceRelativePathSafe,
   joinWorkspaceRelativePath,
   workspaceRelativePathOf,
-} from "@synara/shared/path";
+} from "@cortex/shared/path";
 
 export interface EditedFilePathTargets {
   absolutePath: string | null;

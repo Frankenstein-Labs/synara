@@ -1,6 +1,6 @@
 import { assert, describe, it } from "@effect/vitest";
 
-import { BROWSER_TOOL_CATALOGUE } from "@synara/shared/browserAutomationCatalogue";
+import { BROWSER_TOOL_CATALOGUE } from "@cortex/shared/browserAutomationCatalogue";
 
 import { FALLBACK_OBJECT_DESCRIPTION, sanitizeToolInputSchema } from "./sanitizeToolInputSchema.ts";
 import { countSchemaKeyOccurrences, isJsonRecord } from "./schemaTestUtils.ts";

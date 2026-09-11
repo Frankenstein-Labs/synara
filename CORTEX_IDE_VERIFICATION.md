@@ -1,14 +1,14 @@
 # CORTEX IDE — Rapport de vérification initiale
 
-**Date :** 9 septembre 2026  
-**Commit de base :** `4bb3dccfa2cfdafb432bc4cdbc474921a379f6be`  
-**Branche de travail :** `chore/import-synara-baseline`  
-**Node vérifié :** `v22.16.0`  
+**Date :** 9 septembre 2026
+**Commit de base :** `4bb3dccfa2cfdafb432bc4cdbc474921a379f6be`
+**Branche de travail :** `chore/import-cortex-baseline`
+**Node vérifié :** `v22.16.0`
 **Bun vérifié :** `1.4.2`
 
 ## Résumé exécutif
 
-L’import complet de Synara est présent dans le dépôt CORTEX IDE et les dépendances peuvent être installées après ajout du compilateur natif `g++`. Le typecheck complet passe sous Node `22.16.0`. Le build web passe dans le build global, mais le build global échoue ensuite sur le package serveur parce que les scripts déclarés utilisent `node` directement pour exécuter des fichiers TypeScript `.ts`.
+L’import complet de Cortex est présent dans le dépôt CORTEX IDE et les dépendances peuvent être installées après ajout du compilateur natif `g++`. Le typecheck complet passe sous Node `22.16.0`. Le build web passe dans le build global, mais le build global échoue ensuite sur le package serveur parce que les scripts déclarés utilisent `node` directement pour exécuter des fichiers TypeScript `.ts`.
 
 La suite de tests progresse nettement avec Node `22.16.0`. Les packages scripts, contracts, shared et desktop passent leurs tests. La suite web compte 342 fichiers de test réussis et 3 ignorés, avec un seul test en échec par timeout. La suite complète n’est donc pas verte. Le desktop n’est pas déclaré fonctionnel de bout en bout tant que le build serveur et le smoke test n’ont pas été corrigés ou exécutés avec une toolchain compatible.
 
@@ -37,7 +37,7 @@ nvm install 22.16.0
 nvm use 22.16.0
 bun run typecheck
 bun run test
-bun run --filter @synara/cli build
+bun run --filter @cortex/cli build
 bun run build:desktop
 bun run brand:check
 bun run windows-runtime:check
@@ -121,7 +121,7 @@ La cinquième étape est de conserver une baseline CI pour le typecheck, les tes
 
 ## Références
 
-[1]: https://github.com/Emanuele-web04/synara "Dépôt source Synara"
+[1]: https://github.com/Emanuele-web04/cortex "Dépôt source Cortex"
 [2]: https://github.com/Frankenstein-Labs/cortex-ide "Dépôt de travail CORTEX IDE"
 [3]: https://bun.sh/docs/install "Documentation d’installation de Bun"
 [4]: https://nodejs.org/en/download "Téléchargements Node.js"

@@ -50,7 +50,7 @@ import {
   BrowserWebMcpToolsInput,
   BrowserWebMcpToolsOutput,
   type BrowserToolName,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { Schema } from "effect";
 
 import { BROWSER_TOOL_TITLES } from "./browserAutomationPresentation";
@@ -112,7 +112,7 @@ export const DESTRUCTIVE_LOCAL = {
 } as const;
 
 const BROWSER_COMMON_AGENT_GUIDANCE =
-  "Controls this thread's Synara browser (shared DOM/cookies/session), never chat or desktop; it can run behind the active chat without approval. Stop and answer once the outcome is observed.";
+  "Controls this thread's Cortex browser (shared DOM/cookies/session), never chat or desktop; it can run behind the active chat without approval. Stop and answer once the outcome is observed.";
 const BROWSER_TAB_SCOPED_AGENT_GUIDANCE =
   " Omit tabId for the assigned tab; otherwise use only a tabId from browser_tabs/open in this thread.";
 const BROWSER_SNAPSHOT_TARGET_GUIDANCE =

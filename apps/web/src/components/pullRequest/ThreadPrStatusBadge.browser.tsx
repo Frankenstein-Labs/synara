@@ -22,7 +22,7 @@ describe("ThreadPrStatusBadge", () => {
         pr={{
           number: 841,
           title: "Fix created-at thread ordering",
-          url: "https://github.com/acme/synara/pull/841",
+          url: "https://github.com/acme/cortex/pull/841",
           state: "open",
           isDraft: false,
           mergeability: "mergeable",
@@ -48,6 +48,6 @@ describe("ThreadPrStatusBadge", () => {
     await button.click();
 
     expect(onOpen).toHaveBeenCalledOnce();
-    expect(onOpen.mock.calls[0]?.[1]).toBe("https://github.com/acme/synara/pull/841");
+    expect(onOpen.mock.calls[0]?.[1]).toBe("https://github.com/acme/cortex/pull/841");
   });
 });

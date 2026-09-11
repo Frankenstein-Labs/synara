@@ -1,29 +1,29 @@
 # Providers
 
-Synara does not host models or sell a separate model subscription. It operates supported
+Cortex does not host models or sell a separate model subscription. It operates supported
 coding-agent runtimes installed and authenticated on your machine, then presents them through one
 consistent workspace.
 
 ## Supported providers
 
-| Provider                                                                | What Synara connects to                                      |
+| Provider                                                                | What Cortex connects to                                      |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [Claude Code](https://www.trysynara.com/docs/providers/claude-code)     | Your installed Claude Code runtime and authenticated account |
-| [Codex](https://www.trysynara.com/docs/providers/codex)                 | Your installed and authenticated Codex CLI                   |
-| [OpenCode](https://www.trysynara.com/docs/providers/opencode)           | Your local OpenCode runtime and configured model providers   |
-| [Cursor](https://www.trysynara.com/docs/providers/cursor)               | Your local Cursor agent runtime and account                  |
+| [Claude Code](https://www.trycortex.com/docs/providers/claude-code)     | Your installed Claude Code runtime and authenticated account |
+| [Codex](https://www.trycortex.com/docs/providers/codex)                 | Your installed and authenticated Codex CLI                   |
+| [OpenCode](https://www.trycortex.com/docs/providers/opencode)           | Your local OpenCode runtime and configured model providers   |
+| [Cursor](https://www.trycortex.com/docs/providers/cursor)               | Your local Cursor agent runtime and account                  |
 | [Devin](https://docs.devin.ai)                                          | Your installed and authenticated Devin CLI                   |
-| [Antigravity](https://www.trysynara.com/docs/providers/antigravity)     | Your installed and authenticated Antigravity CLI             |
-| [Grok Build](https://www.trysynara.com/docs/providers/grok)             | Your configured Grok Build runtime and access                |
-| [Pi](https://www.trysynara.com/docs/providers/pi)                       | Pi and the model providers configured through it             |
-| [Factory Droid](https://www.trysynara.com/docs/providers/factory-droid) | Your installed and authenticated Droid runtime               |
+| [Antigravity](https://www.trycortex.com/docs/providers/antigravity)     | Your installed and authenticated Antigravity CLI             |
+| [Grok Build](https://www.trycortex.com/docs/providers/grok)             | Your configured Grok Build runtime and access                |
+| [Pi](https://www.trycortex.com/docs/providers/pi)                       | Pi and the model providers configured through it             |
+| [Factory Droid](https://www.trycortex.com/docs/providers/factory-droid) | Your installed and authenticated Droid runtime               |
 
 Provider availability can differ between the current stable release and development builds. Use the
-provider settings in your installed Synara version as the authoritative list for that build.
+provider settings in your installed Cortex version as the authoritative list for that build.
 
-## What Synara manages
+## What Cortex manages
 
-Synara provides the shared operating surface around each provider:
+Cortex provides the shared operating surface around each provider:
 
 - Project and task ownership
 - Provider and model selection
@@ -49,17 +49,17 @@ The provider still controls:
 - Provider-specific session features
 
 A provider working in its own terminal is an important prerequisite, but not a guarantee that every
-provider feature is supported through Synara.
+provider feature is supported through Cortex.
 
 ## Connect a provider
 
 1. **Install the official runtime.** Use the provider's official installation instructions.
-2. **Authenticate outside Synara.** Complete the provider's normal sign-in or credential setup.
+2. **Authenticate outside Cortex.** Complete the provider's normal sign-in or credential setup.
    Verify the runtime from a fresh terminal.
-3. **Open Synara provider settings.** Confirm that the provider is detected and enabled. When
+3. **Open Cortex provider settings.** Confirm that the provider is detected and enabled. When
    necessary, configure a custom path to the provider executable.
 4. **Check model discovery.** Open the model picker and confirm that the expected models and options
-   appear. Synara discovers many provider capabilities at runtime; the result can depend on the
+   appear. Cortex discovers many provider capabilities at runtime; the result can depend on the
    installed CLI version, account, subscription, and provider configuration.
 5. **Start a small test task.** Use a harmless objective in a test repository before relying on a
    newly configured provider for important work.
@@ -74,7 +74,7 @@ Providers expose different selection models:
 - Reasoning, effort, mode, or variant options
 - Account-dependent availability
 
-Synara normalizes these choices into the composer where possible without pretending that every
+Cortex normalizes these choices into the composer where possible without pretending that every
 provider has identical capabilities.
 
 Favorite models can be surfaced above larger catalogs, and supported provider executables can be
@@ -99,8 +99,8 @@ Capabilities vary. Do not assume a control available for one provider exists for
 
 ## Switching providers
 
-A [provider handoff](https://www.trysynara.com/docs/workflows/handoffs) allows another provider to
-continue the task and work in the same environment with the context Synara passes to it.
+A [provider handoff](https://www.trycortex.com/docs/workflows/handoffs) allows another provider to
+continue the task and work in the same environment with the context Cortex passes to it.
 
 Use handoffs deliberately. Review the working tree before and after changing providers so ownership
 remains clear.
@@ -114,12 +114,12 @@ Check these in order:
 3. Is the expected executable on `PATH`?
 4. Is a custom binary path configured incorrectly?
 5. Does the installed runtime version support the required integration?
-6. Does restarting Synara refresh the provider status?
+6. Does restarting Cortex refresh the provider status?
 7. Does the provider itself report a service or account error?
 
-Continue with the [troubleshooting hub](https://www.trysynara.com/docs/troubleshooting) when the
-runtime works independently but remains unavailable in Synara.
+Continue with the [troubleshooting hub](https://www.trycortex.com/docs/troubleshooting) when the
+runtime works independently but remains unavailable in Cortex.
 
-Use the dedicated [provider guides](https://www.trysynara.com/docs/providers) for exact
+Use the dedicated [provider guides](https://www.trycortex.com/docs/providers) for exact
 installation, authentication, verification, capabilities, update paths, and provider-specific
 failure checks.

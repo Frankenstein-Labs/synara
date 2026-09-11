@@ -15,7 +15,7 @@ import {
   type ModelSlug,
   type PiThinkingLevel,
   type ProviderModelOptions,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import * as Schema from "effect/Schema";
 
 import {
@@ -24,7 +24,7 @@ import {
   normalizeModelSlug,
   resolveModelSlugForProvider,
   resolveSelectableModel,
-} from "@synara/shared/model";
+} from "@cortex/shared/model";
 import { resolveAppModelSelection } from "./appSettings";
 import type { ComposerThreadDraftState } from "./composerDraftDomain";
 import { classifyProviderReasoningEffortSupport } from "./lib/codexReasoningEffort";

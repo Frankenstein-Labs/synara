@@ -4,7 +4,7 @@
 
 import "../../index.css";
 
-import { ThreadId } from "@synara/contracts";
+import { ThreadId } from "@cortex/contracts";
 import { expect, it, vi } from "vitest";
 import { render } from "vitest-browser-react";
 

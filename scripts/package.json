@@ -1,5 +1,5 @@
 {
-  "name": "@synara/scripts",
+  "name": "@cortex/scripts",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,9 +10,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@cortex/contracts": "workspace:*",
+    "@cortex/shared": "workspace:*",
     "@effect/platform-node": "catalog:",
-    "@synara/contracts": "workspace:*",
-    "@synara/shared": "workspace:*",
     "effect": "catalog:"
   },
   "devDependencies": {

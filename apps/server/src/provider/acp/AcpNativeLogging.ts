@@ -1,4 +1,4 @@
-import type { ProviderKind, ThreadId } from "@synara/contracts";
+import type { ProviderKind, ThreadId } from "@cortex/contracts";
 import { Cause, Effect } from "effect";
 
 import { isProviderCredentialKey } from "../../providerChildEnvironment.ts";

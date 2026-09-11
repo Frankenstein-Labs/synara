@@ -39,30 +39,30 @@ import {
   OrchestrationThreadActivity,
   ProviderInteractionMode,
   RuntimeMode,
-} from "@synara/contracts";
-import { automationRequiresTargetThread } from "@synara/shared/automationMode";
-import { respondingInteractionReclaimAt } from "@synara/shared/pendingInteractions";
-import { providerSupportsNativeTurnSteering } from "@synara/shared/providerMetadata";
-import { getDefaultModel, getModelCapabilities, normalizeModelSlug } from "@synara/shared/model";
+} from "@cortex/contracts";
+import { automationRequiresTargetThread } from "@cortex/shared/automationMode";
+import { respondingInteractionReclaimAt } from "@cortex/shared/pendingInteractions";
+import { providerSupportsNativeTurnSteering } from "@cortex/shared/providerMetadata";
+import { getDefaultModel, getModelCapabilities, normalizeModelSlug } from "@cortex/shared/model";
 import {
   resolveLatestTailUserMessageEditTarget,
   resolveTailUserMessageEditTarget,
-} from "@synara/shared/conversationEdit";
-import { threadExportBlockedReason } from "@synara/shared/threadExport";
-import { pendingRequestInstanceKey } from "@synara/shared/threadSummary";
+} from "@cortex/shared/conversationEdit";
+import { threadExportBlockedReason } from "@cortex/shared/threadExport";
+import { pendingRequestInstanceKey } from "@cortex/shared/threadSummary";
 import {
   buildPromptThreadTitleFallback,
   GENERIC_CHAT_THREAD_TITLE,
-} from "@synara/shared/chatThreads";
+} from "@cortex/shared/chatThreads";
 import {
   resolveThreadWorkspaceState,
   resolveThreadBranchSourceCwd,
   resolveThreadWorkspaceCwd as resolveSharedThreadWorkspaceCwd,
-} from "@synara/shared/threadEnvironment";
+} from "@cortex/shared/threadEnvironment";
 import {
   deriveAssociatedWorktreeMetadata,
   workspaceRootsEqual,
-} from "@synara/shared/threadWorkspace";
+} from "@cortex/shared/threadWorkspace";
 import {
   lazy,
   Suspense,
@@ -82,7 +82,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Debouncer, useDebouncedValue } from "@tanstack/react-pacer";
 import { useNavigate } from "@tanstack/react-router";
 import { type LegendListRef } from "@legendapp/list/react";
-import { buildTemporaryWorktreeBranchName } from "@synara/shared/git";
+import { buildTemporaryWorktreeBranchName } from "@cortex/shared/git";
 import {
   GIT_WORKING_TREE_DIFF_LIVE_REFETCH_INTERVAL_MS,
   gitCreateDetachedWorktreeMutationOptions,
@@ -323,7 +323,7 @@ import {
   normalizeRuntimeModeForProvider,
   providerModelSupportsAutoRuntimeMode,
 } from "../lib/runtimeMode";
-import { SynaraLogo } from "./SynaraLogo";
+import { CortexLogo } from "./CortexLogo";
 import { ThreadWorktreeHandoffDialog } from "./ThreadWorktreeHandoffDialog";
 import {
   formatShortcutLabel,
@@ -1207,7 +1207,7 @@ function composerPromptStillMatchesRestoredQueuedDraft(
 
 // Builds an ephemeral transcript bubble for the conversational automation-setup
 // exchange. These never reach a provider and are not persisted; they render the
-// back-and-forth (user request, Synara's clarifying questions) inline like Codex.
+// back-and-forth (user request, Cortex's clarifying questions) inline like Codex.
 function makeAutomationSetupBubble(role: "user" | "assistant", text: string): ChatMessage {
   return {
     id: newMessageId(),
@@ -5084,7 +5084,7 @@ export default function ChatView({
             toastManager.add({
               type: "error",
               title: "Could not update access mode",
-              description: "Synara is not connected to the server.",
+              description: "Cortex is not connected to the server.",
             });
             return false;
           }
@@ -5725,7 +5725,7 @@ export default function ChatView({
         toastManager.add({
           type: "warning",
           title: "Select a unique phrase to mark it.",
-          description: "Try including a few more words so Synara can find the exact place.",
+          description: "Try including a few more words so Cortex can find the exact place.",
         });
         return;
       }
@@ -7355,7 +7355,7 @@ export default function ChatView({
                 type: "warning",
                 title: "Thread note not added",
                 description:
-                  "The automation was created, but Synara could not add the activity note.",
+                  "The automation was created, but Cortex could not add the activity note.",
               });
             }
           })();
@@ -7375,7 +7375,7 @@ export default function ChatView({
             type: "error",
             title: "Could not create automation",
             description:
-              error instanceof Error ? error.message : "Synara could not save the automation.",
+              error instanceof Error ? error.message : "Cortex could not save the automation.",
           });
           return false;
         })
@@ -7449,7 +7449,7 @@ export default function ChatView({
           toastManager.add({
             type: "error",
             title: "Could not create chat",
-            description: "Synara could not promote this draft before saving the automation.",
+            description: "Cortex could not promote this draft before saving the automation.",
           });
           return null;
         }
@@ -7476,7 +7476,7 @@ export default function ChatView({
           description:
             error instanceof Error
               ? error.message
-              : "Synara could not promote this draft before saving the automation.",
+              : "Cortex could not promote this draft before saving the automation.",
         });
         return null;
       }
@@ -12611,7 +12611,7 @@ export default function ChatView({
                       CHAT_COLUMN_FRAME_CLASS_NAME,
                     )}
                   >
-                    <SynaraLogo aria-label="Synara logo" className="size-10" />
+                    <CortexLogo aria-label="Cortex logo" className="size-10" />
                     <h2
                       data-testid="empty-landing-heading"
                       className="text-[26px] font-normal leading-[1.15] tracking-[-0.015em] text-foreground/95 sm:text-[30px]"

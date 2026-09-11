@@ -5,15 +5,15 @@ import { delimiter as pathDelimiter, join as pathJoin } from "node:path";
 
 import * as NodeRuntime from "@effect/platform-node/NodeRuntime";
 import * as NodeServices from "@effect/platform-node/NodeServices";
-import { NetService } from "@synara/shared/Net";
+import { NetService } from "@cortex/shared/Net";
 import {
   getBooleanFlagValue,
   optionalBooleanEnvironmentConfig,
   optionalBooleanFlag,
   type BooleanFlagInput,
-} from "@synara/shared/cli";
-import { resolveSynaraDesktopFlavor, synaraDesktopIdentity } from "@synara/shared/desktopIdentity";
-import { applyShellEnvironmentHydrationMarker } from "@synara/shared/shell";
+} from "@cortex/shared/cli";
+import { resolveCortexDesktopFlavor, cortexDesktopIdentity } from "@cortex/shared/desktopIdentity";
+import { applyShellEnvironmentHydrationMarker } from "@cortex/shared/shell";
 import { Config, Data, Effect, Hash, Layer, Logger, Option, Path, Schema } from "effect";
 import * as ConfigProvider from "effect/ConfigProvider";
 import { Argument, Command, Flag } from "effect/unstable/cli";
@@ -24,22 +24,22 @@ const BASE_WEB_PORT = 5733;
 const MAX_HASH_OFFSET = 3000;
 const MAX_PORT = 65535;
 
-export const DEFAULT_SYNARA_HOME = Effect.map(Effect.service(Path.Path), (path) =>
-  path.join(homedir(), ".synara"),
+export const DEFAULT_CORTEX_HOME = Effect.map(Effect.service(Path.Path), (path) =>
+  path.join(homedir(), ".cortex"),
 );
 const MODE_ARGS = {
   dev: [
     "run",
     "dev",
     "--ui=tui",
-    "--filter=@synara/contracts",
-    "--filter=@synara/web",
-    "--filter=@synara/cli",
+    "--filter=@cortex/contracts",
+    "--filter=@cortex/web",
+    "--filter=@cortex/cli",
     "--parallel",
   ],
-  "dev:server": ["run", "dev", "--filter=@synara/cli"],
-  "dev:web": ["run", "dev", "--filter=@synara/web"],
-  "dev:desktop": ["run", "dev", "--filter=@synara/desktop", "--filter=@synara/web", "--parallel"],
+  "dev:server": ["run", "dev", "--filter=@cortex/cli"],
+  "dev:web": ["run", "dev", "--filter=@cortex/web"],
+  "dev:desktop": ["run", "dev", "--filter=@cortex/desktop", "--filter=@cortex/web", "--parallel"],
 } as const satisfies Record<string, ReadonlyArray<string>>;
 
 type DevMode = keyof typeof MODE_ARGS;
@@ -74,16 +74,16 @@ const optionalUrlConfig = (name: string): Config.Config<URL | undefined> =>
   );
 
 const OffsetConfig = Config.all({
-  portOffset: optionalIntegerConfig("SYNARA_PORT_OFFSET"),
-  devInstance: optionalStringConfig("SYNARA_DEV_INSTANCE"),
+  portOffset: optionalIntegerConfig("CORTEX_PORT_OFFSET"),
+  devInstance: optionalStringConfig("CORTEX_DEV_INSTANCE"),
 });
-const HomeConfig = optionalStringConfig("SYNARA_HOME");
+const HomeConfig = optionalStringConfig("CORTEX_HOME");
 const BooleanEnvConfig = Config.all({
-  noBrowser: optionalBooleanEnvironmentConfig("SYNARA_NO_BROWSER"),
+  noBrowser: optionalBooleanEnvironmentConfig("CORTEX_NO_BROWSER"),
   autoBootstrapProjectFromCwd: optionalBooleanEnvironmentConfig(
-    "SYNARA_AUTO_BOOTSTRAP_PROJECT_FROM_CWD",
+    "CORTEX_AUTO_BOOTSTRAP_PROJECT_FROM_CWD",
   ),
-  logWebSocketEvents: optionalBooleanEnvironmentConfig("SYNARA_LOG_WS_EVENTS"),
+  logWebSocketEvents: optionalBooleanEnvironmentConfig("CORTEX_LOG_WS_EVENTS"),
 });
 
 export const readDevRunnerBooleanEnvironment = (environment: NodeJS.ProcessEnv) => {
@@ -109,11 +109,11 @@ export function resolveOffset(config: {
 }): { readonly offset: number; readonly source: string } {
   if (config.portOffset !== undefined) {
     if (config.portOffset < 0) {
-      throw new Error(`Invalid SYNARA_PORT_OFFSET: ${config.portOffset}`);
+      throw new Error(`Invalid CORTEX_PORT_OFFSET: ${config.portOffset}`);
     }
     return {
       offset: config.portOffset,
-      source: `SYNARA_PORT_OFFSET=${config.portOffset}`,
+      source: `CORTEX_PORT_OFFSET=${config.portOffset}`,
     };
   }
 
@@ -123,11 +123,11 @@ export function resolveOffset(config: {
   }
 
   if (/^\d+$/.test(seed)) {
-    return { offset: Number(seed), source: `numeric SYNARA_DEV_INSTANCE=${seed}` };
+    return { offset: Number(seed), source: `numeric CORTEX_DEV_INSTANCE=${seed}` };
   }
 
   const offset = ((Hash.string(seed) >>> 0) % MAX_HASH_OFFSET) + 1;
-  return { offset, source: `hashed SYNARA_DEV_INSTANCE=${seed}` };
+  return { offset, source: `hashed CORTEX_DEV_INSTANCE=${seed}` };
 }
 
 function resolveBaseDir(
@@ -144,13 +144,13 @@ function resolveBaseDir(
     }
 
     if (mode === "dev:desktop") {
-      const flavor = resolveSynaraDesktopFlavor({
+      const flavor = resolveCortexDesktopFlavor({
         isDevelopment: true,
         requestedFlavor: requestedDesktopFlavor,
       });
-      return path.join(homedir(), synaraDesktopIdentity(flavor).defaultHomeDirectoryName);
+      return path.join(homedir(), cortexDesktopIdentity(flavor).defaultHomeDirectoryName);
     }
-    return yield* DEFAULT_SYNARA_HOME;
+    return yield* DEFAULT_CORTEX_HOME;
   });
 }
 
@@ -159,7 +159,7 @@ interface CreateDevRunnerEnvInput {
   readonly baseEnv: NodeJS.ProcessEnv;
   readonly serverOffset: number;
   readonly webOffset: number;
-  readonly synaraHome: string | undefined;
+  readonly cortexHome: string | undefined;
   readonly authToken: string | undefined;
   readonly noBrowser: boolean | undefined;
   readonly autoBootstrapProjectFromCwd: boolean | undefined;
@@ -174,7 +174,7 @@ export function createDevRunnerEnv({
   baseEnv,
   serverOffset,
   webOffset,
-  synaraHome,
+  cortexHome,
   authToken,
   noBrowser,
   autoBootstrapProjectFromCwd,
@@ -186,7 +186,7 @@ export function createDevRunnerEnv({
   return Effect.gen(function* () {
     const serverPort = port ?? BASE_SERVER_PORT + serverOffset;
     const webPort = BASE_WEB_PORT + webOffset;
-    const resolvedBaseDir = yield* resolveBaseDir(synaraHome, mode, baseEnv.SYNARA_DESKTOP_FLAVOR);
+    const resolvedBaseDir = yield* resolveBaseDir(cortexHome, mode, baseEnv.CORTEX_DESKTOP_FLAVOR);
     const configuredHost = host ?? "127.0.0.1";
     // Brackets are URL syntax, not valid listen-host syntax. Keep the bind host
     // portable while adding brackets back only when constructing an IPv6 URL.
@@ -199,13 +199,13 @@ export function createDevRunnerEnv({
 
     const output: NodeJS.ProcessEnv = {
       ...baseEnv,
-      SYNARA_PORT: String(serverPort),
+      CORTEX_PORT: String(serverPort),
       PORT: String(webPort),
       ELECTRON_RENDERER_PORT: String(webPort),
       VITE_WS_URL: `ws://${formattedClientHost}:${serverPort}`,
       VITE_DEV_SERVER_URL: devUrl?.toString() ?? `http://localhost:${webPort}`,
-      SYNARA_HOME: resolvedBaseDir,
-      SYNARA_HOST: serverHost,
+      CORTEX_HOME: resolvedBaseDir,
+      CORTEX_HOST: serverHost,
     };
 
     const pathKey = process.platform === "win32" ? "Path" : "PATH";
@@ -228,37 +228,37 @@ export function createDevRunnerEnv({
     applyShellEnvironmentHydrationMarker(output, inheritedPathIsUsable);
 
     if (authToken !== undefined) {
-      output.SYNARA_AUTH_TOKEN = authToken;
+      output.CORTEX_AUTH_TOKEN = authToken;
     } else {
-      delete output.SYNARA_AUTH_TOKEN;
+      delete output.CORTEX_AUTH_TOKEN;
     }
 
     if (noBrowser !== undefined) {
-      output.SYNARA_NO_BROWSER = noBrowser ? "1" : "0";
+      output.CORTEX_NO_BROWSER = noBrowser ? "1" : "0";
     } else {
-      delete output.SYNARA_NO_BROWSER;
+      delete output.CORTEX_NO_BROWSER;
     }
 
     if (autoBootstrapProjectFromCwd !== undefined) {
-      output.SYNARA_AUTO_BOOTSTRAP_PROJECT_FROM_CWD = autoBootstrapProjectFromCwd ? "1" : "0";
+      output.CORTEX_AUTO_BOOTSTRAP_PROJECT_FROM_CWD = autoBootstrapProjectFromCwd ? "1" : "0";
     } else {
-      delete output.SYNARA_AUTO_BOOTSTRAP_PROJECT_FROM_CWD;
+      delete output.CORTEX_AUTO_BOOTSTRAP_PROJECT_FROM_CWD;
     }
 
     if (logWebSocketEvents !== undefined) {
-      output.SYNARA_LOG_WS_EVENTS = logWebSocketEvents ? "1" : "0";
+      output.CORTEX_LOG_WS_EVENTS = logWebSocketEvents ? "1" : "0";
     } else {
-      delete output.SYNARA_LOG_WS_EVENTS;
+      delete output.CORTEX_LOG_WS_EVENTS;
     }
 
     if (mode === "dev") {
-      output.SYNARA_MODE = "web";
-      delete output.SYNARA_DESKTOP_WS_URL;
+      output.CORTEX_MODE = "web";
+      delete output.CORTEX_DESKTOP_WS_URL;
     }
 
     if (mode === "dev:server" || mode === "dev:web") {
-      output.SYNARA_MODE = "web";
-      delete output.SYNARA_DESKTOP_WS_URL;
+      output.CORTEX_MODE = "web";
+      delete output.CORTEX_DESKTOP_WS_URL;
     }
 
     return output;
@@ -399,7 +399,7 @@ export function resolveModePortOffsets<R = NetService>({
 
 interface DevRunnerCliInput {
   readonly mode: DevMode;
-  readonly synaraHome: string | undefined;
+  readonly cortexHome: string | undefined;
   readonly authToken: string | undefined;
   readonly noBrowser: BooleanFlagInput;
   readonly autoBootstrapProjectFromCwd: BooleanFlagInput;
@@ -440,7 +440,7 @@ export function runDevRunnerWithInput(input: DevRunnerCliInput) {
       Effect.mapError(
         (cause) =>
           new DevRunnerError({
-            message: "Failed to read SYNARA_PORT_OFFSET/SYNARA_DEV_INSTANCE configuration.",
+            message: "Failed to read CORTEX_PORT_OFFSET/CORTEX_DEV_INSTANCE configuration.",
             cause,
           }),
       ),
@@ -470,7 +470,7 @@ export function runDevRunnerWithInput(input: DevRunnerCliInput) {
       baseEnv: process.env,
       serverOffset,
       webOffset,
-      synaraHome: input.synaraHome,
+      cortexHome: input.cortexHome,
       authToken: input.authToken,
       noBrowser: booleanOverrides.noBrowser,
       autoBootstrapProjectFromCwd: booleanOverrides.autoBootstrapProjectFromCwd,
@@ -486,7 +486,7 @@ export function runDevRunnerWithInput(input: DevRunnerCliInput) {
         : "";
 
     yield* Effect.logInfo(
-      `[dev-runner] mode=${input.mode} source=${source}${selectionSuffix} serverPort=${String(env.SYNARA_PORT)} webPort=${String(env.PORT)} baseDir=${String(env.SYNARA_HOME)}`,
+      `[dev-runner] mode=${input.mode} source=${source}${selectionSuffix} serverPort=${String(env.CORTEX_PORT)} webPort=${String(env.PORT)} baseDir=${String(env.CORTEX_HOME)}`,
     );
 
     if (input.dryRun) {
@@ -534,36 +534,36 @@ const devRunnerCli = Command.make("dev-runner", {
   mode: Argument.choice("mode", DEV_RUNNER_MODES).pipe(
     Argument.withDescription("Development mode to run."),
   ),
-  synaraHome: Flag.string("home-dir").pipe(
-    Flag.withDescription("Base directory for all Synara data (equivalent to SYNARA_HOME)."),
+  cortexHome: Flag.string("home-dir").pipe(
+    Flag.withDescription("Base directory for all Cortex data (equivalent to CORTEX_HOME)."),
     Flag.withFallbackConfig(HomeConfig),
   ),
   authToken: Flag.string("auth-token").pipe(
-    Flag.withDescription("Auth token (forwards to SYNARA_AUTH_TOKEN)."),
+    Flag.withDescription("Auth token (forwards to CORTEX_AUTH_TOKEN)."),
     Flag.withAlias("token"),
-    Flag.withFallbackConfig(optionalStringConfig("SYNARA_AUTH_TOKEN")),
+    Flag.withFallbackConfig(optionalStringConfig("CORTEX_AUTH_TOKEN")),
   ),
   noBrowser: optionalBooleanFlag("no-browser", {
-    description: "Disable browser auto-open (equivalent to SYNARA_NO_BROWSER).",
+    description: "Disable browser auto-open (equivalent to CORTEX_NO_BROWSER).",
     negativeName: "browser",
     negativeDescription: "Enable browser auto-open.",
   }),
   autoBootstrapProjectFromCwd: optionalBooleanFlag("auto-bootstrap-project-from-cwd", {
     description:
-      "Enable project auto-bootstrap (equivalent to SYNARA_AUTO_BOOTSTRAP_PROJECT_FROM_CWD).",
+      "Enable project auto-bootstrap (equivalent to CORTEX_AUTO_BOOTSTRAP_PROJECT_FROM_CWD).",
   }),
   logWebSocketEvents: optionalBooleanFlag("log-websocket-events", {
-    description: "Enable WebSocket event logging (equivalent to SYNARA_LOG_WS_EVENTS).",
+    description: "Enable WebSocket event logging (equivalent to CORTEX_LOG_WS_EVENTS).",
     aliases: ["log-ws-events"],
   }),
   host: Flag.string("host").pipe(
-    Flag.withDescription("Server host/interface override (forwards to SYNARA_HOST)."),
-    Flag.withFallbackConfig(optionalStringConfig("SYNARA_HOST")),
+    Flag.withDescription("Server host/interface override (forwards to CORTEX_HOST)."),
+    Flag.withFallbackConfig(optionalStringConfig("CORTEX_HOST")),
   ),
   port: Flag.integer("port").pipe(
     Flag.withSchema(Schema.Int.check(Schema.isBetween({ minimum: 1, maximum: 65535 }))),
-    Flag.withDescription("Server port override (forwards to SYNARA_PORT)."),
-    Flag.withFallbackConfig(optionalPortConfig("SYNARA_PORT")),
+    Flag.withDescription("Server port override (forwards to CORTEX_PORT)."),
+    Flag.withFallbackConfig(optionalPortConfig("CORTEX_PORT")),
   ),
   devUrl: Flag.string("dev-url").pipe(
     Flag.withSchema(Schema.URLFromString),

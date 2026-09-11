@@ -2,7 +2,7 @@ import Path from "node:path";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { SYNARA_PRODUCTION_BUNDLE_ID } from "@synara/shared/desktopIdentity";
+import { CORTEX_PRODUCTION_BUNDLE_ID } from "@cortex/shared/desktopIdentity";
 import type { BrowserWindow } from "electron";
 
 import {
@@ -36,12 +36,12 @@ function makeWindow({ destroyed = false, visible = true }: FakeWindowState = {})
 }
 
 const identity = {
-  appId: SYNARA_PRODUCTION_BUNDLE_ID,
-  relaunchCommand: "C:\\Program Files\\Synara\\Synara.exe",
-  relaunchDisplayName: "Synara",
+  appId: CORTEX_PRODUCTION_BUNDLE_ID,
+  relaunchCommand: "C:\\Program Files\\Cortex\\Cortex.exe",
+  relaunchDisplayName: "Cortex",
 } as const;
 
-const iconPath = "C:\\Users\\synara\\userdata\\taskbar-icons\\taskbar-icon.ico";
+const iconPath = "C:\\Users\\cortex\\userdata\\taskbar-icons\\taskbar-icon.ico";
 
 afterEach(() => {
   clearWindowsTaskbarIconRefresh();
@@ -79,10 +79,10 @@ describe("windowsShellIconCachePath", () => {
   it("prefers the packaged executable directory over userdata so Explorer loads a trusted ICO", () => {
     expect(
       resolveWindowsShellIconCacheDirectory({
-        executablePath: Path.join("Programs", "synara-desktop", "Synara.exe"),
+        executablePath: Path.join("Programs", "cortex-desktop", "Cortex.exe"),
         fallbackDirectory: Path.join("userdata", "taskbar-icons"),
       }),
-    ).toBe(Path.join("Programs", "synara-desktop"));
+    ).toBe(Path.join("Programs", "cortex-desktop"));
     expect(
       resolveWindowsShellIconCacheDirectory({
         executablePath: Path.join("node_modules", "electron", "electron.exe"),
@@ -95,8 +95,8 @@ describe("windowsShellIconCachePath", () => {
 describe("collectWindowsShortcutPaths", () => {
   it("includes Start Menu and nested program-folder shortcuts while skipping missing roots", () => {
     const files: Record<string, string[]> = {
-      [Path.join("Start Menu", "Programs")]: ["Synara.lnk", "Other", "Readme.txt"],
-      [Path.join("Start Menu", "Programs", "Other")]: ["Synara Dev.lnk"],
+      [Path.join("Start Menu", "Programs")]: ["Cortex.lnk", "Other", "Readme.txt"],
+      [Path.join("Start Menu", "Programs", "Other")]: ["Cortex Dev.lnk"],
     };
 
     expect(
@@ -110,8 +110,8 @@ describe("collectWindowsShortcutPaths", () => {
         isDirectory: (path) => path === Path.join("Start Menu", "Programs", "Other"),
       }),
     ).toEqual([
-      Path.join("Start Menu", "Programs", "Synara.lnk"),
-      Path.join("Start Menu", "Programs", "Other", "Synara Dev.lnk"),
+      Path.join("Start Menu", "Programs", "Cortex.lnk"),
+      Path.join("Start Menu", "Programs", "Other", "Cortex Dev.lnk"),
     ]);
   });
 });
@@ -122,21 +122,21 @@ describe("syncWindowsShortcutIcons", () => {
 
     const result = syncWindowsShortcutIcons({
       iconPath: Path.join("cache", "taskbar-icon.ico"),
-      appId: SYNARA_PRODUCTION_BUNDLE_ID,
-      executablePath: Path.join("Program Files", "Synara", "Synara.exe"),
-      shortcutPaths: ["synara.lnk", "other.lnk", "already.lnk"],
+      appId: CORTEX_PRODUCTION_BUNDLE_ID,
+      executablePath: Path.join("Program Files", "Cortex", "Cortex.exe"),
+      shortcutPaths: ["cortex.lnk", "other.lnk", "already.lnk"],
       readShortcut: (shortcutPath) => {
-        if (shortcutPath === "synara.lnk") {
+        if (shortcutPath === "cortex.lnk") {
           return {
-            appUserModelId: SYNARA_PRODUCTION_BUNDLE_ID,
-            target: Path.join("Program Files", "Synara", "Synara.exe"),
-            icon: Path.join("Program Files", "Synara", "Synara.exe"),
+            appUserModelId: CORTEX_PRODUCTION_BUNDLE_ID,
+            target: Path.join("Program Files", "Cortex", "Cortex.exe"),
+            icon: Path.join("Program Files", "Cortex", "Cortex.exe"),
             iconIndex: 0,
           };
         }
         if (shortcutPath === "already.lnk") {
           return {
-            appUserModelId: SYNARA_PRODUCTION_BUNDLE_ID,
+            appUserModelId: CORTEX_PRODUCTION_BUNDLE_ID,
             icon: Path.join("cache", "taskbar-icon.ico"),
             iconIndex: 0,
           };
@@ -146,11 +146,11 @@ describe("syncWindowsShortcutIcons", () => {
       updateShortcut,
     });
 
-    expect(result.updated).toEqual(["synara.lnk"]);
-    expect(result.matched).toEqual(["synara.lnk", "already.lnk"]);
+    expect(result.updated).toEqual(["cortex.lnk"]);
+    expect(result.matched).toEqual(["cortex.lnk", "already.lnk"]);
     expect(updateShortcut).toHaveBeenCalledTimes(1);
     expect(updateShortcut).toHaveBeenCalledWith(
-      "synara.lnk",
+      "cortex.lnk",
       Path.join("cache", "taskbar-icon.ico"),
       0,
     );
@@ -161,7 +161,7 @@ describe("syncWindowsShortcutIcons", () => {
 
     const result = syncWindowsShortcutIcons({
       iconPath: Path.join("cache", "taskbar-icon.ico"),
-      appId: SYNARA_PRODUCTION_BUNDLE_ID,
+      appId: CORTEX_PRODUCTION_BUNDLE_ID,
       executablePath: Path.join("node_modules", "electron", "electron.exe"),
       shortcutPaths: ["electron.lnk"],
       readShortcut: () => ({
@@ -178,13 +178,13 @@ describe("syncWindowsShortcutIcons", () => {
   it("reports every matching shortcut even when the icon is already current", () => {
     const result = syncWindowsShortcutIcons({
       iconPath: Path.join("cache", "taskbar-icon.ico"),
-      appId: SYNARA_PRODUCTION_BUNDLE_ID,
-      executablePath: Path.join("Program Files", "Synara", "Synara.exe"),
+      appId: CORTEX_PRODUCTION_BUNDLE_ID,
+      executablePath: Path.join("Program Files", "Cortex", "Cortex.exe"),
       shortcutPaths: ["already.lnk", "other.lnk"],
       readShortcut: (shortcutPath) => {
         if (shortcutPath === "already.lnk") {
           return {
-            appUserModelId: SYNARA_PRODUCTION_BUNDLE_ID,
+            appUserModelId: CORTEX_PRODUCTION_BUNDLE_ID,
             icon: Path.join("cache", "taskbar-icon.ico"),
             iconIndex: 0,
           };
@@ -203,34 +203,34 @@ describe("syncWindowsShortcutIcons", () => {
 
     const result = syncWindowsShortcutIcons({
       iconPath: Path.join("cache", "taskbar-icon.ico"),
-      appId: SYNARA_PRODUCTION_BUNDLE_ID,
+      appId: CORTEX_PRODUCTION_BUNDLE_ID,
       executablePath: Path.join(
         "Users",
-        "synara",
+        "cortex",
         "AppData",
         "Local",
         "Programs",
-        "synara-desktop",
-        "Synara.exe",
+        "cortex-desktop",
+        "Cortex.exe",
       ),
-      shortcutPaths: ["synara.lnk"],
+      shortcutPaths: ["cortex.lnk"],
       readShortcut: () => ({
         target: Path.join(
           "C:",
           "Users",
-          "synara",
+          "cortex",
           "AppData",
           "Local",
           "Programs",
-          "synara-desktop",
-          "Synara.exe",
+          "cortex-desktop",
+          "Cortex.exe",
         ),
       }),
       updateShortcut,
     });
 
-    expect(result.matched).toEqual(["synara.lnk"]);
-    expect(result.updated).toEqual(["synara.lnk"]);
+    expect(result.matched).toEqual(["cortex.lnk"]);
+    expect(result.updated).toEqual(["cortex.lnk"]);
     expect(updateShortcut).toHaveBeenCalledTimes(1);
   });
 });
@@ -330,7 +330,7 @@ describe("applyWindowsTaskbarIcon", () => {
   it("cancels an in-flight reregister when a newer icon is applied", () => {
     vi.useFakeTimers();
     const window = makeWindow();
-    const nextIconPath = "C:\\Users\\synara\\userdata\\taskbar-icons\\taskbar-default.ico";
+    const nextIconPath = "C:\\Users\\cortex\\userdata\\taskbar-icons\\taskbar-default.ico";
 
     applyWindowsTaskbarIcon({ window, iconPath, identity, reregisterTaskbarButton: true });
     applyWindowsTaskbarIcon({

@@ -12,9 +12,9 @@ import {
   type ThreadGoalAchievement,
   type ThreadMarker,
   type TurnId,
-} from "@synara/contracts";
-import { isLocalAbsolutePath } from "@synara/shared/path";
-import { pluralize } from "@synara/shared/text";
+} from "@cortex/contracts";
+import { isLocalAbsolutePath } from "@cortex/shared/path";
+import { pluralize } from "@cortex/shared/text";
 import { LegendList, type LegendListRef } from "@legendapp/list/react";
 import {
   memo,
@@ -71,7 +71,7 @@ import { Button } from "../ui/button";
 import { composerOverlayScrollMaskImage } from "./composerOverlay";
 import { CrossTaskOriginLabel, type CrossTaskOrigin } from "./CrossTaskOriginLabel";
 import { ForkSourceDivider, type ForkSourceReference } from "./ForkSourceDivider";
-import { SynaraThreadCreationCard } from "./SynaraThreadCreationCard";
+import { CortexThreadCreationCard } from "./CortexThreadCreationCard";
 import { buildExpandedImagePreview, ExpandedImagePreview } from "./ExpandedImagePreview";
 import { ProposedPlanCard } from "./ProposedPlanCard";
 import { DiffStatLabel } from "./DiffStatLabel";
@@ -468,7 +468,7 @@ interface MessagesTimelineProps {
    * the anchored slide settles; ChatView's auto-follow re-snaps pause while set.
    */
   tailAnchorScrollInFlightRef?: RefObject<boolean> | undefined;
-  /** Provenance for a conversation created from another Synara task. */
+  /** Provenance for a conversation created from another Cortex task. */
   crossTaskOrigin?: CrossTaskOrigin | null;
   /** Immediate source chat for a forked transcript. */
   forkSource?: ForkSourceReference | null;
@@ -1472,9 +1472,9 @@ export const MessagesTimeline = memo(function MessagesTimeline({
         (() => {
           const groupId = row.id;
           // Creation milestones are reserved for the end-of-turn recap card.
-          // The provider's actual Synara MCP tool rows remain visible here.
+          // The provider's actual Cortex MCP tool rows remain visible here.
           const groupedEntries = row.groupedEntries.filter(
-            (workEntry) => !workEntry.synaraThreadCreation,
+            (workEntry) => !workEntry.cortexThreadCreation,
           );
           if (groupedEntries.length === 0) {
             return null;
@@ -1693,7 +1693,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
                   )}
                 >
                   {/* Keep user-message chrome outside the bubble so the message reads as one simple block. */}
-                  {/* The cross-task origin label already attributes this turn to another Synara thread,
+                  {/* The cross-task origin label already attributes this turn to another Cortex thread,
                       so suppress the dispatch chip here to avoid a duplicate "Sent by …" marker. */}
                   {showCrossTaskOrigin ? null : (
                     <UserDispatchModeChip
@@ -1883,7 +1883,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
           const messageMarkers =
             threadMarkersByMessageId.get(row.message.id) ?? EMPTY_MESSAGE_MARKERS;
           const buildWorkDisplay = (workEntries: WorkLogEntry[], workGroupId: string | null) => {
-            const displayEntries = workEntries.filter((entry) => !entry.synaraThreadCreation);
+            const displayEntries = workEntries.filter((entry) => !entry.cortexThreadCreation);
             const toolEntries = displayEntries.filter((entry) => entry.tone === "tool");
             const statusEntries = displayEntries.filter((entry) => entry.tone !== "tool");
             const toolGroupId = toolEntries.length > 0 ? workGroupId : null;
@@ -1987,17 +1987,17 @@ export const MessagesTimeline = memo(function MessagesTimeline({
           ];
           const knownAbsoluteFilePaths =
             collectAbsoluteFilePathsFromWorkEntries(allTurnWorkEntries);
-          const synaraThreadCreationRecaps = [
+          const cortexThreadCreationRecaps = [
             ...new Map(
               allTurnWorkEntries.flatMap((entry) =>
-                entry.synaraThreadCreation
-                  ? [[entry.synaraThreadCreation.operationId, entry.synaraThreadCreation] as const]
+                entry.cortexThreadCreation
+                  ? [[entry.cortexThreadCreation.operationId, entry.cortexThreadCreation] as const]
                   : [],
               ),
             ).values(),
           ];
           const collapsedTurnItems = row.collapsedTurnItems?.filter(
-            (item) => item.kind !== "work" || !item.entry.synaraThreadCreation,
+            (item) => item.kind !== "work" || !item.entry.cortexThreadCreation,
           );
           const hasCollapsedWork = Boolean(collapsedTurnItems && collapsedTurnItems.length > 0);
           const isCollapsedWorkExpanded = hasCollapsedWork
@@ -2328,9 +2328,9 @@ export const MessagesTimeline = memo(function MessagesTimeline({
                   </div>
                 )}
                 {!row.assistantTurnInProgress && row.showAssistantCopyButton
-                  ? synaraThreadCreationRecaps.map((creation) => (
+                  ? cortexThreadCreationRecaps.map((creation) => (
                       <div key={creation.operationId} className="mt-2 mb-4">
-                        <SynaraThreadCreationCard
+                        <CortexThreadCreationCard
                           creation={creation}
                           {...(onOpenThread
                             ? {

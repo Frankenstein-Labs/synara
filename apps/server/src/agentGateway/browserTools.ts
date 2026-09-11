@@ -5,15 +5,15 @@ import {
   ThreadId,
   type BrowserAutomationError,
   type BrowserToolName,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   BROWSER_TOOL_CATALOGUE,
   BROWSER_TOOL_DEFINITIONS_BY_NAME,
   stableJsonStringify,
   type BrowserToolDefinition,
-} from "@synara/shared/browserAutomationCatalogue";
-import { makeBrowserAutomationError } from "@synara/shared/browserAutomationErrors";
-import { encodeBrowserMcpToolError } from "@synara/shared/browserAutomationMcpError";
+} from "@cortex/shared/browserAutomationCatalogue";
+import { makeBrowserAutomationError } from "@cortex/shared/browserAutomationErrors";
+import { encodeBrowserMcpToolError } from "@cortex/shared/browserAutomationMcpError";
 import { Effect, Schema } from "effect";
 
 import type { BrowserAutomationHostShape } from "../browserAutomation/Services/BrowserAutomationHost.ts";
@@ -324,7 +324,7 @@ function withGatewayIdempotencyKey(
   const digest = createHash("sha256").update(requestFingerprint).digest("hex");
   return {
     ...argumentsValue,
-    idempotencyKey: `synara-mcp-${digest.slice(0, 40)}`,
+    idempotencyKey: `cortex-mcp-${digest.slice(0, 40)}`,
   };
 }
 

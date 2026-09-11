@@ -6,7 +6,7 @@ import {
   ProviderSkillReference,
   TurnDispatchMode,
   type OrchestrationMessage,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { Schema, Struct } from "effect";
 
 import {

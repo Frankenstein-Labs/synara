@@ -1,4 +1,4 @@
-import { isLocalAbsolutePath, isWorkspaceRelativePathSafe } from "@synara/shared/path";
+import { isLocalAbsolutePath, isWorkspaceRelativePathSafe } from "@cortex/shared/path";
 
 import { resolvePathLinkTarget } from "./terminal-links";
 

@@ -19,13 +19,13 @@ import {
   RuntimeRequestId,
   type ThreadId,
   TurnId,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   getDefaultEffort,
   getModelCapabilities,
   normalizeGrokModelOptions,
-} from "@synara/shared/model";
-import { decodeOutboundJson, decodeOutboundText, outboundHttp } from "@synara/shared/outboundHttp";
+} from "@cortex/shared/model";
+import { decodeOutboundJson, decodeOutboundText, outboundHttp } from "@cortex/shared/outboundHttp";
 import {
   Cause,
   DateTime,
@@ -46,10 +46,10 @@ import { ChildProcessSpawner } from "effect/unstable/process";
 import { makeEffectProcessCommand } from "../../platform/effectProcessRuntime.ts";
 import type * as Acp from "@agentclientprotocol/sdk";
 
-import { buildAcpSynaraMcpServers } from "../../agentGateway/mcpInjection.ts";
+import { buildAcpCortexMcpServers } from "../../agentGateway/mcpInjection.ts";
 import {
-  type SynaraHarnessPolicyDeliveryState,
-  takeSynaraHarnessPolicyTextPartForProviderSession,
+  type CortexHarnessPolicyDeliveryState,
+  takeCortexHarnessPolicyTextPartForProviderSession,
 } from "../../agentGateway/harnessPolicy.ts";
 import { AgentGatewayCredentials } from "../../agentGateway/Services/AgentGatewayCredentials.ts";
 import { PROVIDER_ADAPTER_RUNTIME_EVENT_BUFFER_CAPACITY } from "../Services/ProviderAdapter.ts";
@@ -136,11 +136,11 @@ import { type EventNdjsonLogger, makeEventNdjsonLogger } from "./EventNdjsonLogg
 
 const PROVIDER = "grok" as const;
 
-export const takeGrokSynaraHarnessPolicyTextPart = (
-  state: SynaraHarnessPolicyDeliveryState,
+export const takeGrokCortexHarnessPolicyTextPart = (
+  state: CortexHarnessPolicyDeliveryState,
   scopedGatewayConnectionAvailable: boolean,
 ) =>
-  takeSynaraHarnessPolicyTextPartForProviderSession(state, {
+  takeCortexHarnessPolicyTextPartForProviderSession(state, {
     provider: PROVIDER,
     scopedGatewayConnectionAvailable,
   });
@@ -151,15 +151,15 @@ const GROK_MODEL_DISCOVERY_TIMEOUT_MS = 15_000;
 const GROK_ACP_FORK_TIMEOUT_MS = 30_000;
 const GROK_ACP_TRANSPORT_DEBUG_MARKER = "grok-acp-meta-stripper-v2";
 const GROK_ACP_LOG_PAYLOAD_LIMIT = 4_000;
-const GROK_ACP_DEBUG_ENV = "SYNARA_GROK_ACP_DEBUG";
-const SYNARA_GROK_ACP_DEBUG_ENV = "SYNARA_GROK_ACP_DEBUG";
+const GROK_ACP_DEBUG_ENV = "CORTEX_GROK_ACP_DEBUG";
+const CORTEX_GROK_ACP_DEBUG_ENV = "CORTEX_GROK_ACP_DEBUG";
 const LEGACY_GROK_ACP_DEBUG_ENV = "DP_GROK_ACP_DEBUG";
 // Backstop for an alive-but-silent grok child: if a turn produces no ACP
 // activity for this long, force-fail it instead of showing "Working" forever.
 // Generous by design so legitimate long, quiet tool runs are not killed;
-// override with SYNARA_GROK_TURN_IDLE_TIMEOUT_MS when a workload needs longer.
+// override with CORTEX_GROK_TURN_IDLE_TIMEOUT_MS when a workload needs longer.
 const GROK_TURN_IDLE_TIMEOUT_MS = resolveAcpTurnIdleTimeoutMs({
-  envVar: "SYNARA_GROK_TURN_IDLE_TIMEOUT_MS",
+  envVar: "CORTEX_GROK_TURN_IDLE_TIMEOUT_MS",
   defaultMs: 600_000,
 });
 const GROK_TURN_WATCHDOG_INTERVAL_MS = 15_000;
@@ -193,7 +193,7 @@ const GROK_TURN_SETTLE_DRAIN_POLL_MS = 25;
 const GROK_EXIT_PLAN_RESPONSE_GRACE_MS = 25;
 const XAI_API_BASE_URL = "https://api.x.ai/v1";
 const GROK_PLAN_MODE_PROMPT_PREFIX = [
-  "Synara requested Grok's native plan mode.",
+  "Cortex requested Grok's native plan mode.",
   "Do not implement or mutate files in this turn.",
   "Do not ask follow-up questions or wait for confirmation; if scope is ambiguous, choose a reasonable default and state the assumption in the plan.",
   "When ready, create the final implementation plan.",
@@ -224,7 +224,7 @@ const GROK_PLAN_READ_ONLY_TOOL_NAMES = new Set([
   "web_fetch",
   "web_search",
 ]);
-const GROK_PLAN_GUARD_HOOK_CALLBACK_ID = "synara-plan-guard";
+const GROK_PLAN_GUARD_HOOK_CALLBACK_ID = "cortex-plan-guard";
 const GROK_SESSION_META = {
   "x.ai/hooks": {
     PreToolUse: [
@@ -255,7 +255,7 @@ export function buildGrokPromptMeta(interactionMode: ProviderInteractionMode): {
 } {
   // Grok ACP reconciles its native Plan tracker from session/prompt `_meta.mode`.
   // Unlike x.ai/toggle_plan_mode this is idempotent, so reconnects cannot invert
-  // the provider state when Synara sends the desired mode again.
+  // the provider state when Cortex sends the desired mode again.
   return { mode: interactionMode === "plan" ? "plan" : "agent" };
 }
 
@@ -293,7 +293,7 @@ export function resolveGrokPlanHookResponse(
   }
   return {
     decision: "deny",
-    systemMessage: `Synara Plan mode blocks the mutating or unknown Grok tool "${toolName || "unknown"}".`,
+    systemMessage: `Cortex Plan mode blocks the mutating or unknown Grok tool "${toolName || "unknown"}".`,
   };
 }
 
@@ -307,7 +307,7 @@ const collectStreamAsString = <E>(stream: Stream.Stream<Uint8Array, E>): Effect.
 function isGrokAcpDebugEnabled(): boolean {
   return (
     process.env[GROK_ACP_DEBUG_ENV] === "1" ||
-    process.env[SYNARA_GROK_ACP_DEBUG_ENV] === "1" ||
+    process.env[CORTEX_GROK_ACP_DEBUG_ENV] === "1" ||
     process.env[LEGACY_GROK_ACP_DEBUG_ENV] === "1"
   );
 }
@@ -709,7 +709,7 @@ export function makeGrokAdapter(
     const childProcessSpawner = yield* ChildProcessSpawner.ChildProcessSpawner;
     const serverConfig = yield* Effect.service(ServerConfig);
     // Optional so adapter tests can run without the gateway layer; when
-    // present, every session gets the synara_* MCP tools.
+    // present, every session gets the cortex_* MCP tools.
     const agentGatewayCredentials = Option.getOrUndefined(
       yield* Effect.serviceOption(AgentGatewayCredentials),
     );
@@ -1072,7 +1072,7 @@ export function makeGrokAdapter(
             cwd,
             runtimeMode: input.runtimeMode,
             ...(resumeSessionId ? { resumeSessionId } : {}),
-            clientInfo: { name: "Synara", version: "0.0.0" },
+            clientInfo: { name: "Cortex", version: "0.0.0" },
             // Grok registers client hooks from session setup metadata, not
             // initialize.clientCapabilities. Re-send this on load/resume so a
             // reconnected session keeps the Plan-mode write gate.
@@ -1080,7 +1080,7 @@ export function makeGrokAdapter(
             ...(agentGatewayCredentials
               ? {
                   buildMcpServers: (initializeResult) =>
-                    buildAcpSynaraMcpServers({
+                    buildAcpCortexMcpServers({
                       connection: gatewaySessionLease!.connection,
                       initializeResult,
                       stdioProxy: agentGatewayCredentials.stdioProxy,
@@ -1175,7 +1175,7 @@ export function makeGrokAdapter(
                       ctx.lastPlanFingerprint !== planMarkdown
                     ) {
                       ctx.lastPlanFingerprint = planMarkdown;
-                      // The extension response must reach Grok before Synara cancels the
+                      // The extension response must reach Grok before Cortex cancels the
                       // prompt fiber. Cancelling inline can tear down Grok's pending reverse
                       // request and recreate its misleading "client disconnected" failure.
                       yield* Effect.gen(function* () {
@@ -1822,7 +1822,7 @@ export function makeGrokAdapter(
             issue: "Turn requires non-empty text or attachments.",
           });
         }
-        const harnessPolicy = takeGrokSynaraHarnessPolicyTextPart(
+        const harnessPolicy = takeGrokCortexHarnessPolicyTextPart(
           ctx,
           agentGatewayCredentials !== undefined,
         );
@@ -1950,7 +1950,7 @@ export function makeGrokAdapter(
                     payload: { planMarkdown: terminalPlanMarkdown },
                     raw: {
                       source: "acp.jsonrpc",
-                      method: "synara.grok.terminal-plan-response",
+                      method: "cortex.grok.terminal-plan-response",
                       payload: result,
                     },
                   });
@@ -2502,7 +2502,7 @@ export function makeGrokAdapter(
             runtime,
             targetCwd,
             unsupportedIssue:
-              "This Grok ACP version does not advertise session/fork; Synara will rebuild the fork from its retained transcript.",
+              "This Grok ACP version does not advertise session/fork; Cortex will rebuild the fork from its retained transcript.",
             requestTimeoutMs: GROK_ACP_FORK_TIMEOUT_MS,
             timeoutError: grokForkTimeoutError,
           });
@@ -2515,7 +2515,7 @@ export function makeGrokAdapter(
             provider: PROVIDER,
             operation: "forkThread",
             issue:
-              "The source Grok session has a turn in flight; Synara will rebuild the fork from its retained transcript.",
+              "The source Grok session has a turn in flight; Cortex will rebuild the fork from its retained transcript.",
           });
         }
         const forked = activeSource
@@ -2543,7 +2543,7 @@ export function makeGrokAdapter(
                 cwd: sourceCwd,
                 runtimeMode: input.runtimeMode,
                 resumeSessionId: sourceSessionId,
-                clientInfo: { name: "Synara Fork", version: "0.0.0" },
+                clientInfo: { name: "Cortex Fork", version: "0.0.0" },
                 sessionMeta: GROK_SESSION_META,
               });
               yield* runtime.start().pipe(

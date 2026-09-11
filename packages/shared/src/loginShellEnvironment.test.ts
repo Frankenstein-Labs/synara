@@ -31,7 +31,7 @@ import {
 const temporaryRoots: Array<string> = [];
 
 function makeTemporaryRoot(): string {
-  const root = FS.mkdtempSync(Path.join(OS.tmpdir(), "synara-login-shell-"));
+  const root = FS.mkdtempSync(Path.join(OS.tmpdir(), "cortex-login-shell-"));
   temporaryRoots.push(root);
   return root;
 }
@@ -324,8 +324,8 @@ describe("createCachedLoginShellEnvironmentReader", () => {
   it("runs uncached when the home directory cannot be resolved", () => {
     const fixture = makeFixture();
     // Pointed at the fixture root, so a spy that failed to apply writes here (and fails the
-    // call-count assertion below) instead of touching the developer's real Synara home.
-    const env = { SYNARA_HOME: Path.dirname(Path.dirname(fixture.cachePath)) };
+    // call-count assertion below) instead of touching the developer's real Cortex home.
+    const env = { CORTEX_HOME: Path.dirname(Path.dirname(fixture.cachePath)) };
     homeDirectoryFailure.active = true;
 
     try {
@@ -359,12 +359,12 @@ describe("createCachedLoginShellEnvironmentReader", () => {
 });
 
 describe("loginShellEnvironmentCachePath", () => {
-  it("anchors the cache in the Synara home both processes resolve", () => {
-    expect(loginShellEnvironmentCachePath({ env: { SYNARA_HOME: "/tmp/synara-home" } })).toBe(
-      Path.join("/tmp/synara-home", "cache", "login-shell-environment.json"),
+  it("anchors the cache in the Cortex home both processes resolve", () => {
+    expect(loginShellEnvironmentCachePath({ env: { CORTEX_HOME: "/tmp/cortex-home" } })).toBe(
+      Path.join("/tmp/cortex-home", "cache", "login-shell-environment.json"),
     );
     expect(loginShellEnvironmentCachePath({ env: {}, homeDirectory: "/users/test" })).toBe(
-      Path.join("/users/test", ".synara", "cache", "login-shell-environment.json"),
+      Path.join("/users/test", ".cortex", "cache", "login-shell-environment.json"),
     );
   });
 });

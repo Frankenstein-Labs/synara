@@ -20,7 +20,7 @@ import {
   applyBrowserWebviewPresentation,
   isBrowserPanelBoundsHiddenKey,
 } from "./BrowserPanel.logic";
-import { ThreadId, type BrowserAnnotationEvent } from "@synara/contracts";
+import { ThreadId, type BrowserAnnotationEvent } from "@cortex/contracts";
 import type { BrowserAnnotationDraft } from "../lib/browserAnnotations";
 
 const THREAD_A = ThreadId.makeUnsafe("thread-a");

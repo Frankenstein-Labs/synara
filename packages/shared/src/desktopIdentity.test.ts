@@ -1,76 +1,76 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  resolveSynaraDesktopFlavor,
-  SYNARA_CANARY_BUNDLE_ID,
-  SYNARA_CANARY_DESKTOP_ENTRY_URL,
-  SYNARA_CANARY_DESKTOP_ORIGIN,
-  SYNARA_DESKTOP_ENTRY_URL,
-  SYNARA_DESKTOP_ORIGIN,
-  SYNARA_DESKTOP_UPDATE_CHANNEL,
-  SYNARA_DEVELOPMENT_BUNDLE_ID,
-  SYNARA_PRODUCTION_BUNDLE_ID,
-  synaraDesktopIdentity,
+  resolveCortexDesktopFlavor,
+  CORTEX_CANARY_BUNDLE_ID,
+  CORTEX_CANARY_DESKTOP_ENTRY_URL,
+  CORTEX_CANARY_DESKTOP_ORIGIN,
+  CORTEX_DESKTOP_ENTRY_URL,
+  CORTEX_DESKTOP_ORIGIN,
+  CORTEX_DESKTOP_UPDATE_CHANNEL,
+  CORTEX_DEVELOPMENT_BUNDLE_ID,
+  CORTEX_PRODUCTION_BUNDLE_ID,
+  cortexDesktopIdentity,
 } from "./desktopIdentity";
 
 describe("desktopIdentity", () => {
   it("uses the exact canonical production and development bundle IDs", () => {
-    expect(SYNARA_PRODUCTION_BUNDLE_ID).toBe("com.emanueledipietro.synara");
-    expect(SYNARA_DEVELOPMENT_BUNDLE_ID).toBe("com.emanueledipietro.synara.dev");
-    expect(synaraDesktopIdentity("production").bundleId).toBe(SYNARA_PRODUCTION_BUNDLE_ID);
-    expect(synaraDesktopIdentity("development").bundleId).toBe(SYNARA_DEVELOPMENT_BUNDLE_ID);
+    expect(CORTEX_PRODUCTION_BUNDLE_ID).toBe("com.emanueledipietro.cortex");
+    expect(CORTEX_DEVELOPMENT_BUNDLE_ID).toBe("com.emanueledipietro.cortex.dev");
+    expect(cortexDesktopIdentity("production").bundleId).toBe(CORTEX_PRODUCTION_BUNDLE_ID);
+    expect(cortexDesktopIdentity("development").bundleId).toBe(CORTEX_DEVELOPMENT_BUNDLE_ID);
   });
 
   it("uses the exact packaged renderer origin and entry URL", () => {
-    expect(SYNARA_DESKTOP_ORIGIN).toBe("synara://app");
-    expect(SYNARA_DESKTOP_ENTRY_URL).toBe("synara://app/index.html");
+    expect(CORTEX_DESKTOP_ORIGIN).toBe("cortex://app");
+    expect(CORTEX_DESKTOP_ENTRY_URL).toBe("cortex://app/index.html");
   });
 
-  it("uses the isolated Synara desktop update channel", () => {
-    expect(SYNARA_DESKTOP_UPDATE_CHANNEL).toBe("synara");
+  it("uses the isolated Cortex desktop update channel", () => {
+    expect(CORTEX_DESKTOP_UPDATE_CHANNEL).toBe("cortex");
   });
 
   it("gives Canary a fully separate desktop identity and storage profile", () => {
-    expect(SYNARA_CANARY_BUNDLE_ID).toBe("com.emanueledipietro.synara.canary");
-    expect(SYNARA_CANARY_DESKTOP_ORIGIN).toBe("synara-canary://app");
-    expect(SYNARA_CANARY_DESKTOP_ENTRY_URL).toBe("synara-canary://app/index.html");
-    expect(synaraDesktopIdentity("canary")).toEqual({
+    expect(CORTEX_CANARY_BUNDLE_ID).toBe("com.emanueledipietro.cortex.canary");
+    expect(CORTEX_CANARY_DESKTOP_ORIGIN).toBe("cortex-canary://app");
+    expect(CORTEX_CANARY_DESKTOP_ENTRY_URL).toBe("cortex-canary://app/index.html");
+    expect(cortexDesktopIdentity("canary")).toEqual({
       flavor: "canary",
-      displayName: "Synara Canary",
-      bundleId: SYNARA_CANARY_BUNDLE_ID,
-      scheme: "synara-canary",
-      origin: SYNARA_CANARY_DESKTOP_ORIGIN,
-      entryUrl: SYNARA_CANARY_DESKTOP_ENTRY_URL,
-      userDataDirectoryName: "synara-canary",
-      defaultHomeDirectoryName: ".synara-canary",
+      displayName: "Cortex Canary",
+      bundleId: CORTEX_CANARY_BUNDLE_ID,
+      scheme: "cortex-canary",
+      origin: CORTEX_CANARY_DESKTOP_ORIGIN,
+      entryUrl: CORTEX_CANARY_DESKTOP_ENTRY_URL,
+      userDataDirectoryName: "cortex-canary",
+      defaultHomeDirectoryName: ".cortex-canary",
       usesScriptedUpdates: true,
     });
   });
 
   it("selects explicit source flavors without changing packaged Stable", () => {
-    expect(resolveSynaraDesktopFlavor({ isDevelopment: false })).toBe("production");
-    expect(resolveSynaraDesktopFlavor({ isDevelopment: true })).toBe("development");
+    expect(resolveCortexDesktopFlavor({ isDevelopment: false })).toBe("production");
+    expect(resolveCortexDesktopFlavor({ isDevelopment: true })).toBe("development");
     expect(
-      resolveSynaraDesktopFlavor({ isDevelopment: false, requestedFlavor: "development" }),
+      resolveCortexDesktopFlavor({ isDevelopment: false, requestedFlavor: "development" }),
     ).toBe("production");
     expect(
-      resolveSynaraDesktopFlavor({
+      resolveCortexDesktopFlavor({
         isDevelopment: false,
         requestedFlavor: "development",
         allowDevelopmentOverride: true,
       }),
     ).toBe("development");
-    expect(resolveSynaraDesktopFlavor({ isDevelopment: false, requestedFlavor: " canary " })).toBe(
+    expect(resolveCortexDesktopFlavor({ isDevelopment: false, requestedFlavor: " canary " })).toBe(
       "canary",
     );
-    expect(resolveSynaraDesktopFlavor({ isDevelopment: true, requestedFlavor: "canary" })).toBe(
+    expect(resolveCortexDesktopFlavor({ isDevelopment: true, requestedFlavor: "canary" })).toBe(
       "canary",
     );
   });
 
   it("isolates development and Canary homes from packaged Stable", () => {
-    expect(synaraDesktopIdentity("development").defaultHomeDirectoryName).toBe(".synara-dev");
-    expect(synaraDesktopIdentity("canary").defaultHomeDirectoryName).toBe(".synara-canary");
-    expect(synaraDesktopIdentity("production").defaultHomeDirectoryName).toBe(".synara");
+    expect(cortexDesktopIdentity("development").defaultHomeDirectoryName).toBe(".cortex-dev");
+    expect(cortexDesktopIdentity("canary").defaultHomeDirectoryName).toBe(".cortex-canary");
+    expect(cortexDesktopIdentity("production").defaultHomeDirectoryName).toBe(".cortex");
   });
 });

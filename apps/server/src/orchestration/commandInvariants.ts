@@ -13,13 +13,13 @@ import type {
   SpaceId,
   ThreadId,
   TurnId,
-} from "@synara/contracts";
-import { THREAD_NOT_ARCHIVED_INVARIANT_MARKER } from "@synara/shared/errorMessages";
+} from "@cortex/contracts";
+import { THREAD_NOT_ARCHIVED_INVARIANT_MARKER } from "@cortex/shared/errorMessages";
 import {
   isLegacyHomeChatContainerRow as isSharedLegacyHomeChatContainerRow,
   isOrdinaryProjectRow as isSharedOrdinaryProjectRow,
-} from "@synara/shared/projectContainers";
-import { normalizeWorkspaceRootForComparison } from "@synara/shared/threadWorkspace";
+} from "@cortex/shared/projectContainers";
+import { normalizeWorkspaceRootForComparison } from "@cortex/shared/threadWorkspace";
 import { Effect } from "effect";
 
 import { OrchestrationCommandInvariantError } from "./Errors.ts";

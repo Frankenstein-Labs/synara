@@ -33,7 +33,7 @@ import type {
   RuntimeMode,
   ThreadCreationSource,
   ThreadEnvironmentMode,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 
 export type SessionPhase = "disconnected" | "connecting" | "ready" | "running";
 export const DEFAULT_RUNTIME_MODE: RuntimeMode = "full-access";
@@ -104,7 +104,7 @@ export type ChatAttachment =
   | ChatAssistantSelectionAttachment;
 
 export type OrchestrationMessageTextSegment =
-  import("@synara/contracts").OrchestrationMessageTextSegment;
+  import("@cortex/contracts").OrchestrationMessageTextSegment;
 
 export interface ChatMessage {
   id: MessageId;

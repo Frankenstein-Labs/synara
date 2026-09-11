@@ -50,7 +50,7 @@ describe("running chats quit confirmation", () => {
   it("builds singular and plural English copy", () => {
     expect(runningChatsQuitCopy([{ id: "a", title: "Fix the tray" }])).toEqual({
       title: "A chat is still running",
-      description: "Work in progress will stop when Synara is closed.",
+      description: "Work in progress will stop when Cortex is closed.",
       resumeLabel: "Resume chat automatically",
       stayLabel: "Cancel",
       quitLabel: "Quit",
@@ -61,11 +61,11 @@ describe("running chats quit confirmation", () => {
           { id: "a", title: "One" },
           { id: "b", title: "Two" },
         ],
-        "Synara Canary",
+        "Cortex Canary",
       ),
     ).toEqual({
       title: "Chats are still running",
-      description: "Work in progress will stop when Synara Canary is closed.",
+      description: "Work in progress will stop when Cortex Canary is closed.",
       resumeLabel: "Resume chats automatically",
       stayLabel: "Cancel",
       quitLabel: "Quit",
@@ -74,10 +74,10 @@ describe("running chats quit confirmation", () => {
 
   it("builds the continuation prompt from the app name", () => {
     expect(quitResumeContinuationPrompt()).toBe(
-      "Synara was closed while this chat was still running. Continue where you left off.",
+      "Cortex was closed while this chat was still running. Continue where you left off.",
     );
-    expect(quitResumeContinuationPrompt("Synara Canary")).toBe(
-      "Synara Canary was closed while this chat was still running. Continue where you left off.",
+    expect(quitResumeContinuationPrompt("Cortex Canary")).toBe(
+      "Cortex Canary was closed while this chat was still running. Continue where you left off.",
     );
   });
 

@@ -15,7 +15,7 @@ import type {
   ProviderRuntimeEvent,
   ProviderSession,
   ServerSettings,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import {
   ApprovalRequestId,
   type ChatAttachment,
@@ -28,9 +28,9 @@ import {
   ProjectId,
   ThreadId,
   TurnId,
-} from "@synara/contracts";
-import { PROVIDER_DELIVERY_BLOCK_SUMMARY } from "@synara/shared/providerDeliveryBlock";
-import type { DeepPartial } from "@synara/shared/Struct";
+} from "@cortex/contracts";
+import { PROVIDER_DELIVERY_BLOCK_SUMMARY } from "@cortex/shared/providerDeliveryBlock";
+import type { DeepPartial } from "@cortex/shared/Struct";
 import {
   Duration,
   Effect,
@@ -268,7 +268,7 @@ describe("ProviderCommandReactor", () => {
     readonly generateThreadTitle?: TextGenerationShape["generateThreadTitle"];
   }) {
     const now = new Date().toISOString();
-    const baseDir = input?.baseDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "synara-reactor-"));
+    const baseDir = input?.baseDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "cortex-reactor-"));
     createdBaseDirs.add(baseDir);
     const { stateDir } = deriveServerPathsSync(baseDir, undefined);
     createdStateDirs.add(stateDir);
@@ -733,7 +733,7 @@ describe("ProviderCommandReactor", () => {
         worktreePath: null,
         ...(input?.gatewayOperationId
           ? {
-              creationSource: "synara_mcp" as const,
+              creationSource: "cortex_mcp" as const,
               gatewayOperationId: input.gatewayOperationId,
               gatewayOperationIndex: 0,
             }
@@ -3069,7 +3069,7 @@ describe("ProviderCommandReactor", () => {
 
     await waitFor(() => harness.sendTurn.mock.calls.length === 1);
     const providerInput = harness.sendTurn.mock.calls[0]?.[0].input;
-    expect(providerInput).toContain("<synara_goal>");
+    expect(providerInput).toContain("<cortex_goal>");
     expect(providerInput).toContain("Finish the complete implementation");
     expect(providerInput).toContain("Continue working toward the active thread goal");
     expect((await readHarnessThread(harness))?.messages).toEqual([]);
@@ -3100,7 +3100,7 @@ describe("ProviderCommandReactor", () => {
         type: "thread.meta.update",
         commandId: CommandId.makeUnsafe("cmd-goal-before-reactor-restart"),
         threadId: ThreadId.makeUnsafe("thread-1"),
-        goal: "Resume after Synara restarts",
+        goal: "Resume after Cortex restarts",
         goalStartBehavior: "defer",
       }),
     );
@@ -5196,9 +5196,9 @@ describe("ProviderCommandReactor", () => {
       runtimeMode: "approval-required",
     });
     const providerInput = harness.sendTurn.mock.calls[0]?.[0].input;
-    expect(providerInput).toContain("<synara_goal>");
+    expect(providerInput).toContain("<cortex_goal>");
     expect(providerInput).toContain("Deliver &lt;all&gt; providers safely");
-    expect(providerInput).toContain("</synara_goal>\n\nhello reactor");
+    expect(providerInput).toContain("</cortex_goal>\n\nhello reactor");
 
     const thread = await readHarnessThread(harness);
     expect(thread?.session?.threadId).toBe("thread-1");
@@ -5366,9 +5366,9 @@ describe("ProviderCommandReactor", () => {
 
     await waitFor(() => harness.steerSubagent.mock.calls.length === 1);
     const steerInput = harness.steerSubagent.mock.calls[0]?.[0].input;
-    expect(steerInput).toContain("<synara_goal>");
+    expect(steerInput).toContain("<cortex_goal>");
     expect(steerInput).toContain("Finish &lt;all&gt; tests");
-    expect(steerInput).toContain("</synara_goal>\n\ncontinue");
+    expect(steerInput).toContain("</cortex_goal>\n\ncontinue");
   });
 
   it("dispatches thread.task.background to the provider service", async () => {
@@ -6457,11 +6457,11 @@ describe("ProviderCommandReactor", () => {
         commandId: CommandId.makeUnsafe("cmd-thread-worktree-bootstrap"),
         threadId: ThreadId.makeUnsafe("thread-1"),
         envMode: "worktree",
-        branch: "synara/cb661f0d",
+        branch: "cortex/cb661f0d",
         worktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
         associatedWorktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
-        associatedWorktreeBranch: "synara/cb661f0d",
-        associatedWorktreeRef: "synara/cb661f0d",
+        associatedWorktreeBranch: "cortex/cb661f0d",
+        associatedWorktreeRef: "cortex/cb661f0d",
       }),
     );
 
@@ -6496,19 +6496,19 @@ describe("ProviderCommandReactor", () => {
     await waitFor(async () => {
       const thread = await readHarnessThread(harness);
       return (
-        thread?.branch === "synara/app-startup-crash" &&
-        thread.associatedWorktreeBranch === "synara/app-startup-crash" &&
-        thread.associatedWorktreeRef === "synara/app-startup-crash"
+        thread?.branch === "cortex/app-startup-crash" &&
+        thread.associatedWorktreeBranch === "cortex/app-startup-crash" &&
+        thread.associatedWorktreeRef === "cortex/app-startup-crash"
       );
     });
 
     const thread = await readHarnessThread(harness);
     expect(thread).toMatchObject({
-      branch: "synara/app-startup-crash",
+      branch: "cortex/app-startup-crash",
       worktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
       associatedWorktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
-      associatedWorktreeBranch: "synara/app-startup-crash",
-      associatedWorktreeRef: "synara/app-startup-crash",
+      associatedWorktreeBranch: "cortex/app-startup-crash",
+      associatedWorktreeRef: "cortex/app-startup-crash",
     });
   });
 
@@ -6528,11 +6528,11 @@ describe("ProviderCommandReactor", () => {
         commandId: CommandId.makeUnsafe("cmd-gateway-worktree-bootstrap"),
         threadId: ThreadId.makeUnsafe("thread-1"),
         envMode: "worktree",
-        branch: "synara/cb661f0d",
+        branch: "cortex/cb661f0d",
         worktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
         associatedWorktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
-        associatedWorktreeBranch: "synara/cb661f0d",
-        associatedWorktreeRef: "synara/cb661f0d",
+        associatedWorktreeBranch: "cortex/cb661f0d",
+        associatedWorktreeRef: "cortex/cb661f0d",
       }),
     );
     await Effect.runPromise(
@@ -6573,11 +6573,11 @@ describe("ProviderCommandReactor", () => {
         commandId: CommandId.makeUnsafe("cmd-missing-gateway-worktree-bootstrap"),
         threadId: ThreadId.makeUnsafe("thread-1"),
         envMode: "worktree",
-        branch: "synara/cb661f0d",
+        branch: "cortex/cb661f0d",
         worktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
         associatedWorktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
-        associatedWorktreeBranch: "synara/cb661f0d",
-        associatedWorktreeRef: "synara/cb661f0d",
+        associatedWorktreeBranch: "cortex/cb661f0d",
+        associatedWorktreeRef: "cortex/cb661f0d",
       }),
     );
     await Effect.runPromise(
@@ -6621,11 +6621,11 @@ describe("ProviderCommandReactor", () => {
         commandId: CommandId.makeUnsafe("cmd-thread-worktree-bootstrap-antigravity"),
         threadId: ThreadId.makeUnsafe("thread-1"),
         envMode: "worktree",
-        branch: "synara/cb661f0d",
+        branch: "cortex/cb661f0d",
         worktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
         associatedWorktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
-        associatedWorktreeBranch: "synara/cb661f0d",
-        associatedWorktreeRef: "synara/cb661f0d",
+        associatedWorktreeBranch: "cortex/cb661f0d",
+        associatedWorktreeRef: "cortex/cb661f0d",
       }),
     );
 
@@ -6659,12 +6659,12 @@ describe("ProviderCommandReactor", () => {
       },
     });
     expect(harness.renameBranch.mock.calls[0]?.[0]).toMatchObject({
-      oldBranch: "synara/cb661f0d",
-      newBranch: "synara/provider-startup-timeouts",
+      oldBranch: "cortex/cb661f0d",
+      newBranch: "cortex/provider-startup-timeouts",
     });
 
     await waitFor(
-      async () => (await readHarnessThread(harness))?.branch === "synara/provider-startup-timeouts",
+      async () => (await readHarnessThread(harness))?.branch === "cortex/provider-startup-timeouts",
     );
   });
 
@@ -6695,11 +6695,11 @@ describe("ProviderCommandReactor", () => {
         commandId: CommandId.makeUnsafe("cmd-thread-worktree-keep-temporary"),
         threadId: ThreadId.makeUnsafe("thread-1"),
         envMode: "worktree",
-        branch: "synara/cb661f0d",
+        branch: "cortex/cb661f0d",
         worktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
         associatedWorktreePath: "/tmp/provider-project/.worktrees/cb661f0d",
-        associatedWorktreeBranch: "synara/cb661f0d",
-        associatedWorktreeRef: "synara/cb661f0d",
+        associatedWorktreeBranch: "cortex/cb661f0d",
+        associatedWorktreeRef: "cortex/cb661f0d",
       }),
     );
 
@@ -6731,9 +6731,9 @@ describe("ProviderCommandReactor", () => {
 
     const thread = await readHarnessThread(harness);
     expect(thread).toMatchObject({
-      branch: "synara/cb661f0d",
-      associatedWorktreeBranch: "synara/cb661f0d",
-      associatedWorktreeRef: "synara/cb661f0d",
+      branch: "cortex/cb661f0d",
+      associatedWorktreeBranch: "cortex/cb661f0d",
+      associatedWorktreeRef: "cortex/cb661f0d",
     });
   });
 

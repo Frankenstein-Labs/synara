@@ -7,8 +7,8 @@ import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
-const FEEDBACK_ADDRESS = "feedback@trysynara.com";
-const FORWARD_FROM = `Synara Feedback <${FEEDBACK_ADDRESS}>`;
+const FEEDBACK_ADDRESS = "feedback@trycortex.com";
+const FORWARD_FROM = `Cortex Feedback <${FEEDBACK_ADDRESS}>`;
 
 function jsonResponse(body: unknown, status: number): Response {
   return Response.json(body, {
@@ -27,7 +27,7 @@ function normalizedAddress(value: string): string {
 export async function POST(request: Request): Promise<Response> {
   const apiKey = process.env.RESEND_INBOUND_API_KEY?.trim();
   const webhookSecret = process.env.RESEND_WEBHOOK_SECRET?.trim();
-  const forwardTo = process.env.SYNARA_FEEDBACK_FORWARD_TO_EMAIL?.trim();
+  const forwardTo = process.env.CORTEX_FEEDBACK_FORWARD_TO_EMAIL?.trim();
   if (!apiKey || !webhookSecret || !forwardTo) {
     return jsonResponse({ error: "Inbound feedback delivery is not configured." }, 503);
   }
@@ -71,7 +71,7 @@ export async function POST(request: Request): Promise<Response> {
       to: forwardTo,
     },
     {
-      idempotencyKey: `synara-feedback-forward/${event.data.email_id}`,
+      idempotencyKey: `cortex-feedback-forward/${event.data.email_id}`,
     },
   );
   if (error) {

@@ -10,7 +10,7 @@ import {
   type RuntimeMode,
   type ThreadId,
   type ToolLifecycleItemType,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import { Schema } from "effect";
 import * as AcpErrors from "./AcpErrors.ts";
 
@@ -129,7 +129,7 @@ export function resolveAcpFullAccessPermissionOutcome(
 }
 
 /**
- * Applies Synara's turn-scoped permission precedence to ACP reverse requests.
+ * Applies Cortex's turn-scoped permission precedence to ACP reverse requests.
  *
  * `interactionMode: undefined` means that no turn owns the request. Those
  * requests are cancelled so replay or late provider activity cannot inherit a

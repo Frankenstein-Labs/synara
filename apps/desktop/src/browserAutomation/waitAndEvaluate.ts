@@ -5,7 +5,7 @@ import type {
   BrowserWaitCondition,
   BrowserWaitInput,
   BrowserWaitOutput,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 
 import type { BrowserAutomationVisibleRuntime } from "../browserManager";
 import {

@@ -1,5 +1,5 @@
-import type { DeviceEvent, DeviceUdid, ThreadDeviceState } from "@synara/contracts";
-import { ThreadId } from "@synara/contracts";
+import type { DeviceEvent, DeviceUdid, ThreadDeviceState } from "@cortex/contracts";
+import { ThreadId } from "@cortex/contracts";
 import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render } from "vitest-browser-react";

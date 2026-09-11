@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { ServerProviderStatus } from "@synara/contracts";
+import type { ServerProviderStatus } from "@cortex/contracts";
 import {
   isProviderUsable,
   normalizeProviderStatusForLocalConfig,
@@ -81,7 +81,7 @@ describe("normalizeProviderStatusForLocalConfig", () => {
       available: false,
       authStatus: "unknown",
       checkedAt: BASE_STATUS.checkedAt,
-      message: "Provider is disabled in Synara settings.",
+      message: "Provider is disabled in Cortex settings.",
     });
   });
 

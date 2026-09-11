@@ -15,7 +15,7 @@ import {
   type ProviderStartOptions,
   type RuntimeMode,
   type ThreadId,
-} from "@synara/contracts";
+} from "@cortex/contracts";
 import * as Equal from "effect/Equal";
 import * as Schema from "effect/Schema";
 
@@ -47,7 +47,7 @@ import {
   type ThreadPrimarySurface,
 } from "./types";
 
-export const COMPOSER_DRAFT_STORAGE_KEY = "synara:composer-drafts:v1";
+export const COMPOSER_DRAFT_STORAGE_KEY = "cortex:composer-drafts:v1";
 export const COMPOSER_DRAFT_STORAGE_VERSION = 6;
 export type DraftThreadEnvMode = "local" | "worktree";
 const TERMINAL_DRAFT_THREAD_MAPPING_SUFFIX = "::terminal";

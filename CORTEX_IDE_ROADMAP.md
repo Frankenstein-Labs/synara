@@ -1,6 +1,6 @@
 # CORTEX IDE — Feuille de route
 
-Cette feuille de route décrit l’évolution future de la base Synara importée vers CORTEX IDE. Elle ne constitue pas une déclaration de fonctionnalités déjà disponibles. La priorité immédiate est de stabiliser et de comprendre la base existante sans supprimer ses capacités.
+Cette feuille de route décrit l’évolution future de la base Cortex importée vers CORTEX IDE. Elle ne constitue pas une déclaration de fonctionnalités déjà disponibles. La priorité immédiate est de stabiliser et de comprendre la base existante sans supprimer ses capacités.
 
 ## Principes directeurs
 
@@ -12,7 +12,7 @@ Les décisions d’architecture devront partir de la structure réellement prés
 
 La première phase consiste à rendre la copie de travail reproductible et fiable. Elle comprend la validation des prérequis Bun/Node, l’installation déterministe des dépendances, la réussite des tests existants, la réussite des typechecks et la vérification des builds web, serveur et desktop.
 
-Cette phase doit également établir une matrice de support Windows, macOS et Linux, documenter les limites de packaging, vérifier les flux de démarrage du desktop et du serveur, et distinguer les problèmes hérités de Synara des changements propres à CORTEX IDE.
+Cette phase doit également établir une matrice de support Windows, macOS et Linux, documenter les limites de packaging, vérifier les flux de démarrage du desktop et du serveur, et distinguer les problèmes hérités de Cortex des changements propres à CORTEX IDE.
 
 ## Phase 2 — Faire évoluer l’éditeur vers le multi-langage
 
@@ -87,11 +87,11 @@ Cette phase nécessitera une conception séparée des comptes, des permissions, 
 
 ## Hors périmètre immédiat
 
-Le grand rebranding de l’interface, le remplacement du code existant, la suppression de fonctionnalités Synara et l’ajout de services cloud ne font pas partie de l’importation initiale. Ils ne devront commencer qu’après la clôture de la Phase 1 et après l’établissement d’une baseline de tests et de builds.
+Le grand rebranding de l’interface, le remplacement du code existant, la suppression de fonctionnalités Cortex et l’ajout de services cloud ne font pas partie de l’importation initiale. Ils ne devront commencer qu’après la clôture de la Phase 1 et après l’établissement d’une baseline de tests et de builds.
 
 ## Références
 
-[1]: https://github.com/Emanuele-web04/synara "Dépôt source Synara"
+[1]: https://github.com/Emanuele-web04/cortex "Dépôt source Cortex"
 [2]: https://github.com/Frankenstein-Labs/cortex-ide "Dépôt de travail CORTEX IDE"
 [3]: https://microsoft.github.io/language-server-protocol/ "Language Server Protocol"
 

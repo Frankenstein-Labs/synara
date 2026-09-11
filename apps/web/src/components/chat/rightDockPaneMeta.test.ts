@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { ThreadId } from "@synara/contracts";
+import type { ThreadId } from "@cortex/contracts";
 import { type RightDockPane } from "~/rightDockStore.logic";
 import {
   buildRightDockPaneLabelOverrides,

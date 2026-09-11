@@ -1,5 +1,5 @@
 /**
- * Minimal MCP (Model Context Protocol) JSON-RPC handling for the Synara agent
+ * Minimal MCP (Model Context Protocol) JSON-RPC handling for the Cortex agent
  * gateway.
  *
  * Implements the stateless subset of the MCP streamable-HTTP transport the
@@ -147,8 +147,8 @@ export function buildMcpInitializeResult(input: {
       tools: { listChanged: false },
     },
     serverInfo: {
-      name: "synara",
-      title: "Synara App Control",
+      name: "cortex",
+      title: "Cortex App Control",
       version: input.serverVersion,
     },
     instructions: input.instructions,

@@ -99,9 +99,9 @@ describe("resolveLocalOnboardingCompletion", () => {
   });
 
   it("only counts a marker recorded against the current installation", () => {
-    const local = { completedAt: COMPLETED_AT, installationKey: "/home/a/.synara/worktrees" };
-    expect(resolveLocalOnboardingCompletion(local, "/home/a/.synara/worktrees")).toBe(COMPLETED_AT);
-    expect(resolveLocalOnboardingCompletion(local, "/home/b/.synara/worktrees")).toBeNull();
+    const local = { completedAt: COMPLETED_AT, installationKey: "/home/a/.cortex/worktrees" };
+    expect(resolveLocalOnboardingCompletion(local, "/home/a/.cortex/worktrees")).toBe(COMPLETED_AT);
+    expect(resolveLocalOnboardingCompletion(local, "/home/b/.cortex/worktrees")).toBeNull();
   });
 
   it("ignores a marker when either installation identity is unknown", () => {
