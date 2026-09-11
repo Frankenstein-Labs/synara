@@ -175,7 +175,7 @@ describe("TraitsPicker (Claude)", () => {
     await using _ = await mountClaudePicker();
 
     await page.getByRole("button").click();
-    await page.getByLabel("Fast mode").click();
+    await page.getByRole("button", { name: "Fast mode", includeHidden: true }).click();
 
     await vi.waitFor(() => {
       expect(document.body.textContent ?? "").toContain("Effort");
@@ -499,7 +499,7 @@ describe("TraitsPicker (Codex)", () => {
     });
 
     await page.getByRole("button").click();
-    await page.getByLabel("Fast mode").click();
+    await page.getByRole("button", { name: "Fast mode", includeHidden: true }).click();
 
     expect(useComposerDraftStore.getState().stickyModelSelectionByProvider.codex).toMatchObject({
       provider: "codex",
