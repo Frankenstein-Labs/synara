@@ -10,9 +10,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@effect/platform-node": "catalog:",
     "@cortex/contracts": "workspace:*",
     "@cortex/shared": "workspace:*",
+    "@effect/platform-node": "catalog:",
     "effect": "catalog:"
   },
   "devDependencies": {

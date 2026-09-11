@@ -45,11 +45,11 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@effect/language-service": "catalog:",
-    "@effect/vitest": "catalog:",
     "@cortex/contracts": "workspace:*",
     "@cortex/shared": "workspace:*",
     "@cortex/web": "workspace:*",
+    "@effect/language-service": "catalog:",
+    "@effect/vitest": "catalog:",
     "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "@types/ws": "^8.5.13",

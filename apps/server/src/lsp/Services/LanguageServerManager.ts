@@ -5,10 +5,7 @@ import { promisify } from "node:util";
 
 import type { OpenVSXDownloadResult } from "@cortex/contracts";
 import { Data, Effect, Layer, ServiceMap } from "effect";
-import {
-  OpenVSXService,
-  type OpenVSXServiceShape,
-} from "../../openvsx/Services/OpenVSXService";
+import { OpenVSXService } from "../../openvsx/Services/OpenVSXService";
 
 const execFileAsync = promisify(execFile);
 
@@ -38,6 +35,11 @@ export interface LanguageServerManagerShape {
   ) => Effect.Effect<LanguageServerResolution, LanguageServerManagerError>;
 }
 
+type OpenVSXDownloadProvider = Pick<
+  import("../../openvsx/Services/OpenVSXService").OpenVSXServiceShape,
+  "downloadExtension"
+>;
+
 export class LanguageServerManager extends ServiceMap.Service<
   LanguageServerManager,
   LanguageServerManagerShape
@@ -61,7 +63,9 @@ const readStaticServerEntrypoint = async (extensionPath: string, relativePath: s
   return entrypoint;
 };
 
-export const makeLanguageServerManager = (openVSX: OpenVSXServiceShape): LanguageServerManagerShape => {
+export const makeLanguageServerManager = (
+  openVSX: OpenVSXDownloadProvider,
+): LanguageServerManagerShape => {
   const openVSXService = openVSX;
   return {
     ensureServer: (candidate, localCommand) =>
@@ -77,7 +81,10 @@ export const makeLanguageServerManager = (openVSX: OpenVSXServiceShape): Languag
             }),
           );
           if (candidate.executableRelativePath) {
-            await readStaticServerEntrypoint(downloaded.extensionPath, candidate.executableRelativePath);
+            await readStaticServerEntrypoint(
+              downloaded.extensionPath,
+              candidate.executableRelativePath,
+            );
           } else {
             // Reading package.json is deliberately limited to discovery. Cortex does
             // not execute extension JavaScript in the server process.
