@@ -97,7 +97,6 @@ La structure vérifiée est la suivante :
 apps/desktop/       Electron desktop, preload, IPC, fenêtres, mises à jour, PTY
 apps/server/        serveur/CLI, orchestration, SQLite, Git, providers, WebSocket
 apps/web/           React/Vite, éditeur, routes, terminal et interface utilisateur
-apps/marketing/     Next.js, contenu marketing et documentation
 packages/contracts/ contrats partagés
 packages/shared/    runtime partagé, filesystem, processus et utilitaires
 scripts/            build, release, packaging, provenance et checks

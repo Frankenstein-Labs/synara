@@ -23,7 +23,6 @@ L’analyse a porté sur l’arborescence Git complète, les manifestes `package
 | Desktop           | `apps/desktop/`                                  | Client desktop Electron, bootstrap principal, preload, ponts IPC, intégration backend et scripts de démarrage.                            |
 | Serveur / CLI     | `apps/server/`                                   | Serveur applicatif et CLI local, orchestration, persistance SQLite, providers, WebSocket et terminal. Le package est nommé `@cortex/cli`. |
 | Web               | `apps/web/`                                      | Interface React 19 construite avec Vite, TanStack Router, Zustand, Lexical et xterm.                                                      |
-| Marketing         | `apps/marketing/`                                | Site marketing et documentation Next.js.                                                                                                  |
 | Contrats partagés | `packages/contracts/`                            | Contrats et types partagés entre les applications.                                                                                        |
 | Code partagé      | `packages/shared/`                               | Utilitaires et abstractions communes, notamment processus, filesystem, plateformes et intégrations.                                       |
 | Scripts           | `scripts/`                                       | Build, release, vérifications de provenance, packaging desktop, migrations de manifestes et tests de smoke.                               |
@@ -36,7 +35,7 @@ Il n’existe pas de répertoires racine `desktop/`, `server/`, `web/` ou `share
 
 Le gestionnaire de paquets et le runtime de développement recommandés sont Bun. Le dépôt déclare `bun@1.4.2` dans le champ `packageManager` et fournit `bun.lock` ainsi que `bunfig.toml`. Le serveur déclare une compatibilité Node.js `^22.19 || ^23.11 || >=24.10`, en complément de l’utilisation de Bun pour les commandes de développement.
 
-La pile principale comprend TypeScript, React 19, Vite 8, Next.js pour le site marketing, Electron pour le desktop, Vitest pour les tests, Playwright pour certains tests navigateur/desktop, Effect pour des parties du serveur et `node-pty` pour les sessions terminal. Les versions et dépendances exactes restent celles des manifestes importés et de `bun.lock`.
+La pile principale comprend TypeScript, React 19, Vite 8, React et Vite pour l’application web, Electron pour le desktop, Vitest pour les tests, Playwright pour certains tests navigateur/desktop, Effect pour des parties du serveur et `node-pty` pour les sessions terminal. Les versions et dépendances exactes restent celles des manifestes importés et de `bun.lock`.
 
 ## Application desktop
 

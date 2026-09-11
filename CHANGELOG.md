@@ -52,7 +52,7 @@ This release includes 43 commits since v0.8.1, covering measured performance imp
 - Reduced shared harness and browser-tool schema overhead while retaining tool-specific guidance and accepted inputs.
 - Restore the last-used model and options in new chats, and persist sidebar project expansion state, including legacy project aliases.
 - Filter routine Codex startup noise while preserving actual errors, use a dedicated compaction icon, and soften chat card seams.
-- Import the public website into `apps/marketing` with Cloudflare Workers preparation, and stop its redundant theme-class MutationObserver feedback loop.
+- Retire the public website integration with Cloudflare Workers preparation, and stop its redundant theme-class MutationObserver feedback loop.
 - Upgrade the pinned Bun toolchain to 1.4.2 and make TypeScript 7 the default seven-workspace checker. Keep `typecheck:legacy` for the documented Effect diagnostic gap and compiler comparisons.
 - Split CI into static, unit, browser, and build lanes; shard unit/browser tests, cache installs, and add a documentation-only fast path. Correct PR-size label synchronization ordering.
 - Remove confirmed unused code and consolidate shared logic while retaining independent regression coverage.
@@ -1564,7 +1564,6 @@ These are recorded before/after experiments for the merged changes, not a new v0
 - Root `bun run test` did not complete cleanly in two attempts: both runs reached a green `@cortex/web` suite (169 files / 1954 tests), then stalled in the `apps/server` Vitest tail. The stale duplicate root/Vitest processes were stopped before continuing verification.
 - Direct `bun run test` from `apps/server` also stalled before reporting test-file progress, only printing Node SQLite experimental warnings, so it is not counted as passed.
 - Direct package tests passed for the release-relevant and non-server packages: `apps/web` 169 files / 1954 tests, `packages/contracts` 9 files / 90 tests, `packages/shared` 24 files / 228 tests, `packages/effect-acp` 3 files / 24 tests, `apps/desktop` 19 files / 149 tests, and `scripts` 5 files / 36 tests.
-- `apps/marketing` has no `test` script.
 - `npm run build` in `/Users/emanueledipietro/Developer/cortex-website` passed and generated `/changelog/v0.2.41`.
 - `npm run lint` in `/Users/emanueledipietro/Developer/cortex-website` passed.
 
@@ -1918,7 +1917,6 @@ These are recorded before/after experiments for the merged changes, not a new v0
 - `bun run test` from `packages/shared` passed (21 files passed; 183 tests passed).
 - `bun run test` from `apps/desktop` passed (18 files passed; 141 tests passed).
 - `bun run test` from `scripts` passed (5 files passed; 36 tests passed).
-- `apps/marketing` has no `test` script.
 - `npm run build` in `/Users/emanueledipietro/Developer/cortex-website` passed and generated `/changelog/v0.1.6`.
 
 ## 0.1.5 - 2026-06-08

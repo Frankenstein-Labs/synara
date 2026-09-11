@@ -97,7 +97,6 @@ CORTEX_PERF=1 CORTEX_PERF_OUT=/tmp/tool-output.json bun run --cwd apps/web test 
 CORTEX_PERF=1 CORTEX_PERF_OUT=/tmp/file-diff.json bun run --cwd apps/web test perf/fileDiff.perf.test.ts
 CORTEX_PERF=1 CORTEX_PERF_OUT=/tmp/diagnostics.json bun run --cwd apps/desktop test perf/browserDiagnostics.perf.test.ts
 CORTEX_PERF=1 CORTEX_PERF_OUT=/tmp/prior-transcript.json bun run --cwd apps/server test perf/priorTranscript.perf.test.ts
-node apps/marketing/scripts/theme-smoke.mjs apps/marketing/src/components/ThemeScript.tsx /tmp/theme.json
 ```
 
 For a baseline theme run, set `CORTEX_PERF=1` so the probe records the pre-fix idle callbacks while still checking behavior. Normal invocation asserts that the feedback loop is absent. Chromium must be installed for the existing Playwright dependency.

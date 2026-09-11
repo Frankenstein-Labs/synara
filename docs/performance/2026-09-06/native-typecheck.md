@@ -117,13 +117,11 @@ measurement. Formatting and lint passed; lint retained existing warnings.
 
 ### Commands
 
-Use the pinned dependencies and a supported Node version. Generate marketing
 types once before either command, rather than comparing a prepared project with
 an unprepared checkout:
 
 ```sh
 bun install --frozen-lockfile
-(cd apps/marketing && bun run postinstall && node node_modules/next/dist/bin/next typegen)
 bun run typecheck:legacy
 bun run typecheck
 ```
@@ -142,7 +140,6 @@ const projects = [
   "apps/server",
   "apps/web",
   "apps/desktop",
-  "apps/marketing",
   "packages/contracts",
   "packages/shared",
   "scripts",
