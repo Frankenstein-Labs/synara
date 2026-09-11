@@ -22,6 +22,14 @@ import type {
   ExternalMcpRevokeIntegrationInput,
 } from "./externalMcp";
 import type {
+  OpenVSXDownloadExtensionInput,
+  OpenVSXDownloadResult,
+  OpenVSXExtension,
+  OpenVSXGetExtensionDetailsInput,
+  OpenVSXSearchExtensionsInput,
+  OpenVSXSearchResult,
+} from "./openvsx";
+import type {
   AutomationCancelRunInput,
   AutomationCancelRunResult,
   AutomationArchiveRunInput,
@@ -723,6 +731,11 @@ export interface NativeApi {
   };
   filesystem: {
     browse: (input: FilesystemBrowseInput) => Promise<FilesystemBrowseResult>;
+  };
+  extensions?: {
+    search: (input: OpenVSXSearchExtensionsInput) => Promise<OpenVSXSearchResult>;
+    details: (input: OpenVSXGetExtensionDetailsInput) => Promise<OpenVSXExtension>;
+    download: (input: OpenVSXDownloadExtensionInput) => Promise<OpenVSXDownloadResult>;
   };
   studio: {
     listThreadOutputs: (
