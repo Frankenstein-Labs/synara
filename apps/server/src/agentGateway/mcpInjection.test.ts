@@ -158,7 +158,7 @@ describe("agent gateway MCP injection", () => {
     assert.isTrue(configHasTomlTableHeader("  [ mcp_servers . cortex ]", "[mcp_servers.cortex]"));
     assert.isTrue(configHasTomlTableHeader('[mcp_servers."cortex"]', "[mcp_servers.cortex]"));
     assert.isTrue(configHasTomlTableHeader("['mcp_servers'.'cortex']", "[mcp_servers.cortex]"));
-    assert.isTrue(configHasTomlTableHeader('[mcp_servers."syn\\u0061ra"]', "[mcp_servers.cortex]"));
+    assert.isTrue(configHasTomlTableHeader('[mcp_servers."c\\u006frtex"]', "[mcp_servers.cortex]"));
     assert.isTrue(
       configHasTomlTableHeader('["shell_environment_policy"]', "[shell_environment_policy]"),
     );
