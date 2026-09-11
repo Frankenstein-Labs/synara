@@ -32,8 +32,9 @@ resources = root / "apps/desktop/resources"
 for name in ("cortex.png", "icon.png", "app-icon-linux.png", "app-icon-macos.png", "dock-icon.png", "dock-icon-dark.png"):
     image.resize((1024, 1024), Image.Resampling.LANCZOS).save(resources / name, format="PNG", optimize=True)
 
-image.resize((256, 256), Image.Resampling.LANCZOS).save(resources / "icon.ico", format="ICO", sizes=[(256, 256), (128, 128), (64, 64), (32, 32), (16, 16)])
-image.resize((256, 256), Image.Resampling.LANCZOS).save(resources / "app-icon-windows.ico", format="ICO", sizes=[(256, 256), (128, 128), (64, 64), (32, 32), (16, 16)])
+windows_icon_sizes = [(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (24, 24), (16, 16)]
+image.resize((256, 256), Image.Resampling.LANCZOS).save(resources / "icon.ico", format="ICO", sizes=windows_icon_sizes)
+image.resize((256, 256), Image.Resampling.LANCZOS).save(resources / "app-icon-windows.ico", format="ICO", sizes=windows_icon_sizes)
 
 print("Installed official logo PNG and ICO variants")
 print(f"Source: {source}")
