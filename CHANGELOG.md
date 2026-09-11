@@ -1564,6 +1564,10 @@ These are recorded before/after experiments for the merged changes, not a new v0
 - Root `bun run test` did not complete cleanly in two attempts: both runs reached a green `@cortex/web` suite (169 files / 1954 tests), then stalled in the `apps/server` Vitest tail. The stale duplicate root/Vitest processes were stopped before continuing verification.
 - Direct `bun run test` from `apps/server` also stalled before reporting test-file progress, only printing Node SQLite experimental warnings, so it is not counted as passed.
 - Direct package tests passed for the release-relevant and non-server packages: `apps/web` 169 files / 1954 tests, `packages/contracts` 9 files / 90 tests, `packages/shared` 24 files / 228 tests, `packages/effect-acp` 3 files / 24 tests, `apps/desktop` 19 files / 149 tests, and `scripts` 5 files / 36 tests.
+<<<<<<< HEAD
+=======
+- `apps/marketing` has no `test` script.
+>>>>>>> origin/chore/import-synara-baseline
 - `npm run build` in `/Users/emanueledipietro/Developer/cortex-website` passed and generated `/changelog/v0.2.41`.
 - `npm run lint` in `/Users/emanueledipietro/Developer/cortex-website` passed.
 
@@ -1917,6 +1921,10 @@ These are recorded before/after experiments for the merged changes, not a new v0
 - `bun run test` from `packages/shared` passed (21 files passed; 183 tests passed).
 - `bun run test` from `apps/desktop` passed (18 files passed; 141 tests passed).
 - `bun run test` from `scripts` passed (5 files passed; 36 tests passed).
+<<<<<<< HEAD
+=======
+- `apps/marketing` has no `test` script.
+>>>>>>> origin/chore/import-synara-baseline
 - `npm run build` in `/Users/emanueledipietro/Developer/cortex-website` passed and generated `/changelog/v0.1.6`.
 
 ## 0.1.5 - 2026-06-08
