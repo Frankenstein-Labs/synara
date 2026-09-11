@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { lstat, mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import * as Path from "node:path";
 
@@ -9,8 +9,11 @@ import type {
   OpenVSXDownloadResult,
   OpenVSXExtension,
   OpenVSXGetExtensionDetailsInput,
+  OpenVSXInstalledExtension,
+  OpenVSXListInstalledResult,
   OpenVSXSearchExtensionsInput,
   OpenVSXSearchResult,
+  OpenVSXUninstallExtensionInput,
 } from "@cortex/contracts";
 import { Data, Effect, Layer, ServiceMap } from "effect";
 
@@ -35,6 +38,13 @@ export interface OpenVSXServiceShape {
   readonly downloadExtension: (
     input: OpenVSXDownloadExtensionInput,
   ) => Effect.Effect<OpenVSXDownloadResult, OpenVSXError>;
+  readonly listInstalledExtensions: () => Effect.Effect<OpenVSXListInstalledResult, OpenVSXError>;
+  readonly installExtension: (
+    input: OpenVSXDownloadExtensionInput,
+  ) => Effect.Effect<OpenVSXInstalledExtension, OpenVSXError>;
+  readonly uninstallExtension: (
+    input: OpenVSXUninstallExtensionInput,
+  ) => Effect.Effect<void, OpenVSXError>;
 }
 
 export class OpenVSXService extends ServiceMap.Service<OpenVSXService, OpenVSXServiceShape>()(
@@ -52,6 +62,11 @@ const safeSegment = (value: string, label: string): string => {
     throw new Error(`Invalid ${label}`);
   }
   return value;
+};
+
+const isWithin = (root: string, candidate: string): boolean => {
+  const relative = Path.relative(Path.resolve(root), Path.resolve(candidate));
+  return relative.length > 0 && !relative.startsWith("..") && !Path.isAbsolute(relative);
 };
 
 const urlSegment = (value: string, label: string): string =>
@@ -78,10 +93,61 @@ const extractArchive = async (archivePath: string, extensionPath: string): Promi
   await execFileAsync("unzip", ["-q", archivePath, "-d", extensionPath]);
 };
 
+const assertSafeExtractedTree = async (current: string): Promise<void> => {
+  const entries = await readdir(current, { withFileTypes: true });
+  for (const entry of entries) {
+    const entryPath = Path.join(current, entry.name);
+    const stat = await lstat(entryPath);
+    if (stat.isSymbolicLink()) throw new Error(`Symlink is not allowed in VSIX: ${entry.name}`);
+    if (entry.isDirectory()) await assertSafeExtractedTree(entryPath);
+  }
+};
+
+const readManifest = async (extensionPath: string): Promise<Record<string, unknown>> => {
+  const manifestPath = Path.join(extensionPath, "extension", "package.json");
+  const raw = await readFile(manifestPath, "utf8");
+  const manifest: unknown = JSON.parse(raw);
+  if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
+    throw new Error("VSIX package.json must contain an object manifest");
+  }
+  const record = manifest as Record<string, unknown>;
+  if (typeof record.name !== "string" || typeof record.version !== "string") {
+    throw new Error("VSIX manifest must declare name and version");
+  }
+  if (
+    record.contributes !== undefined &&
+    (typeof record.contributes !== "object" || record.contributes === null)
+  ) {
+    throw new Error("VSIX manifest contributions must be an object");
+  }
+  return record;
+};
+
 export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServiceShape => {
   const registryUrl = (options.registryUrl ?? DEFAULT_REGISTRY_URL).replace(/\/$/, "");
   const request = options.fetch ?? globalThis.fetch;
   if (!request) throw new Error("Fetch is not available in this runtime");
+  const registryPath = Path.join(options.cacheRoot, "installed.json");
+
+  const readInstalled = async (): Promise<OpenVSXInstalledExtension[]> => {
+    try {
+      const value: unknown = JSON.parse(await readFile(registryPath, "utf8"));
+      return Array.isArray(value) ? (value as OpenVSXInstalledExtension[]) : [];
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+      throw error;
+    }
+  };
+
+  const writeInstalled = async (extensions: OpenVSXInstalledExtension[]): Promise<void> => {
+    await mkdir(options.cacheRoot, { recursive: true });
+    const temporaryPath = `${registryPath}.tmp-${process.pid}`;
+    await writeFile(temporaryPath, `${JSON.stringify(extensions, null, 2)}\n`, {
+      encoding: "utf8",
+      mode: 0o600,
+    });
+    await rename(temporaryPath, registryPath);
+  };
 
   const searchExtensions = (input: OpenVSXSearchExtensionsInput) =>
     Effect.tryPromise({
@@ -207,7 +273,105 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
       ),
     );
 
-  return { searchExtensions, getExtensionDetails, downloadExtension };
+  const listInstalledExtensions = () =>
+    Effect.tryPromise({
+      try: async (): Promise<OpenVSXListInstalledResult> => ({ extensions: await readInstalled() }),
+      catch: (error) => error,
+    }).pipe(
+      Effect.mapError(
+        (error) =>
+          new OpenVSXError({
+            operation: "listInstalledExtensions",
+            message: error instanceof Error ? error.message : String(error),
+            cause: error,
+          }),
+      ),
+    );
+
+  const installExtension = (input: OpenVSXDownloadExtensionInput) =>
+    Effect.tryPromise({
+      try: async (): Promise<OpenVSXInstalledExtension> => {
+        const downloaded = await Effect.runPromise(downloadExtension(input));
+        await assertSafeExtractedTree(downloaded.extensionPath);
+        await readManifest(downloaded.extensionPath);
+        const installed: OpenVSXInstalledExtension = {
+          namespace: downloaded.namespace,
+          name: downloaded.name,
+          version: downloaded.version,
+          extensionPath: downloaded.extensionPath,
+          archivePath: downloaded.archivePath,
+          sha256: downloaded.sha256 ?? "",
+          installedAt: new Date().toISOString(),
+        };
+        const existing = await readInstalled();
+        const next = existing.filter(
+          (item) => !(item.namespace === installed.namespace && item.name === installed.name),
+        );
+        await writeInstalled([...next, installed]);
+        return installed;
+      },
+      catch: (error) => error,
+    }).pipe(
+      Effect.mapError(
+        (error) =>
+          new OpenVSXError({
+            operation: "installExtension",
+            message: error instanceof Error ? error.message : String(error),
+            cause: error,
+          }),
+      ),
+    );
+
+  const uninstallExtension = (input: OpenVSXUninstallExtensionInput) =>
+    Effect.tryPromise({
+      try: async (): Promise<void> => {
+        const installed = await readInstalled();
+        const matches = installed.filter(
+          (item) =>
+            item.namespace === input.namespace &&
+            item.name === input.name &&
+            (input.version === undefined || item.version === input.version),
+        );
+        if (matches.length === 0) throw new Error("Extension is not installed");
+        for (const item of matches) {
+          const versionDirectory = Path.dirname(item.archivePath);
+          if (!isWithin(options.cacheRoot, versionDirectory)) {
+            throw new Error("Installed extension path is outside the Open VSX cache");
+          }
+          await rm(versionDirectory, { recursive: true, force: true });
+        }
+        await writeInstalled(
+          installed.filter(
+            (item) =>
+              !matches.some(
+                (match) =>
+                  match.namespace === item.namespace &&
+                  match.name === item.name &&
+                  match.version === item.version,
+              ),
+          ),
+        );
+      },
+      catch: (error) => error,
+    }).pipe(
+      Effect.mapError(
+        (error) =>
+          new OpenVSXError({
+            operation: "uninstallExtension",
+            message: error instanceof Error ? error.message : String(error),
+            cause: error,
+          }),
+      ),
+    );
+
+  return {
+    searchExtensions,
+    getExtensionDetails,
+    downloadExtension,
+    listInstalledExtensions,
+    installExtension,
+    uninstallExtension,
+  };
 };
 
 export const makeOpenVSXServiceLive = (options: OpenVSXServiceOptions) =>

@@ -26,8 +26,11 @@ import type {
   OpenVSXDownloadResult,
   OpenVSXExtension,
   OpenVSXGetExtensionDetailsInput,
+  OpenVSXInstalledExtension,
+  OpenVSXListInstalledResult,
   OpenVSXSearchExtensionsInput,
   OpenVSXSearchResult,
+  OpenVSXUninstallExtensionInput,
 } from "./openvsx";
 import type {
   AutomationCancelRunInput,
@@ -736,6 +739,9 @@ export interface NativeApi {
     search: (input: OpenVSXSearchExtensionsInput) => Promise<OpenVSXSearchResult>;
     details: (input: OpenVSXGetExtensionDetailsInput) => Promise<OpenVSXExtension>;
     download: (input: OpenVSXDownloadExtensionInput) => Promise<OpenVSXDownloadResult>;
+    listInstalled: () => Promise<OpenVSXListInstalledResult>;
+    install: (input: OpenVSXDownloadExtensionInput) => Promise<OpenVSXInstalledExtension>;
+    uninstall: (input: OpenVSXUninstallExtensionInput) => Promise<void>;
   };
   studio: {
     listThreadOutputs: (

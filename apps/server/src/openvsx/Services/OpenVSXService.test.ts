@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 
@@ -74,7 +74,6 @@ describe("OpenVSXService", () => {
 
   it("downloads and extracts a VSIX into the isolated Cortex cache", async () => {
     const root = await tempDirectory();
-    const source = path.join(root, "extension");
     const archive = path.join(root, "java.vsix");
     await writeFile(path.join(root, "package.json"), JSON.stringify({ name: "java" }));
     await writeFile(path.join(root, "server.js"), "static server asset");
@@ -119,5 +118,91 @@ describe("OpenVSXService", () => {
     await expect(
       Effect.runPromise(service.getExtensionDetails({ namespace: "../escape", name: "java" })),
     ).rejects.toMatchObject({ _tag: "OpenVSXError" });
+  });
+
+  it("installs a validated manifest, persists the registry, and uninstalls atomically", async () => {
+    const root = await tempDirectory();
+    const packageRoot = path.join(root, "extension");
+    const archive = path.join(root, "python.vsix");
+    await mkdir(packageRoot, { recursive: true });
+    await writeFile(
+      path.join(packageRoot, "package.json"),
+      JSON.stringify({
+        name: "python-tools",
+        version: "2.0.0",
+        publisher: "example",
+        contributes: { languages: [{ id: "python", extensions: [".py"] }] },
+      }),
+    );
+    await writeFile(path.join(packageRoot, "README.md"), "safe extension metadata");
+    execFileSync("zip", ["-q", "-r", archive, "extension"], { cwd: root });
+    const archiveBytes = await readFile(archive);
+    const service = makeOpenVSXService({
+      cacheRoot: path.join(root, "cache"),
+      fetch: async (input) => {
+        const url = String(input);
+        if (url.endsWith("/example/python-tools")) {
+          return new Response(
+            JSON.stringify({
+              namespace: "example",
+              name: "python-tools",
+              version: "2.0.0",
+              url: "https://open-vsx.org/api/example/python-tools",
+              files: { download: "https://example.test/python-tools.vsix" },
+            }),
+            { status: 200 },
+          );
+        }
+        return new Response(archiveBytes, { status: 200 });
+      },
+    });
+
+    const installed = await Effect.runPromise(
+      service.installExtension({ namespace: "example", name: "python-tools" }),
+    );
+    expect(installed.sha256).toHaveLength(64);
+    expect((await Effect.runPromise(service.listInstalledExtensions())).extensions).toHaveLength(1);
+    await expect(
+      readFile(path.join(installed.extensionPath, "extension", "package.json")),
+    ).resolves.toBeTruthy();
+
+    await Effect.runPromise(
+      service.uninstallExtension({ namespace: "example", name: "python-tools" }),
+    );
+    expect((await Effect.runPromise(service.listInstalledExtensions())).extensions).toHaveLength(0);
+    await expect(readFile(installed.archivePath)).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("rejects an extracted VSIX without a valid package manifest", async () => {
+    const root = await tempDirectory();
+    const packageRoot = path.join(root, "extension");
+    const archive = path.join(root, "invalid.vsix");
+    await mkdir(packageRoot, { recursive: true });
+    await writeFile(path.join(packageRoot, "README.md"), "missing manifest");
+    execFileSync("zip", ["-q", "-r", archive, "extension"], { cwd: root });
+    const archiveBytes = await readFile(archive);
+    const service = makeOpenVSXService({
+      cacheRoot: path.join(root, "cache"),
+      fetch: async (input) => {
+        const url = String(input);
+        if (url.endsWith("/example/invalid")) {
+          return new Response(
+            JSON.stringify({
+              namespace: "example",
+              name: "invalid",
+              version: "1.0.0",
+              url: "https://open-vsx.org/api/example/invalid",
+              files: { download: "https://example.test/invalid.vsix" },
+            }),
+            { status: 200 },
+          );
+        }
+        return new Response(archiveBytes, { status: 200 });
+      },
+    });
+    await expect(
+      Effect.runPromise(service.installExtension({ namespace: "example", name: "invalid" })),
+    ).rejects.toMatchObject({ _tag: "OpenVSXError" });
+    expect((await Effect.runPromise(service.listInstalledExtensions())).extensions).toHaveLength(0);
   });
 });

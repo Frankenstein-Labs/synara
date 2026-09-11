@@ -557,6 +557,9 @@ export function createWsNativeApi(): NativeApi {
       search: (input) => transport.request(WS_METHODS.openVSXSearchExtensions, input),
       details: (input) => transport.request(WS_METHODS.openVSXGetExtensionDetails, input),
       download: (input) => transport.request(WS_METHODS.openVSXDownloadExtension, input),
+      listInstalled: () => transport.request(WS_METHODS.openVSXListInstalledExtensions),
+      install: (input) => transport.request(WS_METHODS.openVSXInstallExtension, input),
+      uninstall: (input) => transport.request(WS_METHODS.openVSXUninstallExtension, input),
     },
     studio: {
       listThreadOutputs: (input) => transport.request(WS_METHODS.studioListThreadOutputs, input),

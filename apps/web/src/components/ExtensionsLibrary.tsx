@@ -1,8 +1,14 @@
 import type { OpenVSXExtension } from "@cortex/contracts";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { CheckIcon, CircleAlertIcon, PluginIcon } from "~/lib/icons";
-import { openVSXDetailsQueryOptions, openVSXSearchQueryOptions } from "~/lib/openvsxReactQuery";
+import {
+  openVSXDetailsQueryOptions,
+  openVSXInstallMutationOptions,
+  openVSXInstalledQueryOptions,
+  openVSXSearchQueryOptions,
+  openVSXUninstallMutationOptions,
+} from "~/lib/openvsxReactQuery";
 import { cn } from "~/lib/utils";
 import { Skeleton } from "./ui/skeleton";
 
@@ -56,7 +62,19 @@ function ExtensionCard({
   );
 }
 
-function ExtensionDetails({ extension }: { extension: OpenVSXExtension }) {
+function ExtensionDetails({
+  extension,
+  installed,
+  busy,
+  onInstall,
+  onUninstall,
+}: {
+  extension: OpenVSXExtension;
+  installed: boolean;
+  busy: boolean;
+  onInstall: () => void;
+  onUninstall: () => void;
+}) {
   return (
     <aside className="rounded-xl border border-border/60 bg-background/70 p-4 lg:sticky lg:top-4 lg:self-start">
       <div className="flex items-start gap-3">
@@ -97,15 +115,43 @@ function ExtensionDetails({ extension }: { extension: OpenVSXExtension }) {
           ))}
         </div>
       ) : null}
+      <button
+        type="button"
+        className="mt-4 inline-flex h-9 w-full items-center justify-center rounded-lg bg-foreground px-3 text-xs font-medium text-background transition-opacity disabled:opacity-50"
+        disabled={busy}
+        onClick={installed ? onUninstall : onInstall}
+      >
+        {busy ? "Processing…" : installed ? "Uninstall" : "Install extension"}
+      </button>
       <p className="mt-4 border-t border-border/50 pt-3 text-xs text-muted-foreground">
-        Open VSX metadata is available. Installation will be enabled once the controlled extension
-        registry is connected to this surface.
+        Extensions are validated and recorded in Cortex&apos;s controlled installation registry.
       </p>
     </aside>
   );
 }
 
+function EmptyState({
+  title,
+  description,
+  error = false,
+}: {
+  title: string;
+  description: string;
+  error?: boolean;
+}) {
+  return (
+    <div className="flex min-h-40 items-center justify-center rounded-xl border border-dashed border-border/60 bg-background/40 px-5 py-6 text-center">
+      <div className="max-w-sm space-y-1">
+        {error ? <CircleAlertIcon className="mx-auto mb-2 size-4 text-amber-500" /> : null}
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  );
+}
+
 export function ExtensionsLibrary({ query }: { query: string }) {
+  const queryClient = useQueryClient();
   const normalizedQuery = query.trim();
   const searchQuery = useQuery(
     openVSXSearchQueryOptions(
@@ -113,6 +159,9 @@ export function ExtensionsLibrary({ query }: { query: string }) {
       normalizedQuery.length >= 2,
     ),
   );
+  const installedQuery = useQuery(openVSXInstalledQueryOptions());
+  const installMutation = useMutation(openVSXInstallMutationOptions(queryClient));
+  const uninstallMutation = useMutation(openVSXUninstallMutationOptions(queryClient));
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const extensions = searchQuery.data?.extensions ?? [];
   const selectedExtension = extensions.find(
@@ -125,6 +174,16 @@ export function ExtensionsLibrary({ query }: { query: string }) {
         : null,
     ),
   );
+  const installedKeys = new Set(
+    (installedQuery.data?.extensions ?? []).map(
+      (extension) => `${extension.namespace}.${extension.name}`,
+    ),
+  );
+  const detail = detailsQuery.data ?? selectedExtension;
+  const detailKey = detail ? `${detail.namespace}.${detail.name}` : null;
+  const installInput = detail
+    ? { namespace: detail.namespace, name: detail.name, version: detail.version }
+    : null;
 
   if (normalizedQuery.length < 2) {
     return (
@@ -169,36 +228,20 @@ export function ExtensionsLibrary({ query }: { query: string }) {
           );
         })}
       </div>
-      {detailsQuery.data ? (
-        <ExtensionDetails extension={detailsQuery.data} />
-      ) : selectedExtension ? (
-        <ExtensionDetails extension={selectedExtension} />
+      {detail && detailKey && installInput ? (
+        <ExtensionDetails
+          extension={detail}
+          installed={installedKeys.has(detailKey)}
+          busy={installMutation.isPending || uninstallMutation.isPending}
+          onInstall={() => installMutation.mutate(installInput)}
+          onUninstall={() => uninstallMutation.mutate(installInput)}
+        />
       ) : (
         <EmptyState
           title="Select an extension"
           description="Choose a result to inspect its metadata."
         />
       )}
-    </div>
-  );
-}
-
-function EmptyState({
-  title,
-  description,
-  error = false,
-}: {
-  title: string;
-  description: string;
-  error?: boolean;
-}) {
-  return (
-    <div className="flex min-h-40 items-center justify-center rounded-xl border border-dashed border-border/60 bg-background/40 px-5 py-6 text-center">
-      <div className="max-w-sm space-y-1">
-        {error ? <CircleAlertIcon className="mx-auto mb-2 size-4 text-amber-500" /> : null}
-        <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
     </div>
   );
 }

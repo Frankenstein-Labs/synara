@@ -28,8 +28,11 @@ import {
   OpenVSXDownloadResult,
   OpenVSXExtension,
   OpenVSXGetExtensionDetailsInput,
+  OpenVSXInstalledExtension,
+  OpenVSXListInstalledResult,
   OpenVSXSearchExtensionsInput,
   OpenVSXSearchResult,
+  OpenVSXUninstallExtensionInput,
 } from "./openvsx";
 import {
   ExternalMcpCreateIntegrationInput,
@@ -557,6 +560,27 @@ export const WsOpenVSXGetExtensionDetailsRpc = Rpc.make(WS_METHODS.openVSXGetExt
 export const WsOpenVSXDownloadExtensionRpc = Rpc.make(WS_METHODS.openVSXDownloadExtension, {
   payload: OpenVSXDownloadExtensionInput,
   success: OpenVSXDownloadResult,
+  error: WsRpcError,
+});
+
+export const WsOpenVSXListInstalledExtensionsRpc = Rpc.make(
+  WS_METHODS.openVSXListInstalledExtensions,
+  {
+    payload: Schema.Struct({}),
+    success: OpenVSXListInstalledResult,
+    error: WsRpcError,
+  },
+);
+
+export const WsOpenVSXInstallExtensionRpc = Rpc.make(WS_METHODS.openVSXInstallExtension, {
+  payload: OpenVSXDownloadExtensionInput,
+  success: OpenVSXInstalledExtension,
+  error: WsRpcError,
+});
+
+export const WsOpenVSXUninstallExtensionRpc = Rpc.make(WS_METHODS.openVSXUninstallExtension, {
+  payload: OpenVSXUninstallExtensionInput,
+  success: Schema.Void,
   error: WsRpcError,
 });
 
@@ -1314,6 +1338,9 @@ export const WsFeatureRpcGroup = RpcGroup.make(
   WsOpenVSXSearchExtensionsRpc,
   WsOpenVSXGetExtensionDetailsRpc,
   WsOpenVSXDownloadExtensionRpc,
+  WsOpenVSXListInstalledExtensionsRpc,
+  WsOpenVSXInstallExtensionRpc,
+  WsOpenVSXUninstallExtensionRpc,
   WsShellOpenInEditorRpc,
   WsGitGithubRepositoryRpc,
   WsGitStatusRpc,

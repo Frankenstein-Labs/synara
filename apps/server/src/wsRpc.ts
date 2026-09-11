@@ -2011,6 +2011,12 @@ const makeWsRpcHandlersLayer = () =>
           ),
         [WS_METHODS.openVSXDownloadExtension]: (input) =>
           rpcEffect(openVSX.downloadExtension(input), "Failed to download Open VSX extension"),
+        [WS_METHODS.openVSXListInstalledExtensions]: () =>
+          rpcEffect(openVSX.listInstalledExtensions(), "Failed to list installed extensions"),
+        [WS_METHODS.openVSXInstallExtension]: (input) =>
+          rpcEffect(openVSX.installExtension(input), "Failed to install Open VSX extension"),
+        [WS_METHODS.openVSXUninstallExtension]: (input) =>
+          rpcEffect(openVSX.uninstallExtension(input), "Failed to uninstall Open VSX extension"),
         [WS_METHODS.automationList]: (input) =>
           rpcEffect(automationService.list(input), "Failed to list automations"),
         [WS_METHODS.automationGetMemory]: ({ automationId }) =>
