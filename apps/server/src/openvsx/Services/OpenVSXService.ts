@@ -54,7 +54,8 @@ const safeSegment = (value: string, label: string): string => {
   return value;
 };
 
-const urlSegment = (value: string, label: string): string => encodeURIComponent(safeSegment(value, label));
+const urlSegment = (value: string, label: string): string =>
+  encodeURIComponent(safeSegment(value, label));
 
 const responseJson = async <T>(response: Response, operation: string): Promise<T> => {
   if (!response.ok) {
@@ -64,7 +65,9 @@ const responseJson = async <T>(response: Response, operation: string): Promise<T
 };
 
 const extractArchive = async (archivePath: string, extensionPath: string): Promise<void> => {
-  const { stdout } = await execFileAsync("unzip", ["-Z1", archivePath], { maxBuffer: 4 * 1024 * 1024 });
+  const { stdout } = await execFileAsync("unzip", ["-Z1", archivePath], {
+    maxBuffer: 4 * 1024 * 1024,
+  });
   for (const entry of stdout.split("\n").filter(Boolean)) {
     const normalized = entry.replaceAll("\\", "/");
     if (normalized.startsWith("/") || normalized.split("/").includes("..")) {
@@ -140,7 +143,14 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
                       }),
                     );
                   }
-                  return Effect.tryPromise({ try: async () => responseJson<OpenVSXExtension>(await request(versionUrl), "Open VSX version details"), catch: (error) => error });
+                  return Effect.tryPromise({
+                    try: async () =>
+                      responseJson<OpenVSXExtension>(
+                        await request(versionUrl),
+                        "Open VSX version details",
+                      ),
+                    catch: (error) => error,
+                  });
                 }),
               )
             : getExtensionDetails({ namespace, name }),
@@ -150,8 +160,14 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
         const response = await request(downloadUrl);
         if (!response.ok) throw new Error(`VSIX download failed with HTTP ${response.status}`);
         const bytes = new Uint8Array(await response.arrayBuffer());
-        if (bytes.byteLength > MAX_ARCHIVE_BYTES) throw new Error("VSIX archive exceeds the size limit");
-        const versionDir = Path.join(options.cacheRoot, namespace, name, safeSegment(version, "version"));
+        if (bytes.byteLength > MAX_ARCHIVE_BYTES)
+          throw new Error("VSIX archive exceeds the size limit");
+        const versionDir = Path.join(
+          options.cacheRoot,
+          namespace,
+          name,
+          safeSegment(version, "version"),
+        );
         const archivePath = Path.join(versionDir, `${namespace}.${name}-${version}.vsix`);
         const extensionPath = Path.join(versionDir, "extension");
         await mkdir(versionDir, { recursive: true });
@@ -165,20 +181,29 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
           await rm(temporaryArchivePath, { force: true }).catch(() => undefined);
           throw error;
         }
-        const sha256 = createHash("sha256").update(await readFile(archivePath)).digest("hex");
-        return { namespace, name, version, archivePath, extensionPath, downloadUrl, sha256 } satisfies OpenVSXDownloadResult;
+        const sha256 = createHash("sha256")
+          .update(await readFile(archivePath))
+          .digest("hex");
+        return {
+          namespace,
+          name,
+          version,
+          archivePath,
+          extensionPath,
+          downloadUrl,
+          sha256,
+        } satisfies OpenVSXDownloadResult;
       },
       catch: (error) => error,
     }).pipe(
-      Effect.mapError(
-        (error) =>
-          error instanceof OpenVSXError
-            ? error
-            : new OpenVSXError({
-                operation: "downloadExtension",
-                message: error instanceof Error ? error.message : String(error),
-                cause: error,
-              }),
+      Effect.mapError((error) =>
+        error instanceof OpenVSXError
+          ? error
+          : new OpenVSXError({
+              operation: "downloadExtension",
+              message: error instanceof Error ? error.message : String(error),
+              cause: error,
+            }),
       ),
     );
 
@@ -189,5 +214,9 @@ export const makeOpenVSXServiceLive = (options: OpenVSXServiceOptions) =>
   Layer.succeed(OpenVSXService, makeOpenVSXService(options));
 
 export const OpenVSXServiceLive = makeOpenVSXServiceLive({
-  cacheRoot: Path.join(process.env.CORTEX_HOME ?? Path.join(process.env.HOME ?? ".", ".cortex"), "cache", "openvsx"),
+  cacheRoot: Path.join(
+    process.env.CORTEX_HOME ?? Path.join(process.env.HOME ?? ".", ".cortex"),
+    "cache",
+    "openvsx",
+  ),
 });

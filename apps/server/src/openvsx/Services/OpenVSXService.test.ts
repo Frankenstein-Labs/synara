@@ -10,7 +10,9 @@ import { makeOpenVSXService } from "./OpenVSXService";
 const tempDirectories: string[] = [];
 
 afterEach(async () => {
-  await Promise.all(tempDirectories.splice(0).map((directory) => rm(directory, { recursive: true, force: true })));
+  await Promise.all(
+    tempDirectories.splice(0).map((directory) => rm(directory, { recursive: true, force: true })),
+  );
 });
 
 const tempDirectory = async () => {
@@ -110,7 +112,10 @@ describe("OpenVSXService", () => {
   });
 
   it("rejects path traversal in extension identifiers", async () => {
-    const service = makeOpenVSXService({ cacheRoot: await tempDirectory(), fetch: globalThis.fetch });
+    const service = makeOpenVSXService({
+      cacheRoot: await tempDirectory(),
+      fetch: globalThis.fetch,
+    });
     await expect(
       Effect.runPromise(service.getExtensionDetails({ namespace: "../escape", name: "java" })),
     ).rejects.toMatchObject({ _tag: "OpenVSXError" });

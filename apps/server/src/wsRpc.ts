@@ -2005,7 +2005,10 @@ const makeWsRpcHandlersLayer = () =>
         [WS_METHODS.openVSXSearchExtensions]: (input) =>
           rpcEffect(openVSX.searchExtensions(input), "Failed to search Open VSX extensions"),
         [WS_METHODS.openVSXGetExtensionDetails]: (input) =>
-          rpcEffect(openVSX.getExtensionDetails(input), "Failed to load Open VSX extension details"),
+          rpcEffect(
+            openVSX.getExtensionDetails(input),
+            "Failed to load Open VSX extension details",
+          ),
         [WS_METHODS.openVSXDownloadExtension]: (input) =>
           rpcEffect(openVSX.downloadExtension(input), "Failed to download Open VSX extension"),
         [WS_METHODS.automationList]: (input) =>
