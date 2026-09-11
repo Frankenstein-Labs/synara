@@ -37,8 +37,7 @@ export function useThrottledStreamingValue<T>(value: T, active: boolean, interva
   // would coalesce indefinitely and make streaming appear stuck. Bypass.
   const isTestableEnv =
     typeof window === "undefined" ||
-    (typeof process !== "undefined" &&
-      (process.env.VITEST === "true" || process.env.NODE_ENV === "test"));
+    (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent));
   const [throttled, setThrottled] = useState(value);
   const lastCommitAtRef = useRef(0);
   const timerRef = useRef<number | null>(null);

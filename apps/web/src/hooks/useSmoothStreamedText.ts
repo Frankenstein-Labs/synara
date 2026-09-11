@@ -127,8 +127,7 @@ export function useSmoothStreamedText(text: string, isStreaming: boolean): strin
     typeof window === "undefined" ||
     typeof (window as unknown as { requestAnimationFrame?: unknown }).requestAnimationFrame !==
       "function" ||
-    (typeof process !== "undefined" &&
-      (process.env.VITEST === "true" || process.env.NODE_ENV === "test"));
+    (typeof navigator !== "undefined" && /jsdom/i.test(navigator.userAgent));
   const animate = isStreaming && !reduceMotion && !isTestableEnv;
 
   const [revealed, setRevealed] = useState(text);
