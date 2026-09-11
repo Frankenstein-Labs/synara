@@ -161,16 +161,23 @@ describe("OpenVSXService", () => {
       service.installExtension({ namespace: "example", name: "python-tools" }),
     );
     expect(installed.sha256).toHaveLength(64);
-    expect((await Effect.runPromise(service.listInstalledExtensions())).extensions).toHaveLength(1);
+    const listed = (await Effect.runPromise(service.listInstalledExtensions())).extensions;
+    expect(listed).toHaveLength(1);
+    expect(listed[0]).not.toHaveProperty("extensionPath");
+    expect(listed[0]).not.toHaveProperty("archivePath");
     await expect(
-      readFile(path.join(installed.extensionPath, "extension", "package.json")),
+      readFile(
+        path.join(root, "cache/example/python-tools/2.0.0/extension/extension/package.json"),
+      ),
     ).resolves.toBeTruthy();
 
     await Effect.runPromise(
       service.uninstallExtension({ namespace: "example", name: "python-tools" }),
     );
     expect((await Effect.runPromise(service.listInstalledExtensions())).extensions).toHaveLength(0);
-    await expect(readFile(installed.archivePath)).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(
+      readFile(path.join(root, "cache/example/python-tools/2.0.0/example.python-tools-2.0.0.vsix")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
   });
 
   it("rejects an extracted VSIX without a valid package manifest", async () => {

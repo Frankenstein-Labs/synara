@@ -871,6 +871,14 @@ const makeWsRpcHandlersLayer = () =>
         }
       });
 
+      const requireOwnerSession = Effect.gen(function* () {
+        if (!canManageExternalMcp(yield* CurrentWsSessionRole)) {
+          return yield* Effect.fail(
+            new WsRpcError({ message: "Owner authorization is required for this operation." }),
+          );
+        }
+      });
+
       return AdmittedWsFeatureRpcGroup.of({
         [ORCHESTRATION_WS_METHODS.dispatchCommand]: (command) =>
           rpcEffect(
@@ -2014,9 +2022,15 @@ const makeWsRpcHandlersLayer = () =>
         [WS_METHODS.openVSXListInstalledExtensions]: () =>
           rpcEffect(openVSX.listInstalledExtensions(), "Failed to list installed extensions"),
         [WS_METHODS.openVSXInstallExtension]: (input) =>
-          rpcEffect(openVSX.installExtension(input), "Failed to install Open VSX extension"),
+          rpcEffect(
+            requireOwnerSession.pipe(Effect.andThen(openVSX.installExtension(input))),
+            "Failed to install Open VSX extension",
+          ),
         [WS_METHODS.openVSXUninstallExtension]: (input) =>
-          rpcEffect(openVSX.uninstallExtension(input), "Failed to uninstall Open VSX extension"),
+          rpcEffect(
+            requireOwnerSession.pipe(Effect.andThen(openVSX.uninstallExtension(input))),
+            "Failed to uninstall Open VSX extension",
+          ),
         [WS_METHODS.automationList]: (input) =>
           rpcEffect(automationService.list(input), "Failed to list automations"),
         [WS_METHODS.automationGetMemory]: ({ automationId }) =>

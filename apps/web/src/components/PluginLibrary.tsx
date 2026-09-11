@@ -606,7 +606,7 @@ export function PluginLibrary() {
           <div className="px-6 py-10 text-center">
             <h1 className="text-[28px] font-semibold text-foreground">
               {selectedTab === "extensions"
-                ? "Extend Cortex IDE"
+                ? "Extend Cortex Studio"
                 : `Make ${providerLabel} work your way`}
             </h1>
           </div>

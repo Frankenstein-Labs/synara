@@ -176,11 +176,11 @@ export function ExtensionsLibrary({ query }: { query: string }) {
   );
   const installedKeys = new Set(
     (installedQuery.data?.extensions ?? []).map(
-      (extension) => `${extension.namespace}.${extension.name}`,
+      (extension) => `${extension.namespace}.${extension.name}@${extension.version}`,
     ),
   );
   const detail = detailsQuery.data ?? selectedExtension;
-  const detailKey = detail ? `${detail.namespace}.${detail.name}` : null;
+  const detailKey = detail ? `${detail.namespace}.${detail.name}@${detail.version}` : null;
   const installInput = detail
     ? { namespace: detail.namespace, name: detail.name, version: detail.version }
     : null;

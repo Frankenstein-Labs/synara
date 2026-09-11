@@ -558,7 +558,8 @@ export function createWsNativeApi(): NativeApi {
       details: (input) => transport.request(WS_METHODS.openVSXGetExtensionDetails, input),
       download: (input) => transport.request(WS_METHODS.openVSXDownloadExtension, input),
       listInstalled: () => transport.request(WS_METHODS.openVSXListInstalledExtensions),
-      install: (input) => transport.request(WS_METHODS.openVSXInstallExtension, input),
+      install: (input) =>
+        transport.request(WS_METHODS.openVSXInstallExtension, input, { timeoutMs: 300_000 }),
       uninstall: (input) => transport.request(WS_METHODS.openVSXUninstallExtension, input),
     },
     studio: {

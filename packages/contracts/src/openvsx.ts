@@ -79,8 +79,6 @@ export const OpenVSXInstalledExtension = Schema.Struct({
   namespace: TrimmedNonEmptyString,
   name: TrimmedNonEmptyString,
   version: TrimmedNonEmptyString,
-  extensionPath: TrimmedNonEmptyString,
-  archivePath: TrimmedNonEmptyString,
   sha256: TrimmedNonEmptyString,
   installedAt: TrimmedNonEmptyString,
 });

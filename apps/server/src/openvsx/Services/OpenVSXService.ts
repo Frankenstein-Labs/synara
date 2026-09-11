@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
 import { lstat, mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
@@ -69,6 +69,25 @@ const isWithin = (root: string, candidate: string): boolean => {
   return relative.length > 0 && !relative.startsWith("..") && !Path.isAbsolute(relative);
 };
 
+type InstalledExtensionRecord = OpenVSXInstalledExtension & {
+  readonly extensionPath: string;
+  readonly archivePath: string;
+};
+
+const publicInstalledExtension = ({
+  namespace,
+  name,
+  version,
+  sha256,
+  installedAt,
+}: InstalledExtensionRecord): OpenVSXInstalledExtension => ({
+  namespace,
+  name,
+  version,
+  sha256,
+  installedAt,
+});
+
 const urlSegment = (value: string, label: string): string =>
   encodeURIComponent(safeSegment(value, label));
 
@@ -129,10 +148,10 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
   if (!request) throw new Error("Fetch is not available in this runtime");
   const registryPath = Path.join(options.cacheRoot, "installed.json");
 
-  const readInstalled = async (): Promise<OpenVSXInstalledExtension[]> => {
+  const readInstalled = async (): Promise<InstalledExtensionRecord[]> => {
     try {
       const value: unknown = JSON.parse(await readFile(registryPath, "utf8"));
-      return Array.isArray(value) ? (value as OpenVSXInstalledExtension[]) : [];
+      return Array.isArray(value) ? (value as InstalledExtensionRecord[]) : [];
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
       throw error;
@@ -141,12 +160,27 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
 
   const writeInstalled = async (extensions: OpenVSXInstalledExtension[]): Promise<void> => {
     await mkdir(options.cacheRoot, { recursive: true });
-    const temporaryPath = `${registryPath}.tmp-${process.pid}`;
+    const temporaryPath = `${registryPath}.tmp-${process.pid}-${randomUUID()}`;
     await writeFile(temporaryPath, `${JSON.stringify(extensions, null, 2)}\n`, {
       encoding: "utf8",
       mode: 0o600,
     });
     await rename(temporaryPath, registryPath);
+  };
+
+  let registryMutation = Promise.resolve();
+  const withRegistryMutation = async <T>(mutation: () => Promise<T>): Promise<T> => {
+    const previous = registryMutation;
+    let release!: () => void;
+    registryMutation = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await previous;
+    try {
+      return await mutation();
+    } finally {
+      release();
+    }
   };
 
   const searchExtensions = (input: OpenVSXSearchExtensionsInput) =>
@@ -275,7 +309,9 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
 
   const listInstalledExtensions = () =>
     Effect.tryPromise({
-      try: async (): Promise<OpenVSXListInstalledResult> => ({ extensions: await readInstalled() }),
+      try: async (): Promise<OpenVSXListInstalledResult> => ({
+        extensions: (await readInstalled()).map(publicInstalledExtension),
+      }),
       catch: (error) => error,
     }).pipe(
       Effect.mapError(
@@ -292,23 +328,44 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
     Effect.tryPromise({
       try: async (): Promise<OpenVSXInstalledExtension> => {
         const downloaded = await Effect.runPromise(downloadExtension(input));
-        await assertSafeExtractedTree(downloaded.extensionPath);
-        await readManifest(downloaded.extensionPath);
-        const installed: OpenVSXInstalledExtension = {
-          namespace: downloaded.namespace,
-          name: downloaded.name,
-          version: downloaded.version,
-          extensionPath: downloaded.extensionPath,
-          archivePath: downloaded.archivePath,
-          sha256: downloaded.sha256 ?? "",
-          installedAt: new Date().toISOString(),
-        };
-        const existing = await readInstalled();
-        const next = existing.filter(
-          (item) => !(item.namespace === installed.namespace && item.name === installed.name),
-        );
-        await writeInstalled([...next, installed]);
-        return installed;
+        try {
+          await assertSafeExtractedTree(downloaded.extensionPath);
+          const manifest = await readManifest(downloaded.extensionPath);
+          if (
+            manifest.name !== downloaded.name ||
+            manifest.version !== downloaded.version ||
+            (manifest.publisher !== undefined && manifest.publisher !== downloaded.namespace)
+          ) {
+            throw new Error("VSIX manifest identity does not match the requested extension");
+          }
+          return await withRegistryMutation(async () => {
+            const installed: InstalledExtensionRecord = {
+              namespace: downloaded.namespace,
+              name: downloaded.name,
+              version: downloaded.version,
+              extensionPath: downloaded.extensionPath,
+              archivePath: downloaded.archivePath,
+              sha256: downloaded.sha256 ?? "",
+              installedAt: new Date().toISOString(),
+            };
+            const existing = await readInstalled();
+            const next = existing.filter(
+              (item) => !(item.namespace === installed.namespace && item.name === installed.name),
+            );
+            await writeInstalled([...next, installed]);
+            for (const item of existing) {
+              if (item.namespace === installed.namespace && item.name === installed.name) {
+                await rm(Path.dirname(item.archivePath), { recursive: true, force: true });
+              }
+            }
+            return publicInstalledExtension(installed);
+          });
+        } catch (error) {
+          await rm(Path.dirname(downloaded.archivePath), { recursive: true, force: true }).catch(
+            () => undefined,
+          );
+          throw error;
+        }
       },
       catch: (error) => error,
     }).pipe(
@@ -324,34 +381,48 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
 
   const uninstallExtension = (input: OpenVSXUninstallExtensionInput) =>
     Effect.tryPromise({
-      try: async (): Promise<void> => {
-        const installed = await readInstalled();
-        const matches = installed.filter(
-          (item) =>
-            item.namespace === input.namespace &&
-            item.name === input.name &&
-            (input.version === undefined || item.version === input.version),
-        );
-        if (matches.length === 0) throw new Error("Extension is not installed");
-        for (const item of matches) {
-          const versionDirectory = Path.dirname(item.archivePath);
-          if (!isWithin(options.cacheRoot, versionDirectory)) {
-            throw new Error("Installed extension path is outside the Open VSX cache");
-          }
-          await rm(versionDirectory, { recursive: true, force: true });
-        }
-        await writeInstalled(
-          installed.filter(
+      try: async (): Promise<void> =>
+        withRegistryMutation(async () => {
+          const installed = await readInstalled();
+          const matches = installed.filter(
             (item) =>
-              !matches.some(
-                (match) =>
-                  match.namespace === item.namespace &&
-                  match.name === item.name &&
-                  match.version === item.version,
+              item.namespace === input.namespace &&
+              item.name === input.name &&
+              (input.version === undefined || item.version === input.version),
+          );
+          if (matches.length === 0) throw new Error("Extension is not installed");
+          const staged: Array<{ original: string; temporary: string }> = [];
+          try {
+            for (const item of matches) {
+              const original = Path.dirname(item.archivePath);
+              if (!isWithin(options.cacheRoot, original)) {
+                throw new Error("Installed extension path is outside the Open VSX cache");
+              }
+              const temporary = `${original}.deleting-${randomUUID()}`;
+              await rename(original, temporary);
+              staged.push({ original, temporary });
+            }
+            await writeInstalled(
+              installed.filter(
+                (item) =>
+                  !matches.some(
+                    (match) =>
+                      match.namespace === item.namespace &&
+                      match.name === item.name &&
+                      match.version === item.version,
+                  ),
               ),
-          ),
-        );
-      },
+            );
+          } catch (error) {
+            for (const { original, temporary } of staged.toReversed()) {
+              await rename(temporary, original).catch(() => undefined);
+            }
+            throw error;
+          }
+          for (const { temporary } of staged) {
+            await rm(temporary, { recursive: true, force: true });
+          }
+        }),
       catch: (error) => error,
     }).pipe(
       Effect.mapError(
