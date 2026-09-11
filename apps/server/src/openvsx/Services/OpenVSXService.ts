@@ -355,7 +355,13 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
             await writeInstalled([...next, installed]);
             for (const item of existing) {
               if (item.namespace === installed.namespace && item.name === installed.name) {
-                await rm(Path.dirname(item.archivePath), { recursive: true, force: true });
+                const supersededRoot = Path.dirname(item.archivePath);
+                if (
+                  typeof item.archivePath === "string" &&
+                  isWithin(options.cacheRoot, supersededRoot)
+                ) {
+                  await rm(supersededRoot, { recursive: true, force: true }).catch(() => undefined);
+                }
               }
             }
             return publicInstalledExtension(installed);
@@ -420,7 +426,7 @@ export const makeOpenVSXService = (options: OpenVSXServiceOptions): OpenVSXServi
             throw error;
           }
           for (const { temporary } of staged) {
-            await rm(temporary, { recursive: true, force: true });
+            await rm(temporary, { recursive: true, force: true }).catch(() => undefined);
           }
         }),
       catch: (error) => error,
