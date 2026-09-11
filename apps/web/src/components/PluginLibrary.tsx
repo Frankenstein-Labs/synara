@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useMemo, type ReactNode, useDeferredValue, useState } from "react";
 import type { IconType } from "react-icons";
 import {
-  SiCanva,
+  SiCanvas,
   SiFigma,
   SiGithub,
   SiGmail,
@@ -22,10 +22,10 @@ import {
   SiHuggingface,
   SiLinear,
   SiNotion,
-  SiSlack,
   SiStripe,
   SiVercel,
 } from "react-icons/si";
+import { FaSlack } from "react-icons/fa6";
 import { PROVIDER_ICON_COMPONENT_BY_PROVIDER } from "./ProviderIcon";
 import { useStore } from "~/store";
 import { DEFAULT_PROVIDER_ORDER } from "~/providerOrdering";
@@ -87,7 +87,7 @@ const PROVIDER_ICON: Record<ProviderKind, React.FC<React.SVGProps<SVGSVGElement>
   codex: HammerIcon,
 };
 const KNOWN_PLUGIN_BRANDS: Record<string, PluginBrandArtwork> = {
-  canva: { icon: SiCanva, color: "#00C4CC" },
+  canva: { icon: SiCanvas, color: "#00C4CC" },
   figma: { icon: SiFigma, color: "#F24E1E" },
   github: { icon: SiGithub, color: "#181717" },
   gmail: { icon: SiGmail, color: "#EA4335" },
@@ -96,7 +96,7 @@ const KNOWN_PLUGIN_BRANDS: Record<string, PluginBrandArtwork> = {
   huggingface: { icon: SiHuggingface, color: "#FF9D00" },
   linear: { icon: SiLinear, color: "#5E6AD2" },
   notion: { icon: SiNotion, color: "#111111" },
-  slack: { icon: SiSlack, color: "#4A154B" },
+  slack: { icon: FaSlack, color: "#4A154B" },
   stripe: { icon: SiStripe, color: "#635BFF" },
   vercel: { icon: SiVercel, color: "#111111" },
 };

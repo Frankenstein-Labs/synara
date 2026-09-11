@@ -6,7 +6,7 @@ import {
   SiDatagrip,
   SiGoland,
   SiIntellijidea,
-  SiOpenai,
+  SiOpenid,
   SiPhpstorm,
   SiPycharm,
   SiRider,
@@ -167,7 +167,7 @@ export const Zed: Icon = (props) => {
 export const OpenAI: Icon = ({ color, ...props }) => {
   const iconProps = props as Omit<SVGProps<SVGElement>, "color">;
 
-  return <SiOpenai {...iconProps} {...(typeof color === "string" ? { color } : {})} />;
+  return <SiOpenid {...iconProps} {...(typeof color === "string" ? { color } : {})} />;
 };
 
 export const ClaudeAI: Icon = ({ color, ...props }) => (
